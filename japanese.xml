@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LANGUAGE>
+  <LANGNAME>Japanese</LANGNAME>
+  <CLASS>LanguageExtraAlphabets</CLASS>
+  <SOUNDSPREFIX>http://ctp.di.fct.unl.pt/miei/lap/projs/proj2018-3/files/resources/sounds/</SOUNDSPREFIX>
+  <LESSON ID="1">
+    <KEYBOARD>
+       <PROMPT>Write this in English</PROMPT>
+       <ORIGINAL>何時ですか</ORIGINAL>
+       <TRANSLATION>What time is it?</TRANSLATION>
+       <TRANSLATION>What time is it now?</TRANSLATION>
+       <TRANSLATION>Have you got the time?</TRANSLATION>
+       <SOUND>japanese/sentences/何時ですか.mp3</SOUND>
+    </KEYBOARD>
+    <KEYBOARD>
+       <PROMPT>Write this in English</PROMPT>
+       <ORIGINAL>マリアとジョンは日本語がはなせます</ORIGINAL>
+       <TRANSLATION>Maria and John can speak Japanese.</TRANSLATION>
+       <TRANSLATION>Maria and John speak Japanese.</TRANSLATION>
+       <SOUND>japanese/sentences/マリアとジョンは日本語がはなせます.mp3</SOUND>
+    </KEYBOARD>
+    <PAIRS>
+       <PROMPT>Match the pairs</PROMPT>
+       <ORIGINAL>ぶ 五 bu 四 よん えいご ご 英語 六 ろく</ORIGINAL>
+       <SOLUTION>bu ぶ ご 五 よん 四 えいご 英語 ご ろく 六</SOLUTION>
+    </PAIRS>
+    <BLOCKS>
+       <PROMPT>Write this in Japanese</PROMPT>
+       <ORIGINAL>Um, excuse me, where is the bathroom?</ORIGINAL>
+       <BLOCKS>か トイレ 八つ は 六つ すみません あの 七つ どこ 九つ です</BLOCKS>
+       <SOLUTION>あの すみません トイレ は どこ です か</SOLUTION>
+    </BLOCKS>
+    <BLOCKS>
+       <PROMPT>Write this in Japanese</PROMPT>
+       <ORIGINAL>It's not five o'clock now</ORIGINAL>
+       <BLOCKS>ん 五 今 は 六 は で 時 あり ませ 四</BLOCKS>
+       <SOLUTION>今 は 五 時 で は あり ませ ん</SOLUTION>
+    </BLOCKS>
+  </LESSON>
+  <LESSON ID="2">
+    <KEYBOARD>
+       <PROMPT>Write this in English</PROMPT>
+       <ORIGINAL>おげんきですか</ORIGINAL>
+       <TRANSLATION>How are you?</TRANSLATION>
+       <TRANSLATION>Are you fine?</TRANSLATION>
+       <TRANSLATION>Are you OK?</TRANSLATION>
+       <SOUND>japanese/sentences/おげんきですか.mp3</SOUND>
+    </KEYBOARD>
+    <KEYBOARD>
+       <PROMPT>Write this in English</PROMPT>
+       <ORIGINAL>どうもすみません</ORIGINAL>
+       <TRANSLATION>I am very sorry.</TRANSLATION>
+       <TRANSLATION>I'm very sorry.</TRANSLATION>
+       <SOUND>japanese/sentences/どうもすみません.mp3</SOUND>
+    </KEYBOARD>
+  </LESSON>
+  <SYMBOLS>
+    <SYMBNAME>Hiragana</SYMBNAME>
+    <SOUND>japanese/hiragana</SOUND>
+  </SYMBOLS>
+  <SYMBOLS>
+    <SYMBNAME>Katakana</SYMBNAME>
+  </SYMBOLS>
+  <SYMBOLS>
+    <SYMBNAME>Kanji</SYMBNAME>
+  </SYMBOLS>
+</LANGUAGE>
+

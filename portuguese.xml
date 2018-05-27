@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LANGUAGE>
+  <LANGNAME>Portuguese</LANGNAME>
+  <CLASS>Language</CLASS>
+  <LESSON ID="1">
+    <KEYBOARD>
+       <PROMPT>Write this in English</PROMPT>
+       <ORIGINAL>Que horas são?</ORIGINAL>
+       <TRANSLATION>What time is it?</TRANSLATION>
+       <TRANSLATION>What time is it now?</TRANSLATION>
+       <TRANSLATION>Have you got the time?</TRANSLATION>
+    </KEYBOARD>
+    <KEYBOARD>
+       <PROMPT>Write this in English</PROMPT>
+       <ORIGINAL>A Maria e o João sabem falar japonês.</ORIGINAL>
+       <TRANSLATION>Maria and John can speak Japanese.</TRANSLATION>
+       <TRANSLATION>Maria and John speak Japanese.</TRANSLATION>
+    </KEYBOARD>
+    <PAIRS>
+       <PROMPT>Match the pairs</PROMPT>
+       <ORIGINAL>chapéu um dois rato one moon two lua hat mouse</ORIGINAL>
+       <SOLUTION>one um two dois mouse rato moon lua hat chapéu</SOLUTION>
+    </PAIRS>
+    <BLOCKS>
+       <PROMPT>Write this in Portuguese</PROMPT>
+       <ORIGINAL>Um, excuse me, where is the bathroom?</ORIGINAL>
+       <BLOCKS>desculpe-me, Hum, onde a banho praia de avião casa é habitar</BLOCKS>
+       <SOLUTION>Hum, desculpe-me, onde é a casa de banho</SOLUTION>
+    </BLOCKS>
+  </LESSON>
+  <LESSON ID="2">
+    <KEYBOARD>
+       <PROMPT>Write this in English</PROMPT>
+       <ORIGINAL>Como está?</ORIGINAL>
+       <TRANSLATION>How are you?</TRANSLATION>
+       <TRANSLATION>Are you fine?</TRANSLATION>
+       <TRANSLATION>Are you OK?</TRANSLATION>
+    </KEYBOARD>
+    <KEYBOARD>
+       <PROMPT>Write this in English</PROMPT>
+       <ORIGINAL>Lamento imenso</ORIGINAL>
+       <TRANSLATION>I am very sorry.</TRANSLATION>
+       <TRANSLATION>I'm very sorry.</TRANSLATION>
+    </KEYBOARD>
+  </LESSON>
+</LANGUAGE>
+
