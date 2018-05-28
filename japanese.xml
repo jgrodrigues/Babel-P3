@@ -22,7 +22,7 @@
     <PAIRS>
        <PROMPT>Match the pairs</PROMPT>
        <ORIGINAL>ぶ 五 bu 四 よん えいご ご 英語 六 ろく</ORIGINAL>
-       <SOLUTION>bu ぶ ご 五 よん 四 えいご 英語 ご ろく 六</SOLUTION>
+       <SOLUTION>bu ぶ ご 五 よん 四 えいご 英語 ろく 六</SOLUTION>
     </PAIRS>
     <BLOCKS>
        <PROMPT>Write this in Japanese</PROMPT>
@@ -32,12 +32,121 @@
     </BLOCKS>
     <BLOCKS>
        <PROMPT>Write this in Japanese</PROMPT>
-       <ORIGINAL>It's not five o'clock now</ORIGINAL>
+       <ORIGINAL>It's not five o'clock now.</ORIGINAL>
        <BLOCKS>ん 五 今 は 六 は で 時 あり ませ 四</BLOCKS>
        <SOLUTION>今 は 五 時 で は あり ませ ん</SOLUTION>
     </BLOCKS>
+    <KEYBOARD>
+       <PROMPT>Write this in English</PROMPT>
+       <ORIGINAL>おはよう</ORIGINAL>
+       <TRANSLATION>good morning</TRANSLATION>
+       <SOUND>japanese/sentences/おはよう.mp3</SOUND>
+    </KEYBOARD>
+    <KEYBOARD>
+       <PROMPT>Write this in English</PROMPT>
+       <ORIGINAL>こんにちは</ORIGINAL>
+       <TRANSLATION>good afternoon</TRANSLATION>
+       <TRANSLATION>hello</TRANSLATION>
+       <SOUND>japanese/sentences/こんにちは.mp3</SOUND>
+    </KEYBOARD>
+    <KEYBOARD>
+       <PROMPT>Write this in English</PROMPT>
+       <ORIGINAL>ありがとう</ORIGINAL>
+       <TRANSLATION>thanks</TRANSLATION>
+       <SOUND>japanese/sentences/ありがとう.mp3</SOUND>
+    </KEYBOARD>
+    <KEYBOARD>
+       <PROMPT>Write this in English</PROMPT>
+       <ORIGINAL>さようなら</ORIGINAL>
+       <TRANSLATION>goodbye</TRANSLATION>
+       <SOUND>japanese/sentences/さようなら.mp3</SOUND>
+    </KEYBOARD>
+    <KEYBOARD>
+       <PROMPT>Write this in English</PROMPT>
+       <ORIGINAL>こんばんは</ORIGINAL>
+       <TRANSLATION>good evening</TRANSLATION>
+       <SOUND>japanese/sentences/こんばんは.mp3</SOUND>
+    </KEYBOARD>
+    <KEYBOARD>
+       <PROMPT>Write this in English</PROMPT>
+       <ORIGINAL>おねがいします</ORIGINAL>
+       <TRANSLATION>please</TRANSLATION>
+       <SOUND>japanese/sentences/おねがいします.mp3</SOUND>
+    </KEYBOARD>
   </LESSON>
   <LESSON ID="2">
+    <KEYBOARD>
+       <PROMPT>Write this in English</PROMPT>
+       <ORIGINAL>どうもありがとう</ORIGINAL>
+       <TRANSLATION>Thanks you very much.</TRANSLATION>
+       <TRANSLATION>Much obliged.</TRANSLATION>
+       <SOUND>japanese/sentences/どうもありがとう.mp3</SOUND>
+    </KEYBOARD>
+    <KEYBOARD>
+       <PROMPT>Write this in English</PROMPT>
+       <ORIGINAL>ええ、もちろんです</ORIGINAL>
+       <TRANSLATION>Yes, of course.</TRANSLATION>
+       <TRANSLATION>Yes, by all means.</TRANSLATION>
+       <TRANSLATION>Yes, obviously.</TRANSLATION>
+       <SOUND>japanese/sentences/ええ、もちろんです.mp3</SOUND>
+    </KEYBOARD>
+    <KEYBOARD>
+       <PROMPT>Write this in English</PROMPT>
+       <ORIGINAL>ありがとうございます</ORIGINAL>
+       <TRANSLATION>Thanks you very much.</TRANSLATION>
+       <TRANSLATION>Much obliged.</TRANSLATION>
+       <SOUND>japanese/sentences/ありがとうございます.mp3</SOUND>
+    </KEYBOARD>
+    <KEYBOARD>
+       <PROMPT>Write this in English</PROMPT>
+       <ORIGINAL>いいえ、げんきではありません</ORIGINAL>
+       <TRANSLATION>No, I don't feel well.</TRANSLATION>
+       <TRANSLATION>No, I'm not OK.</TRANSLATION>
+       <SOUND>japanese/sentences/いいえ、げんきではありません.mp3</SOUND>
+     </KEYBOARD>
+  </LESSON>
+  <LESSON ID="3">
+     <KEYBOARD>
+       <PROMPT>Write this in English</PROMPT>
+       <ORIGINAL>今は二時です</ORIGINAL>
+       <TRANSLATION>It is 2:00 now.</TRANSLATION>
+       <TRANSLATION>It is two o'clock now.</TRANSLATION>
+       <SOUND>japanese/sentences/今は二時です.mp3</SOUND>
+    </KEYBOARD>
+    <KEYBOARD>
+       <PROMPT>Write this in English</PROMPT>
+       <ORIGINAL>マリアは先生です</ORIGINAL>
+       <TRANSLATION>Maria is a teacher.</TRANSLATION>
+       <SOUND>japanese/sentences/マリアは先生です.mp3</SOUND>
+    </KEYBOARD>
+  </LESSON>
+  <LESSON ID="4">
+    <KEYBOARD>
+       <PROMPT>Write this in English</PROMPT>
+       <ORIGINAL>お名前は何ですか</ORIGINAL>
+       <TRANSLATION>What is your name?</TRANSLATION>
+       <SOUND>japanese/sentences/お名前は何ですか.mp3</SOUND>
+    </KEYBOARD>
+  </LESSON>
+  <LESSON ID="5">
+   <KEYBOARD>
+       <PROMPT>Write this in English</PROMPT>
+       <ORIGINAL>田中です、よろしく</ORIGINAL>
+       <TRANSLATION>I'm Tanaka. Nice to meet you.</TRANSLATION>
+       <TRANSLATION>I am Tanaka. Glad to meet you.</TRANSLATION>
+       <TRANSLATION>My name is Tanaka. Nice to meet you.</TRANSLATION>
+       <SOUND>japanese/sentences/田中です、よろしく.mp3</SOUND>
+    </KEYBOARD>
+  </LESSON>
+  <LESSON ID="6">
+   <KEYBOARD>
+       <PROMPT>Write this in English</PROMPT>
+       <ORIGINAL>英語ははなせますか</ORIGINAL>
+       <TRANSLATION>Do you speak English?</TRANSLATION>
+        <SOUND>japanese/sentences/英語ははなせますか.mp3</SOUND>
+    </KEYBOARD>
+  </LESSON>
+  <LESSON ID="7">
     <KEYBOARD>
        <PROMPT>Write this in English</PROMPT>
        <ORIGINAL>おげんきですか</ORIGINAL>
@@ -46,6 +155,8 @@
        <TRANSLATION>Are you OK?</TRANSLATION>
        <SOUND>japanese/sentences/おげんきですか.mp3</SOUND>
     </KEYBOARD>
+  </LESSON>
+  <LESSON ID="8">
     <KEYBOARD>
        <PROMPT>Write this in English</PROMPT>
        <ORIGINAL>どうもすみません</ORIGINAL>
@@ -53,16 +164,55 @@
        <TRANSLATION>I'm very sorry.</TRANSLATION>
        <SOUND>japanese/sentences/どうもすみません.mp3</SOUND>
     </KEYBOARD>
+    <KEYBOARD>
+       <PROMPT>Write this in English</PROMPT>
+       <ORIGINAL>とり</ORIGINAL>
+       <TRANSLATION>bird</TRANSLATION>
+       <SOUND>japanese/sentences/とり.mp3</SOUND>
+    </KEYBOARD>
+    <KEYBOARD>
+       <PROMPT>Write this in English</PROMPT>
+       <ORIGINAL>わたし</ORIGINAL>
+       <TRANSLATION>I</TRANSLATION>
+       <SOUND>japanese/sentences/わたし.mp3</SOUND>
+    </KEYBOARD>
+    <KEYBOARD>
+       <PROMPT>Write this in English</PROMPT>
+       <ORIGINAL>いいえ</ORIGINAL>
+       <TRANSLATION>no</TRANSLATION>
+       <SOUND>japanese/sentences/いいえ.mp3</SOUND>
+    </KEYBOARD>
+   <KEYBOARD>
+       <PROMPT>Write this in English</PROMPT>
+       <ORIGINAL>日本語</ORIGINAL>
+       <TRANSLATION>Japanese</TRANSLATION>
+       <SOUND>japanese/sentences/日本語.mp3</SOUND>
+    </KEYBOARD>
   </LESSON>
-  <SYMBOLS>
+  <SYMBOLS ID="1">
     <SYMBNAME>Hiragana</SYMBNAME>
-    <SOUND>japanese/hiragana</SOUND>
+    <PROMPT>Match the pairs</PROMPT>
+    <ALPHABET>あ い う え お は ひ ふ へ ほ か き く け こ ま み む め も さ し す せ そ や ゆ よ た ち つ て と ら り る れ ろ な に ぬ ね の わ ゐ ん ゑ を</ALPHABET>
+    <LATIN>a i u e o ha hi fu he ho ka ki ku ke ko ma mi mu me mo sa shi su se so ya yu yo ta chi tsu te to ra ri ru re ro na ni nu ne no wa wi n we wo</LATIN>
+    <SOUNDSDIR>japanese/hiragana/</SOUNDSDIR>
   </SYMBOLS>
-  <SYMBOLS>
+  <SYMBOLS ID="2">
     <SYMBNAME>Katakana</SYMBNAME>
+    <ALPHABET>ア イ ウ エ オ ハ ヒ フ ヘ ホ カ キ ク ケ コ マ ミ ム メ モ サ シ ス セ ソ ヤ ユ ヨ タ チ ツ テ ト ラ リ ル レ ロ ナ ニ ヌ ネ ノ ワ ヰ ン ヱ ヲ</ALPHABET>
+    <LATIN>a i u e o ha hi fu he ho ka ki ku ke ko ma mi mu me mo sa shi su se so ya yu yo ta chi tsu te to ra ri ru re ro na ni nu ne no wa wi n we wo</LATIN>
+    <COMMENT>No sounds for Katakana</COMMENT>
   </SYMBOLS>
-  <SYMBOLS>
-    <SYMBNAME>Kanji</SYMBNAME>
+  <SYMBOLS ID="3">
+    <SYMBNAME>Kanji 1</SYMBNAME>
+    <ALPHABET>一 二 三 四 五 六 七 八 九 十 百 千 万 円 時 日 本 人 月 火 水 木 金 土 曜 上 下 中 半 山 川 元 気 私 今 田 女 男 見 行 食 飲 天 東 西 南 北 口 出 右 左 分 先 生 大 学 外 国 京 子 小 会 社 父 母 高 校 毎 語 文 帰 入</ALPHABET>
+    <LATIN>one two three four five six seven eight nine ten hundred thousand ten_thousand yen time sun origin person moon fire water tree gold earth weekday above under insIDe half mountain river origin energy I now rice field woman man see go eat drink heaven east west south north mouth to exit right left minute previous birth big learning outside country capital child small to meet company father mother high school every word sentence return enter</LATIN>
+    <COMMENT>No sounds for Kanji</COMMENT>
+  </SYMBOLS>
+  <SYMBOLS ID="4">
+    <SYMBNAME>Kanji 2</SYMBNAME>
+    <ALPHABET>員 新 聞 作 仕 事 電 車 休 言 読 思 次 何 午 後 前 名 白 雨 書 友 間 家 話 少 古 知 来 住 正 年 売 買 町 長 道 雪 立 自 夜 朝 持 手 紙 好 近 明 病 院 映 画 歌 市 所 強 有 旅 神 早 牛 使 働 連 別 度 赤 青 色</ALPHABET>
+    <LATIN>member new listen make serve thing electricity car rest say read think next what noon after before name white rain write friend between house speak little old know come live right year sell buy town long way snow stand self night morning hold hand paper favorite near bright isick institution to reflect picture sing city place strong to exist travel god early cow use work link separate time red blue color</LATIN>
+    <COMMENT>No sounds for Kanji</COMMENT>
   </SYMBOLS>
 </LANGUAGE>
 

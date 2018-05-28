@@ -2,6 +2,7 @@
 <LANGUAGE>
   <LANGNAME>Portuguese</LANGNAME>
   <CLASS>Language</CLASS>
+  <SOUNDSPREFIX>http://ctp.di.fct.unl.pt/miei/lap/projs/proj2018-3/files/resources/sounds/</SOUNDSPREFIX>
   <LESSON ID="1">
     <KEYBOARD>
        <PROMPT>Write this in English</PROMPT>
@@ -9,12 +10,14 @@
        <TRANSLATION>What time is it?</TRANSLATION>
        <TRANSLATION>What time is it now?</TRANSLATION>
        <TRANSLATION>Have you got the time?</TRANSLATION>
+       <SOUND>portuguese/sounds/Que horas são.mp3</SOUND>
     </KEYBOARD>
     <KEYBOARD>
        <PROMPT>Write this in English</PROMPT>
        <ORIGINAL>A Maria e o João sabem falar japonês.</ORIGINAL>
        <TRANSLATION>Maria and John can speak Japanese.</TRANSLATION>
        <TRANSLATION>Maria and John speak Japanese.</TRANSLATION>
+       <SOUND>portuguese/sounds/A Maria e o João sabem falar japonês.mp3</SOUND>
     </KEYBOARD>
     <PAIRS>
        <PROMPT>Match the pairs</PROMPT>
@@ -27,21 +30,177 @@
        <BLOCKS>desculpe-me, Hum, onde a banho praia de avião casa é habitar</BLOCKS>
        <SOLUTION>Hum, desculpe-me, onde é a casa de banho</SOLUTION>
     </BLOCKS>
+    <KEYBOARD>
+       <PROMPT>Write this in English</PROMPT>
+       <ORIGINAL>bom dia</ORIGINAL>
+       <TRANSLATION>good morning</TRANSLATION>
+       <SOUND>portuguese/sounds/bom dia.mp3</SOUND>
+    </KEYBOARD>
+    <KEYBOARD>
+       <PROMPT>boa tarde</PROMPT>
+       <ORIGINAL>こんにちは</ORIGINAL>
+       <TRANSLATION>good afternoon</TRANSLATION>
+       <SOUND>portuguese/sounds/boa tarde.mp3</SOUND>
+    </KEYBOARD>
+    <KEYBOARD>
+       <PROMPT>Write this in English</PROMPT>
+       <ORIGINAL>obrigado</ORIGINAL>
+       <TRANSLATION>thanks</TRANSLATION>
+       <SOUND>portuguese/sounds/obrigado.mp3</SOUND>
+    </KEYBOARD>
+    <KEYBOARD>
+       <PROMPT>Write this in English</PROMPT>
+       <ORIGINAL>adeus</ORIGINAL>
+       <TRANSLATION>goodbye</TRANSLATION>
+       <SOUND>portuguese/sounds/adeus.mp3</SOUND>
+    </KEYBOARD>
+    <KEYBOARD>
+       <PROMPT>Write this in English</PROMPT>
+       <ORIGINAL>boa noite</ORIGINAL>
+       <TRANSLATION>good evening</TRANSLATION>
+       <SOUND>portuguese/sounds/boa noite.mp3</SOUND>
+    </KEYBOARD>
+    <KEYBOARD>
+       <PROMPT>Write this in English</PROMPT>
+       <ORIGINAL>por favor</ORIGINAL>
+       <TRANSLATION>please</TRANSLATION>
+       <SOUND>portuguese/sounds/por favor.mp3</SOUND>
+    </KEYBOARD>
   </LESSON>
   <LESSON ID="2">
+    <KEYBOARD>
+       <PROMPT>Write this in English</PROMPT>
+       <ORIGINAL>Muito obrigada</ORIGINAL>
+       <TRANSLATION>Thanks you very much.</TRANSLATION>
+       <TRANSLATION>Much obliged.</TRANSLATION>
+       <SOUND>portuguese/sounds/Muito obrigada.mp3</SOUND>
+    </KEYBOARD>
+    <KEYBOARD>
+       <PROMPT>Write this in English</PROMPT>
+       <ORIGINAL>Sim, claro.</ORIGINAL>
+       <TRANSLATION>Yes, of course.</TRANSLATION>
+       <TRANSLATION>Yes, by all means.</TRANSLATION>
+       <TRANSLATION>Yes, obviously.</TRANSLATION>
+       <SOUND>portuguese/sounds/Sim, claro.mp3</SOUND>
+    </KEYBOARD>
+    <KEYBOARD>
+       <PROMPT>Write this in English</PROMPT>
+       <ORIGINAL>Não, eu não me sinto bem.</ORIGINAL>
+       <TRANSLATION>No, I don't feel well.</TRANSLATION>
+       <TRANSLATION>No, I'm not OK.</TRANSLATION>
+       <SOUND>portuguese/sounds/Não, eu não me sinto bem.mp3</SOUND>
+     </KEYBOARD>
+  </LESSON>
+  <LESSON ID="3">
+     <KEYBOARD>
+       <PROMPT>Write this in English</PROMPT>
+       <ORIGINAL>São 2:00, agora.</ORIGINAL>
+       <TRANSLATION>It is 2:00 now.</TRANSLATION>
+       <TRANSLATION>It is two o'clock now.</TRANSLATION>
+       <SOUND>portuguese/sounds/São 2:00, agora.mp3</SOUND>
+    </KEYBOARD>
+    <KEYBOARD>
+       <PROMPT>Write this in English</PROMPT>
+       <ORIGINAL>Maria é professora.</ORIGINAL>
+       <TRANSLATION>Maria is a teacher.</TRANSLATION>
+       <SOUND>portuguese/sounds/Maria é professora.mp3</SOUND>
+    </KEYBOARD>
+  </LESSON>
+  <LESSON ID="4">
+    <KEYBOARD>
+       <PROMPT>Write this in English</PROMPT>
+       <ORIGINAL>Como se chama?</ORIGINAL>
+       <TRANSLATION>What is your name?</TRANSLATION>
+       <SOUND>portuguese/sounds/Como se chama.mp3</SOUND>
+    </KEYBOARD>
+  </LESSON>
+  <LESSON ID="5">
+   <KEYBOARD>
+       <PROMPT>Write this in English</PROMPT>
+       <ORIGINAL>Eu sou Tanaka. Prazer em conhecê-lo.</ORIGINAL>
+       <TRANSLATION>I'm Tanaka. Nice to meet you.</TRANSLATION>
+       <TRANSLATION>I am Tanaka. Glad to meet you.</TRANSLATION>
+       <TRANSLATION>My name is Tanaka. Nice to meet you.</TRANSLATION>
+       <SOUND>portuguese/sounds/Eu sou Tanaka. Prazer em conhecê-lo.mp3</SOUND>
+    </KEYBOARD>
+  </LESSON>
+  <LESSON ID="6">
+   <KEYBOARD>
+       <PROMPT>Write this in English</PROMPT>
+       <ORIGINAL>Fala inglês?</ORIGINAL>
+       <TRANSLATION>Do you speak English?</TRANSLATION>
+       <SOUND>portuguese/sounds/Fala inglês.mp3</SOUND>
+    </KEYBOARD>
+  </LESSON>
+  <LESSON ID="7">
     <KEYBOARD>
        <PROMPT>Write this in English</PROMPT>
        <ORIGINAL>Como está?</ORIGINAL>
        <TRANSLATION>How are you?</TRANSLATION>
        <TRANSLATION>Are you fine?</TRANSLATION>
        <TRANSLATION>Are you OK?</TRANSLATION>
+       <SOUND>portuguese/sounds/Como está.mp3</SOUND>
+    </KEYBOARD>
+  </LESSON>
+  <LESSON ID="8">
+    <KEYBOARD>
+       <PROMPT>Write this in English</PROMPT>
+       <ORIGINAL>Lamento imenso.</ORIGINAL>
+       <TRANSLATION>I am very sorry.</TRANSLATION>
+       <TRANSLATION>I'm very sorry.</TRANSLATION>
+       <SOUND>portuguese/sounds/Lamento imenso.mp3</SOUND>
     </KEYBOARD>
     <KEYBOARD>
        <PROMPT>Write this in English</PROMPT>
-       <ORIGINAL>Lamento imenso</ORIGINAL>
-       <TRANSLATION>I am very sorry.</TRANSLATION>
-       <TRANSLATION>I'm very sorry.</TRANSLATION>
+       <ORIGINAL>pássaro</ORIGINAL>
+       <TRANSLATION>bird</TRANSLATION>
+       <SOUND>portuguese/sounds/pássaro.mp3</SOUND>
+    </KEYBOARD>
+    <KEYBOARD>
+       <PROMPT>Write this in English</PROMPT>
+       <ORIGINAL>eu</ORIGINAL>
+       <TRANSLATION>I</TRANSLATION>
+       <SOUND>portuguese/sounds/eu.mp3</SOUND>
+    </KEYBOARD>
+    <KEYBOARD>
+       <PROMPT>Write this in English</PROMPT>
+       <ORIGINAL>não</ORIGINAL>
+       <TRANSLATION>no</TRANSLATION>
+       <SOUND>portuguese/sounds/não.mp3</SOUND>
+    </KEYBOARD>
+   <KEYBOARD>
+       <PROMPT>Write this in English</PROMPT>
+       <ORIGINAL>japonês</ORIGINAL>
+       <TRANSLATION>Japanese</TRANSLATION>
+       <SOUND>portuguese/sounds/japonês.mp3</SOUND>
+    </KEYBOARD>
+   <KEYBOARD>
+       <PROMPT>Write this in English</PROMPT>
+       <ORIGINAL>silencioso</ORIGINAL>
+       <TRANSLATION>silent</TRANSLATION>
     </KEYBOARD>
   </LESSON>
 </LANGUAGE>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
