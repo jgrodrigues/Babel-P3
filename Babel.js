@@ -249,7 +249,7 @@ class DynamicHTML {
     }
 
     //TODO HARDCODED PARA TESTAR
-    static showKeyboardScreen(lessonID) {
+    showKeyboardScreen(lessonID) {
         console.log("showKeyboardScreen(i)");
         var screen = this.language.initLesson(lessonID); //USAR ISTO SUBSTITUIR EM BAIXO PELO RESPETIVO
 
