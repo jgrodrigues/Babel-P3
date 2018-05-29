@@ -230,11 +230,11 @@ class DynamicHTML {
         this.language = language;
     }
 
-    addLessonsButtons(nLessons,language) {
+    addLessonsButtons(nLessons) {
         this.buttons = [];
         for (var i = 1; i <= nLessons;i++) {
-            this.buttons[i] = inpuButton(nav,"button" + i,"Lesson" + i, white);
-            eventHandler(this.buttons[i],"onclick","this.showKeyboardScreen();");
+            this.buttons[i] = inpuButton(this.nav,"button" + i,"Lesson" + i, red);
+            eventHandler(this.buttons[i],"onclick","this.showKeyboardScreen(" + i +");");
         }
     }
 
@@ -243,9 +243,9 @@ class DynamicHTML {
     }
 
     //TODO HARDCODED PARA TESTAR
-    showKeyboardScreen() {
-        language.initLesson(i);
-        var d = div(body, "border:3px solid black; display:table; padding:20px; margin-left:40px");
+    showKeyboardScreen(i) {
+        this.language.initLesson(i);
+        var d = div(this.body, "border:3px solid black; display:table; padding:20px; margin-left:40px");
         h1(d, "Write this in English");
 
         var p1 = p(d, "padding-left:40px; word-spacing:50px;");
@@ -327,8 +327,8 @@ class Lesson {
     nextScreen() {
         if(this.hasNextScreen()) {
             this.currentScreenNumber++;
-            this.currScreenType = this.lessonXML.childNodes[currentScreenNumber - 1].tagName;
-            var screenXML = this.lessonXML.childNodes[currentScreenNumber - 1];
+            this.currScreenType = this.lessonXML.childNodes[this.currentScreenNumber - 1].tagName;
+            var screenXML = this.lessonXML.childNodes[this.currentScreenNumber - 1];
             switch (this.currScreenType) {
                 case "KEYBOARD":
 
@@ -337,23 +337,23 @@ class Lesson {
                     var sound = screenXML.getElementsByTagName("SOUND")[0].firstChild.nodeValue;
                     var solutions = [];
 
-                    for (var j = 0; j < getNumberOfChildElements(currScreen, "SOLUTION"); j++) {
+                    for (var j = 0; j < getNumberOfChildElements(this.currScreen, "SOLUTION"); j++) {
                         console.log(i);
                         solutions[j] = screenXML.getElementsByTagName("SOLUTION")[j].firstChild.nodeValue;
                     }
                     this.currScreen = new Keyboard(prompt, original, solutions, sound);
-                    screens[currentScreenNumber] = this.currScreen;
+                    this.screens[this.currentScreenNumber] = this.currScreen;
                     break;
 
                 //TODO outros screens
                 case "PAIRS":
-                    screens[currentScreenNumber] = new Pairs();
+                    this.screens[this.currentScreenNumber] = new Pairs();
                     break;
                 case "BLOCKS":
-                    screens[currentScreenNumber] = new Blocks();
+                    this.screens[this.currentScreenNumber] = new Blocks();
                     break;
                 case "SYMBOLS":
-                    screens[currentScreenNumber] = new Symbols();
+                    this.screens[this.currentScreenNumber] = new Symbols();
                     break;
             }
 
@@ -379,7 +379,7 @@ class Screen {
     answer(answer) {
         var nSolutions = this.solutions.length;
         for(var i = 0;i<nSolutions;i++) {
-            if(answer===solutions[i]) {
+            if(answer===this.solutions[i]) {
                 return true;
             }
         }
@@ -395,7 +395,7 @@ class Screen {
     }
 
     getSolution() {
-        return solutions[0];
+        return this.solutions[0];
     }
 }
 
