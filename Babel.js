@@ -210,26 +210,99 @@ function getNumberOfChildElements(parent, elementName) {
     return nodes.length;
 }
 
-function getLessonData(id, nLessons) {
-    if(id > nLessons) {
-        alert("ERRO getLessonData");
-        return;
+//--------Classes----------
+
+class Startup {
+    static start() {
+        var page = new DynamicHTML();
+        var language = new LanguageExtraAlphabets();
+        page.addLessonsButtons(language.getNLessons(),language);
     }
-    return xmlDoc.getElementsByTagName("LESSON")[id-1];
 }
 
-function startScreens() {
-    Game.run();
-}
+class DynamicHTML {
+    constructor(language) {
+        this.body = document.body;
+        this.body.innerHTML = '';
+        h1(this.body, "Babel   (" + languageName + ")");
+        hr(this.body);
+        this.nav = div(this.body, "display:table; margin-bottom:20px;");
+        this.language = language;
+    }
 
-// --------Classes----------
+    addLessonsButtons(nLessons,language) {
+        this.buttons = [];
+        for (var i = 1; i <= nLessons;i++) {
+            this.buttons[i] = inpuButton(nav,"button" + i,"Lesson" + i, white);
+            eventHandler(this.buttons[i],"onclick","this.showKeyboardScreen();");
+        }
+    }
+
+    removeLessonButtons() {
+        //TODO ??? Talvez nao necessario
+    }
+
+    //TODO HARDCODED PARA TESTAR
+    showKeyboardScreen() {
+        language.initLesson(i);
+        var d = div(body, "border:3px solid black; display:table; padding:20px; margin-left:40px");
+        h1(d, "Write this in English");
+
+        var p1 = p(d, "padding-left:40px; word-spacing:50px;");
+        var i = img(p1, "http://icons.iconarchive.com/icons/icons8/ios7/32/Media-Controls-High-Volume-icon.png");
+        eventHandler(i, "onclick", "play('japanese/sentences/何時ですか.mp3');");
+        text(p1, 16, " ");
+        text(p1, 32, "何時ですか");
+
+        var p2 = p(d, "padding-left:20px;");
+        var i = inputActiveText(p2, "answer", 40, 24, "Type this in English");
+        eventHandler(i, "onkeydown", "if(event.keyCode == 13) document.getElementById('check').click();");
+
+        text(p2, 16, " ");
+        var b1 = inpuButton(p2, "check", "Check", "lime");
+        eventHandler(b1, "onclick", "validate(document.getElementById('answer').value, 'What time is it?');");
+    }
+
+    showPairsScreen(lesson) {
+
+    }
+
+    showBlocksScreens(lesson) {
+
+    }
+
+    showSymbolsScreen(lesson) {
+
+    }
+}
 
 class Language {
-    constructor() {
-        this.languageName = languageName; //???
+    constructor(page) {
+        this.nLessons = getNumberOfChildElements(document, "LESSON");
+        this.currLesson = null;
     }
-    
+
+    initLesson(id) {
+        this.currLesson = new Lesson(id);
+        return this.nextScreen();
+    }
+
+    nextScreen() {
+        if(this.currLesson.hasNextScreen()) {
+            return this.currLesson.nextScreen();
+        }
+    }
+
+    getCurrentLesson(){
+        return this.currLesson;
+    }
+
+    getNLessons() {
+        return this.nLessons;
+    }
 }
+
+//TODO
 class LanguageExtraAlphabets extends Language {
     constructor() {
         super();
@@ -239,11 +312,12 @@ class LanguageExtraAlphabets extends Language {
 
 class Lesson {
     //GUARDAR SCREENS AQUI e fazer a gestão da interação ao longo da lição
-    constructor(screens, nScreens) {
-        this.screens = screens;
-        this.nScreens = nScreens;
-        this.currentScreenNumber = 1;
-        this.currScreen = this.nextScreen();
+    constructor(id) {
+        this.screens = [];
+        this.currentScreenNumber = 0;
+        this.lessonXML = xmlDoc.getElementsByTagName("LESSON")[id-1];
+        this.nScreens = this.lessonXML.childNodes.length;
+        this.currScreen = null;
     }
 
     hasNextScreen() {
@@ -251,100 +325,55 @@ class Lesson {
     }
 
     nextScreen() {
-        this.currScreen = getLessonData(currentScreenNumber,nLessons);
-        this.currScreenType = this.currScreen.firstChild.tagName;
-        switch(this.currScreenType) {
-            case "KEYBOARD":
-                var prompt = currScreen.getElementsByTagName("PROMPT")[0].firstChild.nodeValue;
-                var original = currScreen.getElementsByTagName("ORIGINAL")[0].firstChild.nodeValue;
-                var sound = currLesson.getElementsByTagName("SOUND")[0].firstChild.nodeValue;
-                var solutions = [];
+        if(this.hasNextScreen()) {
+            this.currentScreenNumber++;
+            this.currScreenType = this.lessonXML.childNodes[currentScreenNumber - 1].tagName;
+            var screenXML = this.lessonXML.childNodes[currentScreenNumber - 1];
+            switch (this.currScreenType) {
+                case "KEYBOARD":
 
-                for(var j = 0;j<getNumberOfChildElements(currScreen,"SOLUTION");j++) {
-                    console.log(i);
-                    solutions[j] = currLesson.getElementsByTagName("SOLUTION")[j].firstChild.nodeValue;
-                }
-                currScreen = new Keyboard(prompt, original, solutions, sound);
-                screens[currentScreenNumber] = currScreen;
-                break;
+                    var prompt = screenXML.getElementsByTagName("PROMPT")[0].firstChild.nodeValue;
+                    var original = screenXML.getElementsByTagName("ORIGINAL")[0].firstChild.nodeValue;
+                    var sound = screenXML.getElementsByTagName("SOUND")[0].firstChild.nodeValue;
+                    var solutions = [];
 
-                //TODO
-            case "PAIRS":
-                screens[currentScreenNumber] = new Pairs();
-                break;
-            case "BLOCKS":
-                screens[currentScreenNumber] = new Blocks();
-                break;
-            case "SYMBOLS":
-                screens[currentScreenNumber] = new Symbols();
-                break;
+                    for (var j = 0; j < getNumberOfChildElements(currScreen, "SOLUTION"); j++) {
+                        console.log(i);
+                        solutions[j] = screenXML.getElementsByTagName("SOLUTION")[j].firstChild.nodeValue;
+                    }
+                    this.currScreen = new Keyboard(prompt, original, solutions, sound);
+                    screens[currentScreenNumber] = this.currScreen;
+                    break;
+
+                //TODO outros screens
+                case "PAIRS":
+                    screens[currentScreenNumber] = new Pairs();
+                    break;
+                case "BLOCKS":
+                    screens[currentScreenNumber] = new Blocks();
+                    break;
+                case "SYMBOLS":
+                    screens[currentScreenNumber] = new Symbols();
+                    break;
+            }
+
+            return this.currScreen;
+        } else {
+            alert("ERRO!!");
         }
-
-        
-
-        this.currentScreenNumber++;
     }
 
-}
-
-
-class Game { //TESTE
-    static run() {
-        var body = document.body;
-        body.innerHTML = '';
-        h1(body, "Babel   (" + languageName + ")");
-        hr(body);
-        var d = div(body, "border:3px solid black; display:table; padding:20px; margin-left:40px");
-    
-        //var nLessons = getNumberOfChildElements(xmlDoc,"LESSON");
-        var nScreens = 1;
-        var screens = [];
-        var currScreenNumber;
-
-        var currScreen;
-        var currScreenType;
-        var prompt, original, solutions = [], sound;
-
-        //STARTUP le ficheiro todo e sabe quantos screens e as solucoes de cada umetc
-        for(var i = 1;i<=nScreens;i++) {
-            currScreen = getLessonData(i,nLessons);
-            currScreenType = currScreen.firstChild.tagName;
-            prompt = currScreen.getElementsByTagName("PROMPT")[0].firstChild.nodeValue;
-            original = currScreen.getElementsByTagName("ORIGINAL")[0].firstChild.nodeValue;
-
-            console.log(getNumberOfChildElements(currScreen,"SOLUTION"));
-            console.log(currScreen);
-            console.log(prompt);
-            console.log(original);
-
-            // for(var j = 0;j<getNumberOfChildElements(currScreen,"SOLUTION");j++) {
-            //     console.log(i);
-            //     solutions[j] = currLesson.getElementsByTagName("SOLUTION")[j].firstChild.nodeValue;
-            // }
-
-            sound = currLesson.getElementsByTagName("SOUND")[0].firstChild.nodeValue
-            
-            screens[i] = new Screen(prompt, original, solutions, sound); //Usar instance of mais a frente 
-                                        //pode dar jeito para saber qe licao estamos
-            console.log(currScreenType);
-        }
-
-        console.log(solutions);
-        console.log(lessons[1]);
-    }
-
-    static nextLesson() {
-        
+    getCurrentScreen() {
+        return this.currScreen;
     }
 
 }
 
 class Screen {
-    constructor(prompt, original, solutions, sound) {
+    constructor(prompt, original, solutions) {
         this.prompt = prompt;
         this.original = original;
         this.solutions = solutions;
-        this.sound = sound;
     }
 
     answer(answer) {
@@ -357,6 +386,14 @@ class Screen {
         return false;    
     }
 
+    getPrompt() {
+        return this.prompt;
+    }
+
+    getOriginal() {
+        return this.original;
+    }
+
     getSolution() {
         return solutions[0];
     }
@@ -364,12 +401,15 @@ class Screen {
 
 class Keyboard extends Screen {
     constructor(prompt, original, solutions, sound) {
-        super(prompt, original, solutions, sound);
+        super(prompt, original, solutions);
+        this.sound = sound;
+        //TODO som como evento ao clicar no botao chamar playsound
     }
 
 
 }
 
+//TODO
 class Pairs extends Screen {
 
 }
@@ -382,6 +422,58 @@ class Symbols extends Screen { //Usar para alfabetos extra apenas
 
 }
 //------------------------------
+
+//TESTE
+class Game {
+    static run() {
+        var body = document.body;
+        body.innerHTML = '';
+        h1(body, "Babel   (" + languageName + ")");
+        hr(body);
+        var d = div(body, "border:3px solid black; display:table; padding:20px; margin-left:40px");
+
+        //var nLessons = getNumberOfChildElements(xmlDoc,"LESSON");
+        var nScreens = 1;
+        var screens = [];
+        var currScreenNumber;
+
+        var currScreen;
+        var currScreenType;
+        var prompt, original, solutions = [], sound;
+
+        //STARTUP le ficheiro e sabe quantos screens e as solucoes de cada um etc
+        for(var i = 1;i<=nScreens;i++) {
+            currScreen = getLessonData(i,nLessons);
+            currScreenType = currScreen.firstChild.tagName;
+            prompt = currScreen.getElementsByTagName("PROMPT")[0].firstChild.nodeValue;
+            original = currScreen.getElementsByTagName("ORIGINAL")[0].firstChild.nodeValue;
+
+            console.log(getNumberOfChildElements(currScreen,"SOLUTION"));
+            console.log(currScreen);
+            console.log(prompt);
+            console.log(original);
+
+            for(var j = 0;j<getNumberOfChildElements(currScreen,"SOLUTION");j++) {
+                console.log(i);
+                solutions[j] = currLesson.getElementsByTagName("SOLUTION")[j].firstChild.nodeValue;
+            }
+
+            sound = currLesson.getElementsByTagName("SOUND")[0].firstChild.nodeValue
+
+            screens[i] = new Screen(prompt, original, solutions, sound); //Usar instance of mais a frente
+            //pode dar jeito para saber qe licao estamos
+            console.log(currScreenType);
+        }
+
+        console.log(solutions);
+        console.log(lessons[1]);
+    }
+
+    static nextLesson() {
+
+    }
+
+}
 //------------------------------
 
 function runLanguage(text) {
@@ -392,7 +484,7 @@ function runLanguage(text) {
     if( nodes.length == 1 ) {
         languageName = nodes[0].childNodes[0].nodeValue;  // assignement to global
         //screen1();
-        startScreens();
+        Startup.start();
     }
     else {
         alert('ERROR: Not a language file!\nPLEASE, TRY AGAIN!');
