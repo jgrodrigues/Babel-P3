@@ -214,9 +214,13 @@ function getNumberOfChildElements(parent, elementName) {
 
 class Startup {
     static start() {
-        var page = new DynamicHTML();
+
+        console.log("start()");
+
         var language = new LanguageExtraAlphabets();
-        page.addLessonsButtons(language.getNLessons(),language);
+        var page = new DynamicHTML(language);
+
+        page.addLessonsButtons(language.getNLessons());
     }
 }
 
@@ -232,9 +236,11 @@ class DynamicHTML {
 
     addLessonsButtons(nLessons) {
         this.buttons = [];
+        console.log("addLessonsButtons=" + nLessons);
         for (var i = 1; i <= nLessons;i++) {
-            this.buttons[i] = inpuButton(this.nav,"button" + i,"Lesson" + i, red);
-            eventHandler(this.buttons[i],"onclick","this.showKeyboardScreen(" + i +");");
+            console.log("button");
+            this.buttons[i] = inpuButton(this.nav,"button" + i,"Lesson" + i, "red");
+            eventHandler(this.buttons[i],"onclick","showKeyboardScreen(" + i +");");
         }
     }
 
@@ -243,8 +249,11 @@ class DynamicHTML {
     }
 
     //TODO HARDCODED PARA TESTAR
-    showKeyboardScreen(i) {
-        this.language.initLesson(i);
+    static showKeyboardScreen(lessonID) {
+        console.log("showKeyboardScreen(i)");
+        var screen = this.language.initLesson(lessonID); //USAR ISTO SUBSTITUIR EM BAIXO PELO RESPETIVO
+
+        //PARTE HARDCODED
         var d = div(this.body, "border:3px solid black; display:table; padding:20px; margin-left:40px");
         h1(d, "Write this in English");
 
@@ -278,7 +287,7 @@ class DynamicHTML {
 
 class Language {
     constructor(page) {
-        this.nLessons = getNumberOfChildElements(document, "LESSON");
+        this.nLessons = getNumberOfChildElements(xmlDoc, "LESSON");
         this.currLesson = null;
     }
 
