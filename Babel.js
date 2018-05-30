@@ -40,8 +40,8 @@ function screen0() {
     body.innerHTML = '';
 
 // load the language XML
-    var f = inpuFile(body, "file-input");
-    eventHandler(f, "onchange", "processLocalFile(event, runLanguage);");
+    var f = DynamicHTML.inpuFile(body, "file-input");
+    DynamicHTML.eventHandler(f, "onchange", "DynamicHTML.processLocalFile(event, runLanguage);");
 }
 
 //************************************E APENAS EXEMPLO, DEPOIS E PARA REMOVER     ************************************
@@ -143,7 +143,7 @@ class DynamicHTML {
         return a;
     }
     
-    static inputButton(target, id, value, color) {
+    static inpuButton(target, id, value, color) {
         var a = document.createElement("INPUT");
         a.type = "button";
         a.id = id;
@@ -153,7 +153,7 @@ class DynamicHTML {
         return a;
     }
     
-    static inputFile(target, id) {
+    static inpuFile(target, id) {
         var a = document.createElement("INPUT");
         a.type = "file";
         a.id = id;
@@ -191,9 +191,9 @@ class DynamicHTML {
     }
     
     static text2XML(text) {
-        parser = new DOMParser();
-        serializer = new XMLSerializer();
-        xmlDoc = parser.parseFromString(text,"text/xml");
+        let parser = new DOMParser();
+        let serializer = new XMLSerializer();
+        let xmlDoc = parser.parseFromString(text,"text/xml");
         return xmlDoc;
     }
     
@@ -207,19 +207,20 @@ class DynamicHTML {
         var nodes = xmlDoc.getElementsByTagName("SOUNDSPREFIX");
         if ( nodes.length == 1) {
             const prefix = nodes[0].childNodes[0].nodeValue;
+            console.log(prefix);
+            
+            if( soundEnabled )
+                new Audio(prefix + sound).play();
+            else
+                alert("SOUND: " + sound);
         }
-
-        if( soundEnabled )
-            new Audio(prefix + sound).play();
-        else
-            alert("SOUND: " + sound);
     }
     
     static validate(answer, solution) {
         if( answer == solution )
-            play("general/right_answer.mp3");
+            DynamicHTML.play("general/right_answer.mp3");
         else
-            play("general/wrong_answer.mp3");
+            DynamicHTML.play("general/wrong_answer.mp3");
     }
 }
 
@@ -227,9 +228,9 @@ class Language {
     constructor() {
         this.body = document.body;
         this.body.innerHTML = '';
-        h1(this.body, "Babel   (" + languageName + ")").fontFamily = "Arial Black";
-        hr(this.body);
-        this.nav = div(this.body, "display:table; margin-bottom:20px;");
+        DynamicHTML.h1(this.body, "Babel   (" + languageName + ")").fontFamily = "Arial Black";
+        DynamicHTML.hr(this.body);
+        this.nav = DynamicHTML.div(this.body, "display:table; margin-bottom:20px;");
         this.buttons = [];
         this.nLessons = getNumberOfChildElements(xmlDoc, "LESSON");
         this.currLesson = null;
@@ -247,7 +248,7 @@ class Language {
         console.log("addLessonsButtons=" + nLessons);
         for (let i = 1; i <= nLessons;i++) {
             console.log("button");
-            this.buttons[i] = inpuButton(this.nav,"button" + i,"Lesson " + i, "red");
+            this.buttons[i] = DynamicHTML.inpuButton(this.nav,"button" + i,"Lesson " + i, "red");
             this.buttons[i].style = "margin: 5px 5px; border-radius: 5px; padding: 8px 16px; background-color: #0f96d0; color: white; font-size: 13px; font-weight: bold;";
             
             this.buttons[i].onclick = () => {return this.getLesson(i);};
@@ -392,32 +393,32 @@ class Keyboard extends Screen {
         lessonButton.style.backgroundColor = "#0f66b0";
         //PARTE HARDCODED
         
-        var d = div(document.body, "display: table; border-radius: 5px; background-color: rgb(240, 240, 240); padding:20px; margin:10px; font-family: Arial; box-shadow: 2px 2px 5px rgba(0,0,0,0.2)");
+        var d = DynamicHTML.div(document.body, "display: table; border-radius: 5px; background-color: rgb(240, 240, 240); padding:20px; margin:10px; font-family: Arial; box-shadow: 2px 2px 5px rgba(0,0,0,0.2)");
         
-        h1(d, "Write this in English").style.color = "#333";
+        DynamicHTML.h1(d, "Write this in English").style.color = "#333";
 
-        var p1 = p(d, "padding-left:40px; word-spacing:50px;");
-        var i = img(p1, "http://icons.iconarchive.com/icons/icons8/ios7/32/Media-Controls-High-Volume-icon.png");
-        eventHandler(i, "onclick", "play( '" + this.sound + "');");
-        text(p1, 16, " ");
-        text(p1, 32, this.original);
+        var p1 = DynamicHTML.p(d, "padding-left:40px; word-spacing:50px;");
+        var i = DynamicHTML.img(p1, "http://icons.iconarchive.com/icons/icons8/ios7/32/Media-Controls-High-Volume-icon.png");
+        DynamicHTML.eventHandler(i, "onclick", "DynamicHTML.play( '" + this.sound + "');");
+        DynamicHTML.text(p1, 16, " ");
+        DynamicHTML.text(p1, 32, this.original);
 
-        var p2 = p(d, "padding-left:20px;");
-        var i = inputActiveText(p2, "answer", 40, 24, "Type this in English");
-        eventHandler(i, "onkeydown", "if(event.keyCode == 13) document.getElementById('check').click();");
+        var p2 = DynamicHTML.p(d, "padding-left:20px;");
+        var i = DynamicHTML.inputActiveText(p2, "answer", 40, 24, "Type this in English");
+        DynamicHTML.eventHandler(i, "onkeydown", "if(event.keyCode == 13) document.getElementById('check').click();");
 
-        text(p2, 16, " ");
-        var b1 = inpuButton(p2, "check", "Check", "lime");
+        DynamicHTML.text(p2, 16, " ");
+        var b1 = DynamicHTML.inpuButton(p2, "check", "Check", "lime");
         b1.style = "margin-left: 5px; border-radius: 5px; padding: 8px 15px; background-color: #22aa55; color: white; font-size: 16px; font-weight: bold;";
         b1.onclick = () => {
             let solutions = Array.from(solutions);
             for (let translation of solutions) {
                 if (document.getElementById('answer').value == translation){
                     console.log(translation);
-                    return validate(document.getElementById('answer').value, translation);   
+                    return DynamicHTML.validate(document.getElementById('answer').value, translation);   
                 }
             }
-            return validate(document.getElementById('answer').value, solutions[0]);
+            return DynamicHTML.validate(document.getElementById('answer').value, solutions[0]);
         };
         
     }
@@ -491,7 +492,7 @@ class Game {
 //------------------------------
 
 function runLanguage(text) {
-    xmlDoc = text2XML(text);  // assignement to global
+    xmlDoc = DynamicHTML.text2XML(text);  // assignement to global
     xmlSerializer = new XMLSerializer();  // assignement to global
         // https://www.w3schools.com/xml/dom_nodes_get.asp
     var nodes = xmlDoc.getElementsByTagName("LANGNAME");
