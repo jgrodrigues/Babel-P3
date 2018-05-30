@@ -228,7 +228,7 @@ class DynamicHTML {
     constructor(language) {
         this.body = document.body;
         this.body.innerHTML = '';
-        h1(this.body, "Babel   (" + languageName + ")");
+        h1(this.body, "Babel   (" + languageName + ")").fontFamily = "Arial Black";
         hr(this.body);
         this.nav = div(this.body, "display:table; margin-bottom:20px;");
         this.language = language;
@@ -237,31 +237,40 @@ class DynamicHTML {
     addLessonsButtons(nLessons) {
         this.buttons = [];
         console.log("addLessonsButtons=" + nLessons);
-        for (var i = 1; i <= nLessons;i++) {
+        for (let i = 1; i <= nLessons;i++) {
             console.log("button");
-            this.buttons[i] = inpuButton(this.nav,"button" + i,"Lesson" + i, "red");
-            eventHandler(this.buttons[i],"onclick","showKeyboardScreen(" + i +");");
+            this.buttons[i] = inpuButton(this.nav,"button" + i,"Lesson " + i, "red");
+            this.buttons[i].style = "margin: 5px 5px; border-radius: 5px; padding: 8px 16px; background-color: #0f96d0; color: white; font-size: 13px; font-weight: bold;";
+            //const num = i;
+            this.buttons[i].onclick = () => {return this.showKeyboardScreen(i);};
+            //eventHandler(this.buttons[i],"onclick","showKeyboardScreen(" + i +");");
         }
     }
 
     removeLessonButtons() {
-        //TODO ??? Talvez nao necessario
+        let buttons = Array.from(document.body.querySelectorAll("input[value^='Lesson']"));
+        console.log(buttons);
+        for (let button of buttons) {
+            button.remove();
+        }
     }
 
     //TODO HARDCODED PARA TESTAR
     showKeyboardScreen(lessonID) {
-        console.log("showKeyboardScreen(i)");
         var screen = this.language.initLesson(lessonID); //USAR ISTO SUBSTITUIR EM BAIXO PELO RESPETIVO
-
+        var lessonButton = document.getElementById("button"+lessonID);
+        lessonButton.style.backgroundColor = "#0f66b0";
         //PARTE HARDCODED
-        var d = div(this.body, "border:3px solid black; display:table; padding:20px; margin-left:40px");
-        h1(d, "Write this in English");
+        
+        var d = div(this.body, "display: table; border-radius: 5px; background-color: rgb(240, 240, 240); padding:20px; margin:10px; font-family: Arial; box-shadow: 2px 2px 5px rgba(0,0,0,0.2)");
+        
+        h1(d, "Write this in English").style.color = "#333";
 
         var p1 = p(d, "padding-left:40px; word-spacing:50px;");
         var i = img(p1, "http://icons.iconarchive.com/icons/icons8/ios7/32/Media-Controls-High-Volume-icon.png");
-        eventHandler(i, "onclick", "play('japanese/sentences/何時ですか.mp3');");
+        eventHandler(i, "onclick", "play( '" + screen.sound + "');");
         text(p1, 16, " ");
-        text(p1, 32, "何時ですか");
+        text(p1, 32, screen.getOriginal());
 
         var p2 = p(d, "padding-left:20px;");
         var i = inputActiveText(p2, "answer", 40, 24, "Type this in English");
@@ -269,7 +278,18 @@ class DynamicHTML {
 
         text(p2, 16, " ");
         var b1 = inpuButton(p2, "check", "Check", "lime");
-        eventHandler(b1, "onclick", "validate(document.getElementById('answer').value, 'What time is it?');");
+        b1.style = "margin-left: 5px; border-radius: 5px; padding: 8px 15px; background-color: #22aa55; color: white; font-size: 16px; font-weight: bold;";
+        b1.onclick = () => {
+            let solutions = Array.from(screen.getSolution);
+            for (let translation of solutions) {
+                if (document.getElementById('answer').value == translation){
+                    console.log(translation);
+                    return validate(document.getElementById('answer').value, translation);   
+                }
+            }
+            return validate(document.getElementById('answer').value, screen.getSolution[0]);
+        };
+        
     }
 
     showPairsScreen(lesson) {
@@ -324,7 +344,7 @@ class Lesson {
     constructor(id) {
         this.screens = [];
         this.currentScreenNumber = 0;
-        this.lessonXML = xmlDoc.getElementsByTagName("LESSON")[id-1];
+        this.lessonXML = xmlDoc.querySelectorAll("LESSON")[id-1];
         this.nScreens = this.lessonXML.childNodes.length;
         this.currScreen = null;
     }
@@ -336,20 +356,16 @@ class Lesson {
     nextScreen() {
         if(this.hasNextScreen()) {
             this.currentScreenNumber++;
-            this.currScreenType = this.lessonXML.childNodes[this.currentScreenNumber - 1].tagName;
-            var screenXML = this.lessonXML.childNodes[this.currentScreenNumber - 1];
+            this.currScreenType = this.lessonXML.childNodes[2 * this.currentScreenNumber - 1].tagName; 
+            var screenXML = this.lessonXML.childNodes[2 * this.currentScreenNumber - 1];
             switch (this.currScreenType) {
                 case "KEYBOARD":
 
                     var prompt = screenXML.getElementsByTagName("PROMPT")[0].firstChild.nodeValue;
                     var original = screenXML.getElementsByTagName("ORIGINAL")[0].firstChild.nodeValue;
                     var sound = screenXML.getElementsByTagName("SOUND")[0].firstChild.nodeValue;
-                    var solutions = [];
-
-                    for (var j = 0; j < getNumberOfChildElements(this.currScreen, "SOLUTION"); j++) {
-                        console.log(i);
-                        solutions[j] = screenXML.getElementsByTagName("SOLUTION")[j].firstChild.nodeValue;
-                    }
+                    var solutions = Array.from(screenXML.getElementsByTagName("TRANSLATION")).map(translation => {return translation.firstChild.nodeValue;});
+                    
                     this.currScreen = new Keyboard(prompt, original, solutions, sound);
                     this.screens[this.currentScreenNumber] = this.currScreen;
                     break;
