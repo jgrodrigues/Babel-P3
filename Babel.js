@@ -98,7 +98,7 @@ class Startup {
 
 class DynamicHTML {
     
-    h1(target, text) {
+    static h1(target, text) {
         var a = document.createElement("H1");
         var b = document.createTextNode(text);
         a.appendChild(b);
@@ -106,26 +106,26 @@ class DynamicHTML {
         return a;
     }
     
-    hr(target) {
+    static hr(target) {
         var a = document.createElement("HR");
         target.appendChild(a);
         return a;
     }
     
-    p(target, style) {
+    static p(target, style) {
         var a = document.createElement("P");
         a.style = style;
         target.appendChild(a);
         return a;
     }
     
-    br(target) {
+    static br(target) {
         var a = document.createElement("BR");
         target.appendChild(a);
         return a;
     }
     
-    text(target, fsize, t) {
+    static text(target, fsize, t) {
         var a = document.createElement('SPAN');
         var b = document.createTextNode(t);
         a.appendChild(b);
@@ -134,14 +134,14 @@ class DynamicHTML {
         return a;
     }
     
-    img(target, url) {
+    static img(target, url) {
         var a = document.createElement("IMG");
         a.src = url;
         target.appendChild(a);
         return a;
     }
     
-    inputActiveText(target, id, size, fsize, placeholder) {
+    static inputActiveText(target, id, size, fsize, placeholder) {
         var a = document.createElement("INPUT");
         a.type = "text";
         a.id = id;
@@ -153,7 +153,7 @@ class DynamicHTML {
         return a;
     }
     
-    inputButton(target, id, value, color) {
+    static inputButton(target, id, value, color) {
         var a = document.createElement("INPUT");
         a.type = "button";
         a.id = id;
@@ -163,7 +163,7 @@ class DynamicHTML {
         return a;
     }
     
-    inputFile(target, id) {
+    static inputFile(target, id) {
         var a = document.createElement("INPUT");
         a.type = "file";
         a.id = id;
@@ -171,24 +171,24 @@ class DynamicHTML {
         return a;
     }
     
-    div(target, style) {
+    static div(target, style) {
         var a = document.createElement("DIV");
         a.style = style;
         target.appendChild(a);
         return a; 
     }
     
-    eventHandler(a, kind, action) {
+    static eventHandler(a, kind, action) {
         a[kind] = new Function(action);
         return a;
     }
     
-    eventHandler2(a, kind, functionAction) {
+    static eventHandler2(a, kind, functionAction) {
         a[kind] = functionAction;
         return a;
     }
     
-    processLocalFile(e, processor) {
+    static processLocalFile(e, processor) {
         var file = e.target.files[0];
         if (!file) {
             return;
@@ -200,18 +200,18 @@ class DynamicHTML {
         reader.readAsText(file, "UTF-8");
     }
     
-    text2XML(text) {
+    static text2XML(text) {
         parser = new DOMParser();
         serializer = new XMLSerializer();
         xmlDoc = parser.parseFromString(text,"text/xml");
         return xmlDoc;
     }
     
-    XML2Text(xml) {
+    static XML2Text(xml) {
         return xmlSerializer.serializeToString(xml);
     }
     
-    play(sound) {
+    static play(sound) {
         const soundEnabled = true;
 
         var nodes = xmlDoc.getElementsByTagName("SOUNDSPREFIX");
@@ -225,69 +225,11 @@ class DynamicHTML {
             alert("SOUND: " + sound);
     }
     
-    validate(answer, solution) {
+    static validate(answer, solution) {
         if( answer == solution )
             play("general/right_answer.mp3");
         else
             play("general/wrong_answer.mp3");
-    }
-
-    addLessonsButtons(nLessons) {
-        this.buttons = [];
-        console.log("addLessonsButtons=" + nLessons);
-        for (let i = 1; i <= nLessons;i++) {
-            console.log("button");
-            this.buttons[i] = inpuButton(this.nav,"button" + i,"Lesson " + i, "red");
-            this.buttons[i].style = "margin: 5px 5px; border-radius: 5px; padding: 8px 16px; background-color: #0f96d0; color: white; font-size: 13px; font-weight: bold;";
-            //const num = i;
-            this.buttons[i].onclick = () => {return this.showKeyboardScreen(i);};
-            //eventHandler(this.buttons[i],"onclick","showKeyboardScreen(" + i +");");
-        }
-    }
-
-    removeLessonButtons() {
-        let buttons = Array.from(document.body.querySelectorAll("input[value^='Lesson']"));
-        console.log(buttons);
-        for (let button of buttons) {
-            button.remove();
-        }
-    }
-
-    //TODO HARDCODED PARA TESTAR
-    showKeyboardScreen(lessonID) {
-        var screen = this.language.initLesson(lessonID); //USAR ISTO SUBSTITUIR EM BAIXO PELO RESPETIVO
-        var lessonButton = document.getElementById("button"+lessonID);
-        lessonButton.style.backgroundColor = "#0f66b0";
-        //PARTE HARDCODED
-        
-        var d = div(this.body, "display: table; border-radius: 5px; background-color: rgb(240, 240, 240); padding:20px; margin:10px; font-family: Arial; box-shadow: 2px 2px 5px rgba(0,0,0,0.2)");
-        
-        h1(d, "Write this in English").style.color = "#333";
-
-        var p1 = p(d, "padding-left:40px; word-spacing:50px;");
-        var i = img(p1, "http://icons.iconarchive.com/icons/icons8/ios7/32/Media-Controls-High-Volume-icon.png");
-        eventHandler(i, "onclick", "play( '" + screen.sound + "');");
-        text(p1, 16, " ");
-        text(p1, 32, screen.getOriginal());
-
-        var p2 = p(d, "padding-left:20px;");
-        var i = inputActiveText(p2, "answer", 40, 24, "Type this in English");
-        eventHandler(i, "onkeydown", "if(event.keyCode == 13) document.getElementById('check').click();");
-
-        text(p2, 16, " ");
-        var b1 = inpuButton(p2, "check", "Check", "lime");
-        b1.style = "margin-left: 5px; border-radius: 5px; padding: 8px 15px; background-color: #22aa55; color: white; font-size: 16px; font-weight: bold;";
-        b1.onclick = () => {
-            let solutions = Array.from(screen.getSolution);
-            for (let translation of solutions) {
-                if (document.getElementById('answer').value == translation){
-                    console.log(translation);
-                    return validate(document.getElementById('answer').value, translation);   
-                }
-            }
-            return validate(document.getElementById('answer').value, screen.getSolution[0]);
-        };
-        
     }
 }
 
