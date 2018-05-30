@@ -203,6 +203,8 @@ function screen1() {
     hr(body);
 }
 
+var language = null;
+
 //----------OUR CODE---------
 //-----Funcoes auxiliares-----
 function getNumberOfChildElements(parent, elementName) {
@@ -212,40 +214,16 @@ function getNumberOfChildElements(parent, elementName) {
 
 //--------Classes----------
 
-class Startup {
-    static start() {
-
-        console.log("start()");
-
-        var language = new LanguageExtraAlphabets();
-        var page = new DynamicHTML(language);
-
-        page.addLessonsButtons(language.getNLessons());
-    }
-}
-
 class DynamicHTML {
     constructor(language) {
         this.body = document.body;
         this.body.innerHTML = '';
         h1(this.body, "Babel   (" + languageName + ")").fontFamily = "Arial Black";
         hr(this.body);
-        this.nav = div(this.body, "display:table; margin-bottom:20px;");
         this.language = language;
     }
-
-    addLessonsButtons(nLessons) {
-        this.buttons = [];
-        console.log("addLessonsButtons=" + nLessons);
-        for (let i = 1; i <= nLessons;i++) {
-            console.log("button");
-            this.buttons[i] = inpuButton(this.nav,"button" + i,"Lesson " + i, "red");
-            this.buttons[i].style = "margin: 5px 5px; border-radius: 5px; padding: 8px 16px; background-color: #0f96d0; color: white; font-size: 13px; font-weight: bold;";
-            //const num = i;
-            this.buttons[i].onclick = () => {return this.showKeyboardScreen(i);};
-            //eventHandler(this.buttons[i],"onclick","showKeyboardScreen(" + i +");");
-        }
-    }
+    
+ 
 
     removeLessonButtons() {
         let buttons = Array.from(document.body.querySelectorAll("input[value^='Lesson']"));
@@ -256,64 +234,65 @@ class DynamicHTML {
     }
 
     //TODO HARDCODED PARA TESTAR
-    showKeyboardScreen(lessonID) {
-        var screen = this.language.initLesson(lessonID); //USAR ISTO SUBSTITUIR EM BAIXO PELO RESPETIVO
-        var lessonButton = document.getElementById("button"+lessonID);
-        lessonButton.style.backgroundColor = "#0f66b0";
-        //PARTE HARDCODED
-        
-        var d = div(this.body, "display: table; border-radius: 5px; background-color: rgb(240, 240, 240); padding:20px; margin:10px; font-family: Arial; box-shadow: 2px 2px 5px rgba(0,0,0,0.2)");
-        
-        h1(d, "Write this in English").style.color = "#333";
 
-        var p1 = p(d, "padding-left:40px; word-spacing:50px;");
-        var i = img(p1, "http://icons.iconarchive.com/icons/icons8/ios7/32/Media-Controls-High-Volume-icon.png");
-        eventHandler(i, "onclick", "play( '" + screen.sound + "');");
-        text(p1, 16, " ");
-        text(p1, 32, screen.getOriginal());
-
-        var p2 = p(d, "padding-left:20px;");
-        var i = inputActiveText(p2, "answer", 40, 24, "Type this in English");
-        eventHandler(i, "onkeydown", "if(event.keyCode == 13) document.getElementById('check').click();");
-
-        text(p2, 16, " ");
-        var b1 = inpuButton(p2, "check", "Check", "lime");
-        b1.style = "margin-left: 5px; border-radius: 5px; padding: 8px 15px; background-color: #22aa55; color: white; font-size: 16px; font-weight: bold;";
-        b1.onclick = () => {
-            let solutions = Array.from(screen.getSolution);
-            for (let translation of solutions) {
-                if (document.getElementById('answer').value == translation){
-                    console.log(translation);
-                    return validate(document.getElementById('answer').value, translation);   
-                }
-            }
-            return validate(document.getElementById('answer').value, screen.getSolution[0]);
-        };
-        
-    }
-
-    showPairsScreen(lesson) {
+    showPairsScreen() {
 
     }
 
-    showBlocksScreens(lesson) {
+    showBlocksScreens() {
 
     }
 
-    showSymbolsScreen(lesson) {
+    showSymbolsScreen() {
 
     }
 }
 
 class Language {
-    constructor(page) {
+    constructor() {
+        this.body = document.body;
+        this.body.innerHTML = '';
+        h1(this.body, "Babel   (" + languageName + ")").fontFamily = "Arial Black";
+        hr(this.body);
+        this.nav = div(this.body, "display:table; margin-bottom:20px;");
+        this.buttons = [];
         this.nLessons = getNumberOfChildElements(xmlDoc, "LESSON");
         this.currLesson = null;
+        this.lessons = [];
+        this.start();
     }
+    
+    start() {
+        this.initLessons();
+        
+        this.addLessonsButtons(this.nLessons);
+    }
+    
+    addLessonsButtons(nLessons) {
+        console.log("addLessonsButtons=" + nLessons);
+        for (let i = 1; i <= nLessons;i++) {
+            console.log("button");
+            this.buttons[i] = inpuButton(this.nav,"button" + i,"Lesson " + i, "red");
+            this.buttons[i].style = "margin: 5px 5px; border-radius: 5px; padding: 8px 16px; background-color: #0f96d0; color: white; font-size: 13px; font-weight: bold;";
+            
+            this.buttons[i].onclick = () => {return this.getLesson(i);};
+            //eventHandler(this.buttons[i],"onclick","showKeyboardScreen(" + i +");");
+        }
+    }
+    
+    getLesson(id) {
+        if (this.lessons[id].hasNextScreen()) {
+            this.currLesson = this.lessons[id];
+            this.currLesson.nextScreen();
+            this.currLesson.currScreen.show();
+        }
+    }
+    
 
-    initLesson(id) {
-        this.currLesson = new Lesson(id);
-        return this.nextScreen();
+    initLessons() {
+        for(let i = 1; i <= this.nLessons; i++) {
+            this.lessons[i] = new Lesson(i);
+        }
     }
 
     nextScreen() {
@@ -339,14 +318,17 @@ class LanguageExtraAlphabets extends Language {
 
 }
 
+
 class Lesson {
     //GUARDAR SCREENS AQUI e fazer a gestão da interação ao longo da lição
     constructor(id) {
         this.screens = [];
         this.currentScreenNumber = 0;
         this.lessonXML = xmlDoc.querySelectorAll("LESSON")[id-1];
+        console.log(id);
         this.nScreens = this.lessonXML.childNodes.length;
-        this.currScreen = null;
+        this.nCompletedScreens = 0;
+        this.id = id;
     }
 
     hasNextScreen() {
@@ -387,11 +369,6 @@ class Lesson {
             alert("ERRO!!");
         }
     }
-
-    getCurrentScreen() {
-        return this.currScreen;
-    }
-
 }
 
 class Screen {
@@ -399,6 +376,9 @@ class Screen {
         this.prompt = prompt;
         this.original = original;
         this.solutions = solutions;
+    }
+    show() {
+        
     }
 
     answer(answer) {
@@ -431,7 +411,41 @@ class Keyboard extends Screen {
         //TODO som como evento ao clicar no botao chamar playsound
     }
 
+    show() {
+        var lessonButton = document.getElementById("button"+language.currLesson.id);
+        console.log(language.currLesson.id);
+        lessonButton.style.backgroundColor = "#0f66b0";
+        //PARTE HARDCODED
+        
+        var d = div(document.body, "display: table; border-radius: 5px; background-color: rgb(240, 240, 240); padding:20px; margin:10px; font-family: Arial; box-shadow: 2px 2px 5px rgba(0,0,0,0.2)");
+        
+        h1(d, "Write this in English").style.color = "#333";
 
+        var p1 = p(d, "padding-left:40px; word-spacing:50px;");
+        var i = img(p1, "http://icons.iconarchive.com/icons/icons8/ios7/32/Media-Controls-High-Volume-icon.png");
+        eventHandler(i, "onclick", "play( '" + this.sound + "');");
+        text(p1, 16, " ");
+        text(p1, 32, this.original);
+
+        var p2 = p(d, "padding-left:20px;");
+        var i = inputActiveText(p2, "answer", 40, 24, "Type this in English");
+        eventHandler(i, "onkeydown", "if(event.keyCode == 13) document.getElementById('check').click();");
+
+        text(p2, 16, " ");
+        var b1 = inpuButton(p2, "check", "Check", "lime");
+        b1.style = "margin-left: 5px; border-radius: 5px; padding: 8px 15px; background-color: #22aa55; color: white; font-size: 16px; font-weight: bold;";
+        b1.onclick = () => {
+            let solutions = Array.from(solutions);
+            for (let translation of solutions) {
+                if (document.getElementById('answer').value == translation){
+                    console.log(translation);
+                    return validate(document.getElementById('answer').value, translation);   
+                }
+            }
+            return validate(document.getElementById('answer').value, solutions[0]);
+        };
+        
+    }
 }
 
 //TODO
@@ -509,7 +523,12 @@ function runLanguage(text) {
     if( nodes.length == 1 ) {
         languageName = nodes[0].childNodes[0].nodeValue;  // assignement to global
         //screen1();
-        Startup.start();
+        
+        console.log("start()");
+
+        language = new LanguageExtraAlphabets();
+        
+        //var page = new DynamicHTML(language);
     }
     else {
         alert('ERROR: Not a language file!\nPLEASE, TRY AGAIN!');
