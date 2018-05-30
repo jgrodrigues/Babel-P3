@@ -23,144 +23,16 @@ var xmlDoc, xmlSerializer, languageName;
 
 /* Misc functions */
 
-function play(sound) {
-    const soundEnabled = true;
-
-    var nodes = xmlDoc.getElementsByTagName("SOUNDSPREFIX");
-    if ( nodes.length == 1) {
-        const prefix = nodes[0].childNodes[0].nodeValue;
-    }
-
-    if( soundEnabled )
-        new Audio(prefix + sound).play();
-    else
-        alert("SOUND: " + sound);
-}
-
-function validate(answer, solution) {
-    if( answer == solution )
-        play("general/right_answer.mp3");
-    else
-        play("general/wrong_answer.mp3");
-}
-
 /* XML */
 /*       https://www.w3schools.com/xml/default.asp  */
 
-function text2XML(text) {
-    parser = new DOMParser();
-    serializer = new XMLSerializer();
-    xmlDoc = parser.parseFromString(text,"text/xml");
-    return xmlDoc;
-}
-
-function XML2Text(xml) {
-    return xmlSerializer.serializeToString(xml);
-}
-
 /* Local files */
 /*        https://www.javascripture.com/FileReader */
-
-function processLocalFile(e, processor) {
-    var file = e.target.files[0];
-    if (!file) {
-        return;
-    }
-    var reader = new FileReader();
-    reader.onload = function(e) {
-        processor(e.target.result);
-    };
-    reader.readAsText(file, "UTF-8");
-}
 
 
 /* JavaScript HTML DOMhttps://www.w3schools.com/js/js_htmldom.asp */
 /*        https://www.w3schools.com/js/js_htmldom.asp */
 
-function eventHandler(a, kind, action) {
-    a[kind] = new Function(action);
-    return a;
-}
-
-function h1(target, text) {
-    var a = document.createElement("H1");
-    var b = document.createTextNode(text);
-    a.appendChild(b);
-    target.appendChild(a);
-    return a;
-}
-
-function hr(target) {
-    var a = document.createElement("HR");
-    target.appendChild(a);
-    return a;
-}
-
-function p(target, style) {
-    var a = document.createElement("P");
-    a.style = style;
-    target.appendChild(a);
-    return a;
-}
-
-function br(target) {
-    var a = document.createElement("BR");
-    target.appendChild(a);
-    return a;
-}
-
-function text(target, fsize, t) {
-    var a = document.createElement('SPAN');
-    var b = document.createTextNode(t);
-    a.appendChild(b);
-    a.style.fontSize = fsize + "px";
-    target.appendChild(a);
-    return a;
-}
-
-function img(target, url) {
-    var a = document.createElement("IMG");
-    a.src = url;
-    target.appendChild(a);
-    return a;
-}
-
-function inputActiveText(target, id, size, fsize, placeholder) {
-    var a = document.createElement("INPUT");
-    a.type = "text";
-    a.id = id;
-    a.value = "";
-    a.placeholder = placeholder;
-    a.style.fontSize = fsize + "px";
-    a.size = size;
-    target.appendChild(a);
-    return a;
-}    
-
-function inpuButton(target, id, value, color) {
-    var a = document.createElement("INPUT");
-    a.type = "button";
-    a.id = id;
-    a.value = value;
-    a.style.backgroundColor = color;
-    target.appendChild(a);
-    return a;
-}
-
-function inpuFile(target, id, ) {
-    var a = document.createElement("INPUT");
-    a.type = "file";
-    a.id = id;
-    target.appendChild(a);
-    return a;
-}
-
-function div(target, style) {
-    var a = document.createElement("DIV");
-    a.style = style;
-    target.appendChild(a);
-    return a;    
-}
 
 function screen0() {
     var body = document.body;
@@ -225,13 +97,139 @@ class Startup {
 }
 
 class DynamicHTML {
-    constructor(language) {
-        this.body = document.body;
-        this.body.innerHTML = '';
-        h1(this.body, "Babel   (" + languageName + ")").fontFamily = "Arial Black";
-        hr(this.body);
-        this.nav = div(this.body, "display:table; margin-bottom:20px;");
-        this.language = language;
+    
+    h1(target, text) {
+        var a = document.createElement("H1");
+        var b = document.createTextNode(text);
+        a.appendChild(b);
+        target.appendChild(a);
+        return a;
+    }
+    
+    hr(target) {
+        var a = document.createElement("HR");
+        target.appendChild(a);
+        return a;
+    }
+    
+    p(target, style) {
+        var a = document.createElement("P");
+        a.style = style;
+        target.appendChild(a);
+        return a;
+    }
+    
+    br(target) {
+        var a = document.createElement("BR");
+        target.appendChild(a);
+        return a;
+    }
+    
+    text(target, fsize, t) {
+        var a = document.createElement('SPAN');
+        var b = document.createTextNode(t);
+        a.appendChild(b);
+        a.style.fontSize = fsize + "px";
+        target.appendChild(a);
+        return a;
+    }
+    
+    img(target, url) {
+        var a = document.createElement("IMG");
+        a.src = url;
+        target.appendChild(a);
+        return a;
+    }
+    
+    inputActiveText(target, id, size, fsize, placeholder) {
+        var a = document.createElement("INPUT");
+        a.type = "text";
+        a.id = id;
+        a.value = "";
+        a.placeholder = placeholder;
+        a.style.fontSize = fsize + "px";
+        a.size = size;
+        target.appendChild(a);
+        return a;
+    }
+    
+    inputButton(target, id, value, color) {
+        var a = document.createElement("INPUT");
+        a.type = "button";
+        a.id = id;
+        a.value = value;
+        a.style.backgroundColor = color;
+        target.appendChild(a);
+        return a;
+    }
+    
+    inputFile(target, id) {
+        var a = document.createElement("INPUT");
+        a.type = "file";
+        a.id = id;
+        target.appendChild(a);
+        return a;
+    }
+    
+    div(target, style) {
+        var a = document.createElement("DIV");
+        a.style = style;
+        target.appendChild(a);
+        return a; 
+    }
+    
+    eventHandler(a, kind, action) {
+        a[kind] = new Function(action);
+        return a;
+    }
+    
+    eventHandler2(a, kind, functionAction) {
+        a[kind] = functionAction;
+        return a;
+    }
+    
+    processLocalFile(e, processor) {
+        var file = e.target.files[0];
+        if (!file) {
+            return;
+        }
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            processor(e.target.result);
+        };
+        reader.readAsText(file, "UTF-8");
+    }
+    
+    text2XML(text) {
+        parser = new DOMParser();
+        serializer = new XMLSerializer();
+        xmlDoc = parser.parseFromString(text,"text/xml");
+        return xmlDoc;
+    }
+    
+    XML2Text(xml) {
+        return xmlSerializer.serializeToString(xml);
+    }
+    
+    play(sound) {
+        const soundEnabled = true;
+
+        var nodes = xmlDoc.getElementsByTagName("SOUNDSPREFIX");
+        if ( nodes.length == 1) {
+            const prefix = nodes[0].childNodes[0].nodeValue;
+        }
+
+        if( soundEnabled )
+            new Audio(prefix + sound).play();
+        else
+            alert("SOUND: " + sound);
+    }
+    
+    validate(answer, solution) {
+        if( answer == solution )
+            play("general/right_answer.mp3");
+        else
+            play("general/wrong_answer.mp3");
     }
 
     addLessonsButtons(nLessons) {
@@ -290,18 +288,6 @@ class DynamicHTML {
             return validate(document.getElementById('answer').value, screen.getSolution[0]);
         };
         
-    }
-
-    showPairsScreen(lesson) {
-
-    }
-
-    showBlocksScreens(lesson) {
-
-    }
-
-    showSymbolsScreen(lesson) {
-
     }
 }
 
