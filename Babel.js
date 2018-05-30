@@ -257,6 +257,10 @@ class Language {
     }
     
     getLesson(id) {
+        if (this.currLesson != null) {
+            this.currLesson.currScreen.hide();
+        }
+        
         if (this.lessons[id].hasNextScreen()) {
             this.currLesson = this.lessons[id];
             this.currLesson.nextScreen();
@@ -352,9 +356,14 @@ class Screen {
         this.prompt = prompt;
         this.original = original;
         this.solutions = solutions;
+        this.container = null;
     }
     show() {
         
+    }
+    
+    hide() {
+        this.container.remove();
     }
 
     answer(answer) {
@@ -367,14 +376,6 @@ class Screen {
         return false;    
     }
 
-    getPrompt() {
-        return this.prompt;
-    }
-
-    getOriginal() {
-        return this.original;
-    }
-
     getSolution() {
         return this.solutions[0];
     }
@@ -384,6 +385,7 @@ class Keyboard extends Screen {
     constructor(prompt, original, solutions, sound) {
         super(prompt, original, solutions);
         this.sound = sound;
+        
         //TODO som como evento ao clicar no botao chamar playsound
     }
 
@@ -393,17 +395,17 @@ class Keyboard extends Screen {
         lessonButton.style.backgroundColor = "#0f66b0";
         //PARTE HARDCODED
         
-        var d = DynamicHTML.div(document.body, "display: table; border-radius: 5px; background-color: rgb(240, 240, 240); padding:20px; margin:10px; font-family: Arial; box-shadow: 2px 2px 5px rgba(0,0,0,0.2)");
+        this.container = DynamicHTML.div(document.body, "display: table; border-radius: 5px; background-color: rgb(240, 240, 240); padding:20px; margin:10px; font-family: Arial; box-shadow: 2px 2px 5px rgba(0,0,0,0.2)");
         
-        DynamicHTML.h1(d, "Write this in English").style.color = "#333";
+        DynamicHTML.h1(this.container, "Write this in English").style.color = "#333";
 
-        var p1 = DynamicHTML.p(d, "padding-left:40px; word-spacing:50px;");
+        var p1 = DynamicHTML.p(this.container, "padding-left:40px; word-spacing:50px;");
         var i = DynamicHTML.img(p1, "http://icons.iconarchive.com/icons/icons8/ios7/32/Media-Controls-High-Volume-icon.png");
         DynamicHTML.eventHandler(i, "onclick", "DynamicHTML.play( '" + this.sound + "');");
         DynamicHTML.text(p1, 16, " ");
         DynamicHTML.text(p1, 32, this.original);
 
-        var p2 = DynamicHTML.p(d, "padding-left:20px;");
+        var p2 = DynamicHTML.p(this.container, "padding-left:20px;");
         var i = DynamicHTML.inputActiveText(p2, "answer", 40, 24, "Type this in English");
         DynamicHTML.eventHandler(i, "onkeydown", "if(event.keyCode == 13) document.getElementById('check').click();");
 
