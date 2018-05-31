@@ -37,8 +37,8 @@
        <SOUND>portuguese/sounds/bom dia.mp3</SOUND>
     </KEYBOARD>
     <KEYBOARD>
-       <PROMPT>boa tarde</PROMPT>
-       <ORIGINAL>こんにちは</ORIGINAL>
+       <PROMPT>Write this in English</PROMPT>
+       <ORIGINAL>boa tarde</ORIGINAL>
        <TRANSLATION>good afternoon</TRANSLATION>
        <SOUND>portuguese/sounds/boa tarde.mp3</SOUND>
     </KEYBOARD>
