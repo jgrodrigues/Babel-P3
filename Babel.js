@@ -248,6 +248,7 @@ class Language {
 		console.log("addLessonsButtons=" + this.nLessons);
 		for (let i = 1; i <= this.nLessons;i++) {
 			console.log("button");
+			//tirar a cor como argumento do botao
 			this.buttons[i] = DynamicHTML.inpuButton(this.nav,"button" + i,"Lesson " + i, "red");
 			this.buttons[i].style = "margin: 5px 5px; border-radius: 5px; padding: 8px 16px; background-color: #0f96d0; color: white; font-size: 13px; font-weight: bold;";
 
@@ -265,40 +266,45 @@ class Language {
 	showBackButton() {
 		this.backButton = DynamicHTML.inpuButton(this.nav,"backButton", "Back");
 		this.backButton.style = "margin: 5px 5px; border-radius: 5px; padding: 8px 16px; background-color: #0f96d0; color: white; font-size: 13px; font-weight: bold;"
-		this.backButton.onclick = () => {return this.goBack();};
+		this.backButton.onclick = () => {return this.goStartPage();};
 	}
 
 	hideBackButton(){
 		this.backButton.style.display = "none";
 	}
 
-	goBack() {
+	goStartPage() {
 		this.currLesson.currScreen.hide();
+		this.currLesson.resetScreens();
+		this.currLesson.hideScreenButtons();
 		this.currLesson = null;
 		this.hideBackButton();
 		this.addLessonsButtons();
 	}
     
 	getLesson(id) {
-		if (this.currLesson != null) {
-			this.currLesson.currScreen.hide();
-			//this.hideLessonsButtons();
-		} else {
-			this.hideLessonsButtons();
-			this.showBackButton();
-		}
+		// if (this.currLesson != null) {
+		// 	this.currLesson.currScreen.hide();
+		// } else {
+		// 	this.hideLessonsButtons();
+		// 	this.showBackButton();
+		// }
         
 		if (this.lessons[id].hasNextScreen()) {
 			this.currLesson = this.lessons[id];
+			this.currLesson.startLesson();
 			this.currLesson.nextScreen();
 			this.currLesson.currScreen.show();
+
+			this.hideLessonsButtons();
+			this.showBackButton();
 		}
 	}
     
 
 	initLessons() {
 		for(let i = 1; i <= this.nLessons; i++) {
-			this.lessons[i] = new Lesson(i);
+			this.lessons[i] = new Lesson(i,this.body);
 		}
 	}
 
@@ -328,7 +334,7 @@ class LanguageExtraAlphabets extends Language {
 
 class Lesson {
 	//GUARDAR SCREENS AQUI e fazer a gestão da interação ao longo da lição
-	constructor(id) {
+	constructor(id,body) {
 		this.screens = [];
 		this.currentScreenNumber = 0;
 		this.lessonXML = xmlDoc.querySelectorAll("LESSON")[id-1];
@@ -336,7 +342,27 @@ class Lesson {
 		this.nScreens = this.lessonXML.childNodes.length;
 		this.nCompletedScreens = 0;
 		this.id = id;
+		this.screenButtons = [];
+		this.body = body;
+		this.subNav = DynamicHTML.div(this.body, "display:table; margin-bottom:20px;");
 	}
+
+	startLesson() {
+		if(this.screenButtons.length==0) {
+			for(let i = 0;i<this.nScreens;i++) {
+				this.screenButtons[i] = DynamicHTML.inpuButton(this.subNav,"button" + i,"Screen " + i, "red");
+				this.screenButtons[i].style = "margin: 5px 5px; border-radius: 5px; padding: 8px 16px; background-color: #0f96d0; color: white; font-size: 13px; font-weight: bold;";
+				this.screenButtons[i].disabled = true;
+			}
+		} else {
+			this.subNav.style.display = "table";
+		}
+	}
+
+	hideScreenButtons() {
+		this.subNav.style.display = "none";
+	}
+
 
 	hasNextScreen() {
 		return this.currentScreenNumber < this.nScreens;
@@ -345,6 +371,7 @@ class Lesson {
 	nextScreen() {
 		if(this.hasNextScreen()) {
 			this.currentScreenNumber++;
+			this.screenButtons[this.currentScreenNumber-1].style = "margin: 5px 5px; border-radius: 5px; padding: 8px 16px; background-color: #063c53; color: white; font-size: 13px; font-weight: bold;";
 			this.currScreenType = this.lessonXML.childNodes[2 * this.currentScreenNumber - 1].tagName; 
 			var screenXML = this.lessonXML.childNodes[2 * this.currentScreenNumber - 1];
 			switch (this.currScreenType) {
@@ -371,10 +398,16 @@ class Lesson {
 				break;
 			}
 
+
+
 			return this.currScreen;
 		} else {
 			alert("ERRO!!");
 		}
+	}
+
+	resetScreens() {
+		this.currentScreenNumber = 0;
 	}
 }
 
