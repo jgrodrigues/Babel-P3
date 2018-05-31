@@ -423,6 +423,7 @@ class Screen {
         
         DynamicHTML.h1(this.container, "LESSON " + language.currLesson.id).style = "color:#0d76b0; font-family: sans-serif;";
         DynamicHTML.h1(this.container, "Screen " + language.currLesson.getCurrentScreen().id + " of " + language.currLesson.nScreens).style = "color:#444; font-family: sans-serif; font-size: 20px;";
+        DynamicHTML.h1(this.container, "You have " + language.currLesson.screensNotPassed.length + " screens to complete").style = "color:#555; font-family: sans-serif; font-size: 15px;";
         
         //Test
         DynamicHTML.inpuButton(this.container, "next", "Next", "violet").onclick = () => language.currLesson.nextScreen();
