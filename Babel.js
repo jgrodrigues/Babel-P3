@@ -276,7 +276,7 @@ class Language {
 	}
 
 	goBack() {
-		this.currLesson.getCurrentScreen().hide();
+        this.currLesson.getCurrentScreen().hide();
 		this.currLesson = null;
 		this.hideBackButton();
 		this.addLessonsButtons();
@@ -292,11 +292,14 @@ class Language {
 		}
         
         this.currLesson = this.lessons[id];
+        
+        language.currLesson.getCurrentScreen().show();
 			
-        if (this.currLesson.hasNextScreen()) {
-            this.currLesson.getCurrentScreen().show();
+        if (!language.currLesson.hasNextScreen()) {
+            language.currLesson.getCurrentScreen().box.style = "display: none;";
+            console.log(language.currLesson.getCurrentScreen().box);
+            DynamicHTML.h1(language.currLesson.getCurrentScreen().container, "Congratulations, you've reached the end of this lesson!").style = "color:#444; font-family: sans-serif; font-size: 20px;";
         }
-		
 	}
     
 
@@ -336,7 +339,7 @@ class Lesson {
         this.nScreens = 0;
 		this.id = id;
         this.loadScreens(); 
-        this.screenNotPassedIndex = this.nScreens;
+        this.screenNotPassedIndex = this.screensNotPassed.length - 1;
         console.log(this.screens);
 	}
     
@@ -396,7 +399,7 @@ class Lesson {
         this.screenNotPassedIndex--;
         
         if (this.screenNotPassedIndex < 0) {
-            this.screenNotPassedIndex = this.nScreens - 1;
+            this.screenNotPassedIndex = this.screensNotPassed.length - 1;
         }
         
         this.currentScreenNumber = this.screensNotPassed[this.screenNotPassedIndex];
@@ -406,7 +409,10 @@ class Lesson {
 	}
     
     passCurrentScreen() {
-        this.screensNotPassed.splice(this.nextScreenNotPassedIndex, 1);
+        console.log(this.screenNotPassedIndex);
+        console.log(this.screensNotPassed);
+        this.screensNotPassed.splice(this.screenNotPassedIndex, 1);
+        console.log(this.screensNotPassed);
     }
 }
 
@@ -417,6 +423,7 @@ class Screen {
 		this.original = original;
 		this.solutions = solutions;
 		this.container = null;
+        this.box = null;
 	}
 	show() {
         this.container = DynamicHTML.div(document.body, "position: absolute; left: 50%; -webkit-transform: translateX(-50%); transform: translateX(-50%); ");
@@ -426,7 +433,19 @@ class Screen {
         DynamicHTML.h1(this.container, "You have " + language.currLesson.screensNotPassed.length + " screens to complete").style = "color:#555; font-family: sans-serif; font-size: 15px;";
         
         //Test
-        DynamicHTML.inpuButton(this.container, "next", "Next", "violet").onclick = () => language.currLesson.nextScreen();
+            DynamicHTML.inpuButton(this.container, "next", "Next", "violet").onclick = function() {
+                if (language.currLesson.hasNextScreen()) {
+                    language.currLesson.nextScreen();
+                } else {
+                    language.currLesson.getCurrentScreen().box.style = "display: none;";
+                    console.log(language.currLesson.getCurrentScreen().box);
+                    DynamicHTML.h1(language.currLesson.getCurrentScreen().container, "Congratulations, you've reached the end of this lesson!").style = "color:#444; font-family: sans-serif; font-size: 20px;";
+                }
+            }
+            
+            DynamicHTML.inpuButton(this.container, "pass", "Pass", "violet").onclick = () => language.currLesson.passCurrentScreen();
+        
+            this.box = DynamicHTML.div(this.container, "border-radius: 5px; background-color: rgb(240, 240, 240); padding:20px; font-family: Arial; box-shadow: 2px 2px 5px rgba(0,0,0,0.2)");
 	}
     
 	hide() {
@@ -462,8 +481,6 @@ class Keyboard extends Screen {
 		console.log(language.currLesson.id);
 		lessonButton.style.backgroundColor = "#0f66b0";
 		//PARTE HARDCODED
-        
-		this.box = DynamicHTML.div(this.container, "border-radius: 5px; background-color: rgb(240, 240, 240); padding:20px; font-family: Arial; box-shadow: 2px 2px 5px rgba(0,0,0,0.2)");
         
 		DynamicHTML.h1(this.box, "Write this in English").style.color = "#333";
 
