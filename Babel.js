@@ -360,11 +360,12 @@ class Lesson {
 
 	startLesson() {
 		this.subNav = DynamicHTML.div(this.body, "display:table; margin-bottom:20px;");
-		for(let i = 0;i<this.nScreens;i++) {
+		for(let i = 1;i<=this.nScreens;i++) {
 			this.screenButtons[i] = DynamicHTML.inpuButton(this.subNav,"button" + i,"Screen " + i, "red");
 			this.screenButtons[i].style = "margin: 5px 5px; border-radius: 5px; padding: 8px 16px; background-color: #0f96d0; color: white; font-size: 13px; font-weight: bold;";
 			this.screenButtons[i].disabled = true;
 		}
+		this.nextScreen();
 	}
 
 	hideScreenButtons() {
@@ -390,7 +391,7 @@ class Lesson {
 				var sound = screenXML.getElementsByTagName("SOUND")[0].firstChild.nodeValue;
 				var solutions = Array.from(screenXML.getElementsByTagName("TRANSLATION")).map(translation => {return translation.firstChild.nodeValue;});
                     
-				this.currScreen = new Keyboard(prompt, original, solutions, sound);
+				this.currScreen = new Keyboard(prompt, original, solutions, sound, this);
 				this.screens[this.currentScreenNumber] = this.currScreen;
 				break;
 
@@ -405,13 +406,23 @@ class Lesson {
 				this.screens[this.currentScreenNumber] = new Symbols();
 				break;
 			}
-
-
-
-			return this.currScreen;
+			this.currScreen.show();
 		} else {
-			alert("ERRO!!");
+			// alert("ERRO!!");
+			//TODO VER ECRAS ERRRADOS ETC
 		}
+	}
+
+	answeredCorrect() {
+		this.currScreen.container.remove();
+		this.screenButtons[this.currentScreenNumber].style.backgroundColor = "green";
+		this.nextScreen();
+	}
+
+	answeredWrong() {
+		this.currScreen.container.remove();
+		this.screenButtons[this.currentScreenNumber].style.backgroundColor = "red";
+		this.nextScreen();
 	}
 
 	resetScreens() {
@@ -420,11 +431,13 @@ class Lesson {
 }
 
 class Screen {
-	constructor(prompt, original, solutions) {
+	constructor(prompt, original, solutions, lesson) {
 		this.prompt = prompt;
 		this.original = original;
 		this.solutions = solutions;
+		this.answeredCorrect = false;
 		this.container = null;
+		this.lesson = lesson;
 	}
 	show() {
         
@@ -450,8 +463,8 @@ class Screen {
 }
 
 class Keyboard extends Screen {
-	constructor(prompt, original, solutions, sound) {
-		super(prompt, original, solutions);
+	constructor(prompt, original, solutions, sound,lesson) {
+		super(prompt, original, solutions,lesson);
 		this.sound = sound;
         
 		//TODO som como evento ao clicar no botao chamar playsound
@@ -481,14 +494,18 @@ class Keyboard extends Screen {
 		var b1 = DynamicHTML.inpuButton(p2, "check", "Check", "lime");
 		b1.style = "margin-left: 5px; border-radius: 5px; padding: 8px 15px; background-color: #22aa55; color: white; font-size: 16px; font-weight: bold;";
 		b1.onclick = () => {
-			let solutions = Array.from(solutions);
+			let solutions = Array.from(this.solutions);
 			for (let translation of solutions) {
 				if (document.getElementById("answer").value == translation){
-					console.log(translation);
-					return DynamicHTML.validate(document.getElementById("answer").value, translation);   
+					//console.log(translation);
+					//return DynamicHTML.validate(document.getElementById("answer").value, translation);
+					this.lesson.answeredCorrect();
+					return;
 				}
 			}
-			return DynamicHTML.validate(document.getElementById("answer").value, solutions[0]);
+			//return DynamicHTML.validate(document.getElementById("answer").value, solutions[0]);
+			//IMPRIMIR RESPOSTA CORRETA e so depois passar
+			this.lesson.answeredWrong();
 		};
         
 	}
