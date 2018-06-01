@@ -362,11 +362,11 @@ class Lesson {
 				case "KEYBOARD": 
 					screen = this.loadKeyboard(this.nScreens, screenXML);
 					break;
-				case "PAIRS": //TODO
+				case "PAIRS":
 					screen = this.loadPairs(this.nScreens, screenXML);
 					break;
 				case "BLOCKS": //TODO
-					screen = new Blocks();
+					screen = this.loadBlocks(this.nScreens, screenXML);
 					break;
 				}
 
@@ -390,6 +390,14 @@ class Lesson {
 		var original = screenXML.getElementsByTagName("ORIGINAL")[0].firstChild.nodeValue;
 		var solutions = screenXML.getElementsByTagName("SOLUTION")[0].firstChild.nodeValue;
 		return new Pairs(id, prompt, original, solutions);
+	}
+    
+    loadBlocks(id,screenXML) {
+		var prompt = screenXML.getElementsByTagName("PROMPT")[0].firstChild.nodeValue;
+		var original = screenXML.getElementsByTagName("ORIGINAL")[0].firstChild.nodeValue;
+		var solutions = screenXML.getElementsByTagName("SOLUTION")[0].firstChild.nodeValue;
+		var blocks = screenXML.getElementsByTagName("BLOCKS")[0].firstChild.nodeValue;
+		return new Blocks(id, prompt, original, solutions, blocks);
 	}
 
 	hasNextScreen() {
@@ -503,7 +511,7 @@ class Keyboard extends Screen {
 
 	show(container) {
 		super.show(container);
-		DynamicHTML.h1(this.box, "Write this in English").style = "margin-left: 15px; color:#333";
+		DynamicHTML.h1(this.box, this.prompt).style = "margin-left: 15px; color:#333";
 
 		var p1 = DynamicHTML.p(this.box, "padding-left:40px; word-spacing:50px;");
 		var i = DynamicHTML.img(p1, "http://icons.iconarchive.com/icons/icons8/ios7/32/Media-Controls-High-Volume-icon.png");
@@ -612,7 +620,7 @@ class Pairs extends Screen {
 
 	show(container) {
 		super.show(container);
-		DynamicHTML.h1(this.box,"Match the pairs").style.color = "#333";
+		DynamicHTML.h1(this.box,this.prompt).style.color = "#333";
 		let pairs = DynamicHTML.p(this.box,"");
 
 		for(let i=0;i<this.originalArray.length;i++) {
@@ -625,6 +633,37 @@ class Pairs extends Screen {
 }
 
 class Blocks extends Screen {
+    constructor(id, prompt, original, solution, blocks) {
+        super(id, prompt, original, solution);
+        
+        this.blocks = blocks.split(" ");
+        this.buttonElements = [];
+    }
+    
+    show(container) {
+        super.show(container);
+        DynamicHTML.h1(this.box,this.prompt).style.color = "#333";
+		let pairs = DynamicHTML.p(this.box,"");
+        
+        let firstLine = DynamicHTML.div(this.box, "margin: 15px; border-bottom: 2px solid #666; height: 40px; width 70%");
+        firstLine.id = "answer";
+        firstLine.ondragover = event => {
+            event.preventDefault();
+        };
+        
+        let secondLine = DynamicHTML.div(this.box, "margin: 15px; border-bottom: 2px solid #666; height: 40px; width 70%");
+        
+        let blocksDiv = DynamicHTML.div(this.box, "display: inline-block; text-align: center; margin: 15px; width 70%");
+        
+        for(let i=0;i<this.blocks.length;i++) {
+			this.buttonElements[i] = DynamicHTML.inpuButton(blocksDiv,"butElem"+i,this.blocks[i],"red");
+			this.buttonElements[i].style = "margin:5px 5px; border-radius: 5px; font-size: 17px; background-color: rgb(255, 255, 255); padding:5px; font-family: Arial; box-shadow: 2px 2px 5px rgba(0,0,0,0.2); cursor: pointer;";
+            this.buttonElements[i].draggable = "true";
+            this.buttonElements[i].ondragstart = event => {
+                event.dataTransfer.setData("text", event.target.value);
+            };
+		}
+    }
 
 }
 
