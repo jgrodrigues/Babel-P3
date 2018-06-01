@@ -226,11 +226,11 @@ class DynamicHTML {
 
 class Language {
 	constructor() {
-        language = this;
+		language = this;
 		this.body = document.body;
-        this.screenTypes = ["KEYBOARD", "PAIRS", "BLOCKS", "SYMBOLS"];
+		this.screenTypes = ["KEYBOARD", "PAIRS", "BLOCKS", "SYMBOLS"];
 		this.body.innerHTML = "";
-        this.header = DynamicHTML.div(this.body, "float:left;top: 0px; left: 0;background-color: #0f96d0; width:100%; height: 80px;");
+		this.header = DynamicHTML.div(this.body, "float:left;top: 0px; left: 0;background-color: #0f96d0; width:100%; height: 80px;");
 		DynamicHTML.h1(this.header, "Babel   - " + languageName + "").style = "margin: 20px;font-family: sans-serif; text-transform: uppercase; font-weight: bold; color: white";
 		DynamicHTML.hr(this.body).style = "border-top: 1px dashed #0f96d0;";
 		this.nav = DynamicHTML.div(this.body, "text-align: center; position: relative; margin-bottom:20px;");
@@ -242,7 +242,7 @@ class Language {
 	}
     
 	start() {
-        console.log(this.nLessons);
+		console.log(this.nLessons);
 		this.initLessons();
         
 		this.addLessonsButtons();
@@ -277,7 +277,7 @@ class Language {
 	}
 
 	goBack() {
-        this.currLesson.getCurrentScreen().hide();
+		this.currLesson.getCurrentScreen().hide();
 		this.currLesson = null;
 		this.hideBackButton();
 		this.addLessonsButtons();
@@ -292,15 +292,16 @@ class Language {
 			this.showBackButton();
 		}
         
-        this.currLesson = this.lessons[id];
+		this.currLesson = this.lessons[id];
         
-        language.currLesson.getCurrentScreen().show();
+		language.currLesson.getCurrentScreen().show();
 			
-        if (!language.currLesson.hasNextScreen()) {
-            language.currLesson.getCurrentScreen().box.style = "display: none;";
-            console.log(language.currLesson.getCurrentScreen().box);
-            DynamicHTML.h1(language.currLesson.getCurrentScreen().container, "Congratulations, you've reached the end of this lesson!").style = "color:#444; font-family: sans-serif; font-size: 20px;";
-        }
+		if (!language.currLesson.hasNextScreen()) {
+			language.currLesson.getCurrentScreen().box.style = "display: none;";
+			console.log(language.currLesson.getCurrentScreen().box);
+			DynamicHTML.h1(language.currLesson.getCurrentScreen().container, "Congratulations, you've reached the end of this lesson!").style = "color:#444; font-family: sans-serif; font-size: 20px;";
+			language.currLesson.buttons[id].style.backgroundColor = "#095077";
+		}
 	}
     
 
@@ -322,7 +323,7 @@ class Language {
 //TODO
 class LanguageExtraAlphabets extends Language {
 	constructor() {
-        super();
+		super();
 	}
 
 }
@@ -331,109 +332,109 @@ class LanguageExtraAlphabets extends Language {
 class Lesson {
 	//GUARDAR SCREENS AQUI e fazer a gestão da interação ao longo da lição
 	constructor(id) {
-        //Array that contains all the screens of the lesson
+		//Array that contains all the screens of the lesson
 		this.screens = [];
-        //Array that contains the id of the screens that haven been passed yet
-        this.screensNotPassed = [];
+		//Array that contains the id of the screens that haven been passed yet
+		this.screensNotPassed = [];
 		this.currentScreenNumber = 1;
-        this.lessonXML = xmlDoc.getElementsByTagName("LESSON")[id-1];
-        this.nScreens = 0;
+		this.lessonXML = xmlDoc.getElementsByTagName("LESSON")[id-1];
+		this.nScreens = 0;
 		this.id = id;
-        this.loadScreens(); 
-        this.screenNotPassedIndex = this.screensNotPassed.length - 1;
-        console.log(this.screens);
+		this.loadScreens(); 
+		this.screenNotPassedIndex = this.screensNotPassed.length - 1;
+		console.log(this.screens);
 	}
     
-    loadScreens() {
-        let nNodes = this.lessonXML.childNodes.length;
+	loadScreens() {
+		let nNodes = this.lessonXML.childNodes.length;
         
-        for (let i = 0; i < nNodes; i++) {
-            let screenType = this.lessonXML.childNodes[i].tagName;
+		for (let i = 0; i < nNodes; i++) {
+			let screenType = this.lessonXML.childNodes[i].tagName;
             
-            if (language.screenTypes.indexOf(screenType) != -1) {
-                this.nScreens++;
+			if (language.screenTypes.indexOf(screenType) != -1) {
+				this.nScreens++;
                 
-                //Add to the beggining of the list
-                this.screensNotPassed.unshift(this.nScreens);
+				//Add to the beggining of the list
+				this.screensNotPassed.unshift(this.nScreens);
             
-                let screenXML = this.lessonXML.childNodes[i];
-                let screen = null;
+				let screenXML = this.lessonXML.childNodes[i];
+				let screen = null;
 
-                switch(screenType) {
-                    case "KEYBOARD": 
-                        screen = this.loadKeyboard(this.nScreens, screenXML);
-                        break;
-                    case "PAIRS": //TODO
-                        screen = new Pairs();
-                        break;
-                    case "BLOCKS": //TODO
-                        screen = new Blocks();
-                        break;
-                }
+				switch(screenType) {
+				case "KEYBOARD": 
+					screen = this.loadKeyboard(this.nScreens, screenXML);
+					break;
+				case "PAIRS": //TODO
+					screen = new Pairs();
+					break;
+				case "BLOCKS": //TODO
+					screen = new Blocks();
+					break;
+				}
 
-                this.screens[this.nScreens] = screen;
+				this.screens[this.nScreens] = screen;
                 
-            }
-        }
-    }
+			}
+		}
+	}
     
-    loadKeyboard(id, screenXML) {
-        var prompt = screenXML.getElementsByTagName("PROMPT")[0].firstChild.nodeValue;
-        var original = screenXML.getElementsByTagName("ORIGINAL")[0].firstChild.nodeValue;
-        var sound = screenXML.getElementsByTagName("SOUND")[0].firstChild.nodeValue;
-        var solutions = Array.from(screenXML.getElementsByTagName("TRANSLATION")).map(translation => {return translation.firstChild.nodeValue;});
-        return new Keyboard(id, prompt, original, solutions, sound);
-    }
+	loadKeyboard(id, screenXML) {
+		var prompt = screenXML.getElementsByTagName("PROMPT")[0].firstChild.nodeValue;
+		var original = screenXML.getElementsByTagName("ORIGINAL")[0].firstChild.nodeValue;
+		var sound = screenXML.getElementsByTagName("SOUND")[0].firstChild.nodeValue;
+		var solutions = Array.from(screenXML.getElementsByTagName("TRANSLATION")).map(translation => {return translation.firstChild.nodeValue;});
+		return new Keyboard(id, prompt, original, solutions, sound);
+	}
 
 	hasNextScreen() {
 		return this.screensNotPassed.length != 0;
 	}
     
-    getCurrentScreen() {
-        return this.screens[this.currentScreenNumber];
-    }
+	getCurrentScreen() {
+		return this.screens[this.currentScreenNumber];
+	}
 
 	nextScreen() {
-        //Hide previous screen
-        this.screens[this.currentScreenNumber].hide();
+		//Hide previous screen
+		this.screens[this.currentScreenNumber].hide();
         
-        this.screenNotPassedIndex--;
+		this.screenNotPassedIndex--;
         
-        if (this.screenNotPassedIndex < 0) {
-            this.screenNotPassedIndex = this.screensNotPassed.length - 1;
-        }
+		if (this.screenNotPassedIndex < 0) {
+			this.screenNotPassedIndex = this.screensNotPassed.length - 1;
+		}
         
-        this.currentScreenNumber = this.screensNotPassed[this.screenNotPassedIndex];
+		this.currentScreenNumber = this.screensNotPassed[this.screenNotPassedIndex];
         
-        //Show next screen
+		//Show next screen
 		this.screens[this.currentScreenNumber].show();
 	}
     
-    passCurrentScreen() {
-        console.log(this.screenNotPassedIndex);
-        console.log(this.screensNotPassed);
-        this.screensNotPassed.splice(this.screenNotPassedIndex, 1);
-        console.log(this.screensNotPassed);
-    }
+	passCurrentScreen() {
+		console.log(this.screenNotPassedIndex);
+		console.log(this.screensNotPassed);
+		this.screensNotPassed.splice(this.screenNotPassedIndex, 1);
+		console.log(this.screensNotPassed);
+	}
 }
 
 class Screen {
 	constructor(id, prompt, original, solutions) {
-        this.id = id;
+		this.id = id;
 		this.prompt = prompt;
 		this.original = original;
 		this.solutions = solutions;
 		this.container = null;
-        this.box = null;
+		this.box = null;
 	}
 	show() {
-        this.container = DynamicHTML.div(document.body, "position: absolute; left: 50%; -webkit-transform: translateX(-50%); transform: translateX(-50%); ");
+		this.container = DynamicHTML.div(document.body, "position: absolute; left: 50%; -webkit-transform: translateX(-50%); transform: translateX(-50%); ");
         
-        DynamicHTML.h1(this.container, "LESSON " + language.currLesson.id).style = "color:#0d76b0; font-family: sans-serif;";
-        DynamicHTML.h1(this.container, "Screen " + language.currLesson.getCurrentScreen().id + " of " + language.currLesson.nScreens).style = "color:#444; font-family: sans-serif; font-size: 20px;";
-        DynamicHTML.h1(this.container, "You have " + language.currLesson.screensNotPassed.length + " screens to complete").style = "color:#555; font-family: sans-serif; font-size: 15px;";
+		DynamicHTML.h1(this.container, "LESSON " + language.currLesson.id).style = "color:#0d76b0; font-family: sans-serif;";
+		DynamicHTML.h1(this.container, "Screen " + language.currLesson.getCurrentScreen().id + " of " + language.currLesson.nScreens).style = "color:#444; font-family: sans-serif; font-size: 20px;";
+		DynamicHTML.h1(this.container, "You have " + language.currLesson.screensNotPassed.length + " screens to complete").style = "color:#555; font-family: sans-serif; font-size: 15px;";
         
-        this.box = DynamicHTML.div(this.container, "border-radius: 5px; background-color: rgb(240, 240, 240); padding:20px; font-family: Arial; box-shadow: 2px 2px 5px rgba(0,0,0,0.2)");
+		this.box = DynamicHTML.div(this.container, "border-radius: 5px; background-color: rgb(240, 240, 240); padding:20px; font-family: Arial; box-shadow: 2px 2px 5px rgba(0,0,0,0.2)");
 	}
     
 	hide() {
@@ -441,13 +442,13 @@ class Screen {
 	}
 
 	checkAnswer(answer) {
-        for (let i=0; i < this.solutions.length; i++) {
-            if (answer == this.solutions[i]) {
-                return true;
-            }
-        } 
+		for (let i=0; i < this.solutions.length; i++) {
+			if (answer == this.solutions[i]) {
+				return true;
+			}
+		} 
         
-        return false;
+		return false;
 	}
 
 	getSolution() {
@@ -464,7 +465,7 @@ class Keyboard extends Screen {
 	}
 
 	show() {
-        super.show();
+		super.show();
 		var lessonButton = document.getElementById("button"+language.currLesson.id);
 		console.log(language.currLesson.id);
 		lessonButton.style.backgroundColor = "#0f66b0";
@@ -488,36 +489,36 @@ class Keyboard extends Screen {
 		b1.onclick = () => {
 			let isSolution = language.currLesson.getCurrentScreen().checkAnswer(document.getElementById("answer").value);
             
-            if (isSolution) {
-                language.currLesson.passCurrentScreen();
-                DynamicHTML.play("general/right_answer.mp3");
+			if (isSolution) {
+				language.currLesson.passCurrentScreen();
+				DynamicHTML.play("general/right_answer.mp3");
                 
-                if (language.currLesson.hasNextScreen()) {
-                    language.currLesson.nextScreen();
-                } else {
-                    language.currLesson.getCurrentScreen().hide();
-                    language.currLesson.getCurrentScreen().show();
-                    language.currLesson.getCurrentScreen().box.style = "display: none;";
-                    this.style = "display: none;";
-                    console.log(language.currLesson.getCurrentScreen().box);
-                    DynamicHTML.h1(language.currLesson.getCurrentScreen().container, "Congratulations, you've reached the end of this lesson!").style = "color:#444; font-family: sans-serif; font-size: 20px;";
-                }
-            } else {
-                let nextScreenBtn = DynamicHTML.inpuButton(this.container, "nextbtn", "Next Screen", "red");
-                nextScreenBtn.style = "display: inline-block; margin: 5px 5px 10px; border-radius: 5px; padding: 8px 16px; background-color: #0f96d0; color: white; font-size: 13px; font-weight: bold;";
+				if (language.currLesson.hasNextScreen()) {
+					language.currLesson.nextScreen();
+				} else {
+					language.currLesson.getCurrentScreen().hide();
+					language.currLesson.getCurrentScreen().show();
+					language.currLesson.getCurrentScreen().box.style = "display: none;";
+					this.style = "display: none;";
+					console.log(language.currLesson.getCurrentScreen().box);
+					DynamicHTML.h1(language.currLesson.getCurrentScreen().container, "Congratulations, you've reached the end of this lesson!").style = "color:#444; font-family: sans-serif; font-size: 20px;";
+				}
+			} else {
+				let nextScreenBtn = DynamicHTML.inpuButton(this.container, "nextbtn", "Next Screen", "red");
+				nextScreenBtn.style = "display: inline-block; margin: 5px 5px 10px; border-radius: 5px; padding: 8px 16px; background-color: #0f96d0; color: white; font-size: 13px; font-weight: bold;";
                 
-                nextScreenBtn.onclick = () => {
-                    if (language.currLesson.hasNextScreen()) {
-                        language.currLesson.nextScreen();
-                    } else {
-                        language.currLesson.getCurrentScreen().hide();
-                        language.currLesson.getCurrentScreen().show();
-                    }
-                };
-                language.currLesson.getCurrentScreen().box.style = "display: none";
-                DynamicHTML.h1(language.currLesson.getCurrentScreen().container, "The correct answer was: " + language.currLesson.getCurrentScreen().getSolution()).style = "color:#444; font-family: sans-serif; font-size: 20px;";
-                DynamicHTML.play("general/wrong_answer.mp3");  
-            }
+				nextScreenBtn.onclick = () => {
+					if (language.currLesson.hasNextScreen()) {
+						language.currLesson.nextScreen();
+					} else {
+						language.currLesson.getCurrentScreen().hide();
+						language.currLesson.getCurrentScreen().show();
+					}
+				};
+				language.currLesson.getCurrentScreen().box.style = "display: none";
+				DynamicHTML.h1(language.currLesson.getCurrentScreen().container, "The correct answer was: " + language.currLesson.getCurrentScreen().getSolution()).style = "color:#444; font-family: sans-serif; font-size: 20px;";
+				DynamicHTML.play("general/wrong_answer.mp3");  
+			}
 		};
         
 	}
