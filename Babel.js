@@ -370,7 +370,7 @@ class Lesson {
 					screen = this.loadKeyboard(this.nScreens, screenXML);
 					break;
 				case "PAIRS": //TODO
-					screen = new Pairs();
+					screen = this.loadPairs(this.nScreens, screenXML);
 					break;
 				case "BLOCKS": //TODO
 					screen = new Blocks();
@@ -392,6 +392,13 @@ class Lesson {
 		return new Keyboard(id, prompt, original, solutions, sound);
 	}
 
+	loadPairs(id,screenXML) {
+		var prompt = screenXML.getElementsByTagName("PROMPT")[0].firstChild.nodeValue;
+		var original = screenXML.getElementsByTagName("ORIGINAL")[0].firstChild.nodeValue;
+		var solutions = screenXML.getElementsByTagName("SOLUTION")[0].firstChild.nodeValue;
+		return new Pairs(id, prompt, original, solutions);
+	}
+
 	hasNextScreen() {
 		return this.screensNotPassed.length != 0;
 	}
@@ -411,7 +418,7 @@ class Lesson {
 		}
         
 		this.currentScreenNumber = this.screensNotPassed[this.screenNotPassedIndex];
-        console.log(this.screensNotPassed);
+		console.log(this.screensNotPassed);
 		//Show next screen
 		this.screens[this.currentScreenNumber].show();
 	}
@@ -531,7 +538,6 @@ class Keyboard extends Screen {
 
 	show() {
 		super.show();
-		var lessonButton = document.getElementById("button"+language.currLesson.id);
 		console.log(language.currLesson.id);
 		//PARTE HARDCODED
         
@@ -565,7 +571,71 @@ class Keyboard extends Screen {
 
 //TODO
 class Pairs extends Screen {
+	constructor(id, prompt, original, solutions) {
+		super(id, prompt, original, solutions);
+		this.solutionsArray = this.solutions.split(" ");
+		this.originalArray = this.original.split(" ");
+		this.buttonsElements = [];
+		this.selectedBefore = null;
+		this.nPairsMade = 0;
+	}
 
+	answered(button) {
+		if(this.selectedBefore==null) {
+			this.selectedBefore = button;
+		} else {
+			if(this.isPairCorrect(button)) {
+				this.selectedBefore.style.backgroundColor = "#B4B4B4";
+				button.style.backgroundColor = "#B4B4B4";
+				this.selectedBefore.disabled = "disabled";
+				button.disabled = "disabled";
+				this.nPairsMade++;
+			} 
+			this.selectedBefore = null;
+		}
+		if(this.nPairsMade == this.solutionsArray.length/2) {
+			language.currLesson.passCurrentScreen();
+			DynamicHTML.play("general/right_answer.mp3");
+                
+			if (language.currLesson.hasNextScreen()) {
+				language.currLesson.nextScreen();
+			} else {
+				language.currLesson.getCurrentScreen().hide();
+				language.currLesson.getCurrentScreen().show();
+				language.currLesson.getCurrentScreen().box.style = "display: none;";
+				this.style = "display: none;";
+				console.log(language.currLesson.getCurrentScreen().box);
+				DynamicHTML.h1(language.currLesson.getCurrentScreen().container, "Congratulations, you've reached the end of this lesson!").style = "color:#444; font-family: sans-serif; font-size: 20px;";
+			}
+		}
+	}
+
+	isPairCorrect(lastSelected) {
+		let indexOfSelectedNow = this.solutionsArray.indexOf(lastSelected.value);
+		let indexOfSelectedBefore = this.solutionsArray.indexOf(this.selectedBefore.value); 
+		if( Math.abs(indexOfSelectedNow - indexOfSelectedBefore) == 1) {
+			if (Math.min(indexOfSelectedBefore,indexOfSelectedNow) % 2 == 0 ) {
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			return false;
+		}
+	}
+
+	show() {
+		super.show();
+		DynamicHTML.h1(this.box,"Match the pairs").style.color = "#333";
+		let pairs = DynamicHTML.p(this.box,"");
+
+		for(let i=0;i<this.originalArray.length;i++) {
+			this.buttonsElements[i] = DynamicHTML.inpuButton(pairs,"butElem"+i,this.originalArray[i],"red");
+			this.buttonsElements[i].style = "margin:5px 5px; border-radius: 5px; font-size: 17px; background-color: rgb(240, 240, 240); padding:5px; font-family: Arial; box-shadow: 2px 2px 5px rgba(0,0,0,0.2)";
+			this.buttonsElements[i].onclick = (event) => {this.answered(event.target);};
+		}
+
+	}
 }
 
 class Blocks extends Screen {
