@@ -411,7 +411,7 @@ class Lesson {
 		}
         
 		this.currentScreenNumber = this.screensNotPassed[this.screenNotPassedIndex];
-        
+        console.log(this.screensNotPassed);
 		//Show next screen
 		this.screens[this.currentScreenNumber].show();
 	}
@@ -475,24 +475,53 @@ class Keyboard extends Screen {
 	}
 
 	answeredWrong() {
-		var wrongMessage = DynamicHTML.h1(this.box, "Wrong Answer!");
-		wrongMessage.style.color = "red";
+		// var wrongMessage = DynamicHTML.h1(this.box, "Wrong Answer!");
+		// wrongMessage.style.color = "red";
 
-		DynamicHTML.p(this.container, "The correct answer is: " + this.solutions[0]);
-		this.showNextButton();
+		// DynamicHTML.p(this.container, "The correct answer is: " + this.solutions[0]);
+		// this.showNextButton();
+
+		let nextScreenBtn = DynamicHTML.inpuButton(this.container, "nextbtn", "Next Screen", "red");
+		nextScreenBtn.style = "display: inline-block; margin: 5px 5px 10px; border-radius: 5px; padding: 8px 16px; background-color: #0f96d0; color: white; font-size: 13px; font-weight: bold;";
+                
+		nextScreenBtn.onclick = () => {
+			if (language.currLesson.hasNextScreen()) {
+				language.currLesson.nextScreen();
+			} else {
+				language.currLesson.getCurrentScreen().hide();
+				language.currLesson.getCurrentScreen().show();
+			}
+		};
+		language.currLesson.getCurrentScreen().box.style = "display: none";
+		DynamicHTML.h1(language.currLesson.getCurrentScreen().container, "The correct answer was: " + language.currLesson.getCurrentScreen().getSolution()).style = "color:#444; font-family: sans-serif; font-size: 20px;";
+		DynamicHTML.play("general/wrong_answer.mp3");  
 	}
 
 	answerCorrect() {
-		var correctMessage = DynamicHTML.h1(this.box, "Correct!");
-		correctMessage.style.color = "green";
+		// var correctMessage = DynamicHTML.h1(this.box, "Correct!");
+		// correctMessage.style.color = "green";
+		// language.currLesson.passCurrentScreen();
+		// this.showNextButton();
+
 		language.currLesson.passCurrentScreen();
-		this.showNextButton();
+		DynamicHTML.play("general/right_answer.mp3");
+                
+		if (language.currLesson.hasNextScreen()) {
+			language.currLesson.nextScreen();
+		} else {
+			language.currLesson.getCurrentScreen().hide();
+			language.currLesson.getCurrentScreen().show();
+			language.currLesson.getCurrentScreen().box.style = "display: none;";
+			this.style = "display: none;";
+			console.log(language.currLesson.getCurrentScreen().box);
+			DynamicHTML.h1(language.currLesson.getCurrentScreen().container, "Congratulations, you've reached the end of this lesson!").style = "color:#444; font-family: sans-serif; font-size: 20px;";
+		}
 	}
 
-	blockInput() {
-		this.b1.remove();
-		this.i.disabled = "disabled";
-	}
+	// blockInput() {
+	// 	this.b1.remove();
+	// 	this.i.disabled = "disabled";
+	// }
 
 	showNextButton() {
 		var nextButton = DynamicHTML.inpuButton(this.box,"nextButton", "Next", "green");
@@ -525,34 +554,9 @@ class Keyboard extends Screen {
 			let isSolution = language.currLesson.getCurrentScreen().checkAnswer(document.getElementById("answer").value);
             
 			if (isSolution) {
-				language.currLesson.passCurrentScreen();
-				DynamicHTML.play("general/right_answer.mp3");
-                
-				if (language.currLesson.hasNextScreen()) {
-					language.currLesson.nextScreen();
-				} else {
-					language.currLesson.getCurrentScreen().hide();
-					language.currLesson.getCurrentScreen().show();
-					language.currLesson.getCurrentScreen().box.style = "display: none;";
-					this.style = "display: none;";
-					console.log(language.currLesson.getCurrentScreen().box);
-					DynamicHTML.h1(language.currLesson.getCurrentScreen().container, "Congratulations, you've reached the end of this lesson!").style = "color:#444; font-family: sans-serif; font-size: 20px;";
-				}
+				this.answerCorrect();
 			} else {
-				let nextScreenBtn = DynamicHTML.inpuButton(this.container, "nextbtn", "Next Screen", "red");
-				nextScreenBtn.style = "display: inline-block; margin: 5px 5px 10px; border-radius: 5px; padding: 8px 16px; background-color: #0f96d0; color: white; font-size: 13px; font-weight: bold;";
-                
-				nextScreenBtn.onclick = () => {
-					if (language.currLesson.hasNextScreen()) {
-						language.currLesson.nextScreen();
-					} else {
-						language.currLesson.getCurrentScreen().hide();
-						language.currLesson.getCurrentScreen().show();
-					}
-				};
-				language.currLesson.getCurrentScreen().box.style = "display: none";
-				DynamicHTML.h1(language.currLesson.getCurrentScreen().container, "The correct answer was: " + language.currLesson.getCurrentScreen().getSolution()).style = "color:#444; font-family: sans-serif; font-size: 20px;";
-				DynamicHTML.play("general/wrong_answer.mp3");  
+				this.answeredWrong();
 			}
 		};
         
