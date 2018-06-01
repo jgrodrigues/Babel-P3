@@ -346,7 +346,7 @@ class Lesson {
 		this.nScreens = 0;
 		this.id = id;
 		this.loadScreens(); 
-		this.screenNotPassedIndex = 0;
+		this.screenNotPassedIndex = this.screensNotPassed.length - 1;
 		console.log(this.screens);
 	}
     
@@ -360,7 +360,7 @@ class Lesson {
 				this.nScreens++;
                 
 				//Add to the beggining of the list
-				this.screensNotPassed.push(this.nScreens);
+				this.screensNotPassed.unshift(this.nScreens);
             
 				let screenXML = this.lessonXML.childNodes[i];
 				let screen = null;
@@ -404,10 +404,10 @@ class Lesson {
 		//Hide previous screen
 		this.screens[this.currentScreenNumber].hide();
         
-		this.screenNotPassedIndex++;
+		this.screenNotPassedIndex--;
         
-		if (this.screenNotPassedIndex == this.nScreens-1) {
-			this.screenNotPassedIndex = 0;
+		if (this.screenNotPassedIndex < 0) {
+			this.screenNotPassedIndex = this.screensNotPassed.length - 1;
 		}
         
 		this.currentScreenNumber = this.screensNotPassed[this.screenNotPassedIndex];
