@@ -263,21 +263,21 @@ class Language {
 
 	hideLessonsButtons() {
 		for (let i = 1; i <= this.nLessons;i++) {
-			this.buttons[i].remove();
+			this.buttons[i].style.display = "none";
 		}
 		//this.nav.remove();
 	}
 
 	showLessonsButtons() {
-		// for (let i = 1; i <= this.nLessons;i++) {
-		// 	this.buttons[i].style.display = "";
-		// }
-		this.addLessonsButtons();
+		for (let i = 1; i <= this.nLessons;i++) {
+			this.buttons[i].style.display = "";
+		}
+		//this.addLessonsButtons();
 	}
 
 	showBackButton() {
 		this.backButton = DynamicHTML.inpuButton(this.nav,"backButton", "Back");
-		this.backButton.style = "position: absolute; left: 20px; border-radius: 5px; padding: 8px 16px; background-color: #0f96d0; color: white; font-size: 13px; font-weight: bold;";
+		this.backButton.style = "margin:5px 5px; position: absolute; left: 20px; border-radius: 5px; padding: 8px 16px; background-color: #0f96d0; color: white; font-size: 13px; font-weight: bold;";
 		this.backButton.onclick = () => {return this.goBack();};
 	}
 
@@ -299,10 +299,11 @@ class Language {
 			this.currLesson.getCurrentScreen().hide();
 			//this.hideLessonsButtons();
 		} else {
+			this.buttons[id].style.backgroundColor = "#095077";
 			this.hideLessonsButtons();
 			this.showBackButton();
 		}
-        
+		
 		this.currLesson = this.lessons[id];
 			
 		if (this.currLesson.hasNextScreen()) {
@@ -316,14 +317,6 @@ class Language {
 		for(let i = 1; i <= this.nLessons; i++) {
 			this.lessons[i] = new Lesson(i,this.body);
 		}
-	}
-
-	getCurrentLesson(){
-		return this.currLesson;
-	}
-
-	getNLessons() {
-		return this.nLessons;
 	}
 }
 
@@ -348,7 +341,7 @@ class Lesson {
 		this.nScreens = 0;
 		this.id = id;
 		this.loadScreens(); 
-		this.screenNotPassedIndex = this.nScreens;
+		this.screenNotPassedIndex = 0;
 		console.log(this.screens);
 	}
     
@@ -362,7 +355,7 @@ class Lesson {
 				this.nScreens++;
                 
 				//Add to the beggining of the list
-				this.screensNotPassed.unshift(this.nScreens);
+				this.screensNotPassed.push(this.nScreens);
             
 				let screenXML = this.lessonXML.childNodes[i];
 				let screen = null;
@@ -383,6 +376,7 @@ class Lesson {
                 
 			}
 		}
+		console.log(this.screensNotPassed);
 	}
     
 	loadKeyboard(id, screenXML) {
@@ -406,10 +400,10 @@ class Lesson {
 		//Hide previous screen
 		this.screens[this.currentScreenNumber].hide();
         
-		this.screenNotPassedIndex--;
+		this.screenNotPassedIndex++;
         
-		if (this.screenNotPassedIndex < 0) {
-			this.screenNotPassedIndex = this.nScreens - 1;
+		if (this.screenNotPassedIndex == this.nScreens - 1) {
+			this.screenNotPassedIndex = 0;
 		}
         
 		this.currentScreenNumber = this.screensNotPassed[this.screenNotPassedIndex];
@@ -421,6 +415,7 @@ class Lesson {
     
 	passCurrentScreen() {
 		this.screensNotPassed.splice(this.nextScreenNotPassedIndex, 1);
+		console.log(this.screensNotPassed);
 	}
 }
 
@@ -471,7 +466,7 @@ class Keyboard extends Screen {
 	}
 
 	answeredWrong() {
-		var wrongMessage = DynamicHTML.h1(this.container, "Wrong Answer!");
+		var wrongMessage = DynamicHTML.h1(this.box, "Wrong Answer!");
 		wrongMessage.style.color = "red";
 
 		DynamicHTML.p(this.container, "The correct answer is: " + this.solutions[0]);
@@ -479,7 +474,7 @@ class Keyboard extends Screen {
 	}
 
 	answerCorrect() {
-		var correctMessage = DynamicHTML.h1(this.container, "Correct!");
+		var correctMessage = DynamicHTML.h1(this.box, "Correct!");
 		correctMessage.style.color = "green";
 		language.currLesson.passCurrentScreen();
 		this.showNextButton();
@@ -491,8 +486,8 @@ class Keyboard extends Screen {
 	}
 
 	showNextButton() {
-		var nextButton = DynamicHTML.inpuButton(this.container,"nextButton", "Next", "green");
-		nextButton.style = "border-radius: 5px; background-color: #22aa55; padding:20px; font-family: Arial; box-shadow: 2px 2px 5px rgba(0,0,0,0.2)";
+		var nextButton = DynamicHTML.inpuButton(this.box,"nextButton", "Next", "green");
+		nextButton.style = "margin-left: 5px; border-radius: 5px; background-color: #22aa55; padding: 8px 15px; color:white; font-size: 16px; font-weight: bold;";
 		nextButton.onclick = () => {language.currLesson.nextScreen();};
 	}
 
