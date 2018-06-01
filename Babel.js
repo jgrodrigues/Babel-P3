@@ -395,7 +395,7 @@ class Lesson {
     loadBlocks(id,screenXML) {
 		var prompt = screenXML.getElementsByTagName("PROMPT")[0].firstChild.nodeValue;
 		var original = screenXML.getElementsByTagName("ORIGINAL")[0].firstChild.nodeValue;
-		var solutions = screenXML.getElementsByTagName("SOLUTION")[0].firstChild.nodeValue;
+		var solutions = [screenXML.getElementsByTagName("SOLUTION")[0].firstChild.nodeValue];
 		var blocks = screenXML.getElementsByTagName("BLOCKS")[0].firstChild.nodeValue;
 		return new Blocks(id, prompt, original, solutions, blocks);
 	}
@@ -638,33 +638,125 @@ class Blocks extends Screen {
         
         this.blocks = blocks.split(" ");
         this.buttonElements = [];
+        this.answer = [];
     }
     
     show(container) {
         super.show(container);
-        DynamicHTML.h1(this.box,this.prompt).style.color = "#333";
+        DynamicHTML.h1(this.box,this.prompt).style = "color:#333; margin: 15px;";
 		let pairs = DynamicHTML.p(this.box,"");
         
-        let firstLine = DynamicHTML.div(this.box, "margin: 15px; border-bottom: 2px solid #666; height: 40px; width 70%");
+        DynamicHTML.text(this.box, 16, " ");
+		DynamicHTML.text(this.box, 32, this.original).style = "margin: 15px; font-size: 25px;";
+        
+        let firstLine = DynamicHTML.div(this.box, "padding: 10px; margin: 15px; border-bottom: 2px solid #666; min-height: 40px; min-width: 90%; max-width 90%;");
         firstLine.id = "answer";
         firstLine.ondragover = event => {
             event.preventDefault();
         };
         
-        let secondLine = DynamicHTML.div(this.box, "margin: 15px; border-bottom: 2px solid #666; height: 40px; width 70%");
+        firstLine.ondrop = event => {
+            this.onBlockDropFirstLine(event);
+        };
         
-        let blocksDiv = DynamicHTML.div(this.box, "display: inline-block; text-align: center; margin: 15px; width 70%");
+        let secondLine = DynamicHTML.div(this.box, "margin: 15px; border-bottom: 2px solid #666; height: 40px; min-width: 90%; max-width 90%;");
+        
+        let blocksDiv = DynamicHTML.div(this.box, "text-align: center; margin: 15px; min-width: 90%; max-width 90%;");
+        
+        blocksDiv.ondrop = event => {
+            this.onBlockDropBlocksDiv(event);
+        };
+        
+        blocksDiv.ondragover = event => {
+            event.preventDefault();
+        };
         
         for(let i=0;i<this.blocks.length;i++) {
 			this.buttonElements[i] = DynamicHTML.inpuButton(blocksDiv,"butElem"+i,this.blocks[i],"red");
-			this.buttonElements[i].style = "margin:5px 5px; border-radius: 5px; font-size: 17px; background-color: rgb(255, 255, 255); padding:5px; font-family: Arial; box-shadow: 2px 2px 5px rgba(0,0,0,0.2); cursor: pointer;";
+			this.buttonElements[i].style = "display: inline-block; margin:5px 5px; border-radius: 5px; font-size: 17px; background-color: rgb(255, 255, 255); padding:5px; font-family: Arial; box-shadow: 2px 2px 5px rgba(0,0,0,0.2); cursor: pointer;";
             this.buttonElements[i].draggable = "true";
             this.buttonElements[i].ondragstart = event => {
-                event.dataTransfer.setData("text", event.target.value);
+                event.dataTransfer.setData("text", event.target.id);
+            };
+            
+            this.buttonElements[i].ondrop = event => {
+                this.onBlockDropBlock(event);
+            };
+
+            this.buttonElements[i].ondragover = event => {
+                event.preventDefault();
             };
 		}
     }
+    
+    onBlockDropBlock(event) {
+        event.stopPropagation();
+        event.preventDefault();
+        let block = document.getElementById(event.dataTransfer.getData("text"));
+        let row = event.target.parentNode;       
+        
+        if(row != block.parentNode || row.id == "answer") {
+            let answerParent = (row.id == "answer")?row: block.parentNode;
+            //Execute unless the block comes from the block options
+            if (row == block.parentNode || row.id != "answer") {
+                
+                let index = Array.from(answerParent.children).indexOf(block);
+                //insert blank string that will later be removed
+                this.answer.splice(index, 1, "");   
+            }
+            
+            //index of target button
+            if (row.id == "answer") {
+                
+                let index = Array.from(row.children).indexOf(event.target);
+                
+                //insert block value at the index of the target value 
+                this.answer.splice(index, 0, block.value);
+            }
+            
+            if(this.answer.indexOf("") != -1) {
+                this.answer.splice(this.answer.indexOf(""), 1);
+            }
+        }     
+            
+        row.insertBefore(block, event.target);
+        console.log(this.answer);
+        this.checkAnswer();
+    }
+    
+    checkAnswer() {
+        if(this.answer.join(" ") == language.currLesson.getCurrentScreen().getSolution()) {
+            language.currLesson.passCurrentScreen();
+            DynamicHTML.play("general/right_answer.mp3");
+            language.currLesson.nextScreen();
+        }
+    }
 
+    onBlockDropFirstLine(event) {
+        event.preventDefault();
+        let block = document.getElementById(event.dataTransfer.getData("text"));
+        let value = block.value;
+        event.target.appendChild(block);
+        this.answer.push(block.value);
+            
+        this.checkAnswer();
+    }
+    
+    onBlockDropBlocksDiv(event) {
+        event.preventDefault();
+        let block = document.getElementById(event.dataTransfer.getData("text"));
+        let row = event.target.parentNode; 
+        
+        if(row != block.parentElement) {
+            let index = Array.from(block.parentElement.children).indexOf(block);
+            this.answer.splice(index, 1);
+            
+        }
+        
+        this.checkAnswer();
+        
+        event.target.appendChild(block);
+    }
 }
 
 class Symbols extends Screen { //Usar para alfabetos extra apenas
