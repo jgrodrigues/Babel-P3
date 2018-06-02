@@ -1,8 +1,6 @@
 /*
 
 Babel.js - AMD/2018
-
-    *** REESCREVA ESTE TEXTO! ***
     
 Autores: Jonas Rodrigues (49806), Joao Costa (50597)
 
@@ -160,21 +158,27 @@ class Language {
 		this.body.style = "margin:0px; padding: 0px;";
 		this.screenTypes = ["KEYBOARD", "PAIRS", "BLOCKS", "SYMBOLS"];
 		this.body.innerHTML = "";
+
 		this.header = 
 			DynamicHTML.div(this.body, "float:left;top: 0px; left: 0;"+
 				"background-color: #0f96d0; width:100%; height: 80px;");
+
 		DynamicHTML.h1(this.header, "Babel   - " + languageName + "").style = 
 			"margin: 20px;font-family: sans-serif; text-transform: uppercase;"+
 			"font-weight: bold; color: white";
+
 		DynamicHTML.hr(this.body).style = "border-top: 2px solid #0f6690;";
+
 		this.nav = 
 			DynamicHTML.div(this.body, "margin: 20px auto; width: 600px;" +
 				"text-align: center;grid-gap: 5px; display: grid;" +
 				"grid-template-columns: repeat(4, 1fr); text-align: center;" +
 				"position: relative; margin-bottom:20px;");
+
 		this.back = 
 			DynamicHTML.div(this.body,"text-align:center; position: relative;" +
 				"margin-bottom:20px;");
+
 		this.buttons = [];
 		this.nLessons = xmlDoc.getElementsByTagName("LESSON").length;
 		this.currLesson = null;
@@ -191,11 +195,14 @@ class Language {
 		console.log("in");
 		let header = DynamicHTML.h1(this.nav, "LESSONS");
 		header.id = "lessonHeader";
+
 		header.style = "text-align: left; grid-column: 1 / span 4;" +
 			"color: rgb(15, 150, 208); font-family: sans-serif;";
+
 		for (let i = 1; i <= this.nLessons;i++) {
 			this.buttons[i] = 
 				DynamicHTML.inpuButton(this.nav,"button" + i,"LESSON " + i);
+
 			this.buttons[i].style = 
 				"height: 150px; width: 150px; padding: 8px 16px;" +
 				"background-color: #0f96d0; color: white; font-size: 20px;" +
@@ -224,10 +231,12 @@ class Language {
 
 	showBackButton() {
 		this.backButton = DynamicHTML.inpuButton(this.back,"backButton","Back");
+
 		this.backButton.style = "margin:5px 5px; position: absolute;" +
 			"left: 20px; border-radius: 5px; padding: 8px 16px;" +
 			"background-color: #0f96d0; color: white; font-size: 13px;" +
 			"font-weight: bold;";
+
 		this.backButton.onclick = () => {return this.goBack();};
 	}
 
@@ -281,6 +290,7 @@ class LanguageExtraAlphabets extends Language {
 		console.log("nLessons antes=" + this.nLessons);
         
 		let header = DynamicHTML.h1(this.nav, "SYMBOLS");
+
 		header.style = "text-align: left; grid-column: 1 / span 4;" +
 			"color: #891bf7; font-family: sans-serif;";
         
@@ -323,10 +333,12 @@ class LanguageExtraAlphabets extends Language {
 		let container = 
 			DynamicHTML.div(document.body, "position: absolute; left: 50%;" +
 			"-webkit-transform: translateX(-50%);transform: translateX(-50%);");
+
 		container.id = "container";
         
 		let resetBtn = 
 			DynamicHTML.inpuButton(container, "resetBtn", "Reset Board");
+
 		resetBtn.style = "position: absolute; top: 22px;right: 10px;"+
 			"background-color: rgb(13, 118, 176); border-radius: 5px;" +
 			"padding: 8px 16px; color: white; font-size: 13px;" +
@@ -341,15 +353,18 @@ class LanguageExtraAlphabets extends Language {
 		let title = 
 			DynamicHTML.h1(container, language.currSymbols.name.toUpperCase() +
 				" SYMBOLS");
+
 		title.style = "color:#0d76b0; font-family: sans-serif;";
 		title.id = "title";
         
 		let currScreen = DynamicHTML.h1(container, "");
+
 		currScreen.style = 
 			"color:#444; font-family: sans-serif; font-size: 20px;";
 		currScreen.id = "currScreen";
         
 		let screensLeft = DynamicHTML.h1(container, "");
+
 		screensLeft.style = 
 			"color:#555; font-family: sans-serif; font-size: 15px;";
 		screensLeft.id = "screensLeft";
@@ -438,7 +453,7 @@ class Lesson {
 				screenXML.getElementsByTagName("SOUND")[0].firstChild.nodeValue;
 		}
 
-		var transXML = screenXML.getElementsByTagName("TRANSLATION")
+		var transXML = screenXML.getElementsByTagName("TRANSLATION");
 
 		var solutions = 
 			Array.from(transXML).map(translation => {
@@ -513,6 +528,7 @@ class Lesson {
 			currScreen.innerHTML = 
 				"Screen " + language.currLesson.getCurrentScreen().id + 
 				" of " + language.currLesson.nScreens;
+
 			let screens = (language.currLesson.screensNotPassed.length == 1)?
 				" screen": " screens";
 
@@ -569,6 +585,7 @@ class Screen {
 		this.box = DynamicHTML.div(container, "border-radius: 5px;" +
 		"background-color: rgb(240, 240, 240); padding:20px;" +
 		"font-family: Arial; box-shadow: 2px 2px 5px rgba(0,0,0,0.2)");
+
 		this.box.id = "box";
 	}
     
@@ -610,6 +627,7 @@ class Keyboard extends Screen {
 			DynamicHTML.eventHandler(i, "onclick", "DynamicHTML.play(" + 
 				"\"" + this.sound + "\"" + ");");
 		}
+
 		DynamicHTML.text(p1, 16, " ").style.marginLeft = "30px";
 		DynamicHTML.text(p1, 32, this.original);
 
@@ -623,8 +641,10 @@ class Keyboard extends Screen {
 		b1.style = "margin-left: 5px; border-radius: 5px; padding: 8px 15px;" +
 			"background-color: #22aa55; color: white; font-size: 16px;" +
 			"font-weight: bold;";
+
 		DynamicHTML.eventHandler(document, "onkeydown", 
 			"if(event.keyCode==13) document.getElementById('check').click();");
+
 		DynamicHTML.eventHandler(b1, "onclick", 
 			"language.currLesson.getCurrentScreen().checkSolution();");
         
@@ -659,7 +679,6 @@ class Keyboard extends Screen {
 		nextScreenBtn.style = "display: inline-block; margin: 5px 5px 10px;" +
 			"border-radius: 5px; padding: 8px 16px; background-color: #0f96d0;"+
 			"color: white; font-size: 13px; font-weight: bold;";
-		//nextScreenBtn.id = "nextScreenBtn";
 		
                 
 		nextScreenBtn.onclick = () => {
@@ -678,11 +697,14 @@ class Keyboard extends Screen {
 			" document.getElementById('nextScreenBtn').click();");
                 
 		language.currLesson.getCurrentScreen().box.style = "display: none";
+
 		let correctAnswer = DynamicHTML.h1(container,"The correct answer was: "+
 			language.currLesson.getCurrentScreen().getSolution());
+
 		correctAnswer.style = 
 			"color:#444; font-family: sans-serif; font-size: 20px;";
 		correctAnswer.id = "correctAnswer";
+		
 		DynamicHTML.play("general/wrong_answer.mp3"); 
 	}
 }
@@ -749,12 +771,14 @@ class Pairs extends Screen {
 
 			this.buttonsElements[i] = DynamicHTML.inpuButton(pairs,"butElem"+i,
 				this.originalArray[i]);
+
 			this.buttonsElements[i].style = 
 				"margin:5px 5px; border-radius: 5px; font-size: 17px;" +
 				"background-color: rgb(255, 255, 255); padding:5px;" +
 				"font-family: Arial; box-shadow: 2px 2px 5px rgba(0,0,0,0.2);" +
 				"cursor: pointer; transition: transform .1s ease-in-out;" +
                 "-webkit-transition: transform .1s ease-in-out;";;
+
 			this.buttonsElements[i].onclick = (event) => {
 				this.answered(event.target);
 			};
@@ -794,6 +818,7 @@ class Blocks extends Screen {
 			"border-bottom: 2px solid #666; min-height: 40px; min-width: 90%;" +
 			"max-width 90%;");
 		firstLine.id = "answer";
+
 		firstLine.ondragover = event => {
 			event.preventDefault();
 		};
@@ -808,7 +833,7 @@ class Blocks extends Screen {
         
 		let blocksDiv = 
 			DynamicHTML.div(this.box, "text-align: center; margin: 15px;" +
-				" min-width: 90%; max-width 90%;");
+				"min-width: 90%; max-width 90%;");
         
 		blocksDiv.ondrop = event => {
 			this.onBlockDropBlocksDiv(event);
@@ -821,12 +846,15 @@ class Blocks extends Screen {
 		for(let i=0;i<this.blocks.length;i++) {
 			this.buttonElements[i] = 
 				DynamicHTML.inpuButton(blocksDiv,"butElem"+i,this.blocks[i]);
+
 			this.buttonElements[i].style = 
 				"display: inline-block; margin:5px 5px; border-radius: 5px;" +
 				"font-size: 17px; background-color: rgb(255, 255, 255);" +
 				"padding:5px; font-family: Arial;" +
 				"box-shadow: 2px 2px 5px rgba(0,0,0,0.2); cursor: pointer;";
+
 			this.buttonElements[i].draggable = "true";
+
 			this.buttonElements[i].ondragstart = event => {
 				event.dataTransfer.setData("text", event.target.id);
 			};
@@ -890,7 +918,6 @@ class Blocks extends Screen {
 		let value = block.value;
 		event.target.appendChild(block);
 		this.answer.push(value);
-            
 		this.checkAnswer();
 	}
     
@@ -901,12 +928,10 @@ class Blocks extends Screen {
         
 		if(row != block.parentElement) {
 			let index = Array.from(block.parentElement.children).indexOf(block);
-			this.answer.splice(index, 1);
-            
+			this.answer.splice(index, 1);   
 		}
         
 		this.checkAnswer();
-        
 		event.target.appendChild(block);
 	}
 }
@@ -950,13 +975,16 @@ class Symbols extends Screen { //Usar para alfabetos extra apenas
 
 	show(container) {
 		super.show(container);
+
 		this.box2 = 
 			DynamicHTML.div(container, "margin-top: 10px;border-radius: 5px;" +
 			"background-color: rgb(240, 240, 240); padding:20px;" +
 			"font-family: Arial; box-shadow: 2px 2px 5px rgba(0,0,0,0.2)");
+
 		this.box.style = 
 			this.box.getAttribute("style") + "display: grid;" +
 			"grid-template-columns: repeat(8, 1fr); grid-gap: 5px 5px";
+
 		for(let i=0;i<this.original.length;i++) {
 
 			this.pairsBoxes[i] = 
@@ -986,11 +1014,13 @@ class Symbols extends Screen { //Usar para alfabetos extra apenas
 			let symbolElement = 
 				DynamicHTML.inpuButton(this.box2,"buttonToDrag" + i,
 					tempSymbols[i].symbol);
+
 			symbolElement.style = 
 				"margin:5px; border-radius: 5px; font-size: 17px;" +
 				"background-color: rgb(255, 255, 255); padding:5px;" +
 				"font-family: Arial; box-shadow: 2px 2px 5px rgba(0,0,0,0.2);"+
 				"cursor: pointer;";
+
 			symbolElement.draggable = "true";
 			let symbol = new Symbol(this.solutions[i], this.original[i]);
 			symbolElement.symbol = tempSymbols[i];
@@ -1009,10 +1039,13 @@ class Symbols extends Screen { //Usar para alfabetos extra apenas
         
 		if(this.isAnswerCorrect(event.target.parentNode.getElementsByTagName(
 			"span")[0].textContent, elementDropped.symbol)) {
+
 				event.target.style = "margin: 5px auto 0px;border-radius:5px;"+
 				"height:" + elementDropped.offsetHeight + "px; width:" +
 				 elementDropped.offsetWidth + "px; border:1px solid #000";
+
 				event.target.appendChild(elementDropped);
+
 				elementDropped.style = "border-radius: 5px; font-size: 17px;" +
 				"background-color: rgb(255, 255, 255); padding:5px;" +
 				"font-family: Arial; box-shadow: 2px 2px 5px rgba(0,0,0,0.2);"+
@@ -1029,8 +1062,9 @@ class Symbols extends Screen { //Usar para alfabetos extra apenas
 		for(let i = 0;i<this.original.length;i++) {
 			this.pairsBoxes[i].remove();
 		}
+
 		DynamicHTML.h1(this.box, "Congratulations, you just learned all" +
-		" symbols of the alphabet " + this.name + ".").style = 
+			" symbols of the alphabet " + this.name + ".").style = 
 			"color:#444; font-family: sans-serif; font-size: 20px;" +
 			"text-align:center;";
 	}
