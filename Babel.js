@@ -835,7 +835,7 @@ class Symbols extends Screen { //Usar para alfabetos extra apenas
 	show(container) {
 		super.show(container);
 		this.box2 = DynamicHTML.div(container, "margin-top: 10px;border-radius: 5px; background-color: rgb(240, 240, 240); padding:20px; font-family: Arial; box-shadow: 2px 2px 5px rgba(0,0,0,0.2)");
-        this.box.style = this.box.getAttribute("style") + "display: grid; grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr";
+        this.box.style = this.box.getAttribute("style") + "display: grid; grid-template-columns: repeat(8, 1fr)";
 		for(let i=0;i<this.original.length;i++) {
 			this.pairsBoxes[i] = DynamicHTML.div(this.box,"margin: 6px 6px; text-align:center;vertical-align:middle;");
 			this.fixedElements[i] = DynamicHTML.text(this.pairsBoxes[i],"18",this.original[i]);
