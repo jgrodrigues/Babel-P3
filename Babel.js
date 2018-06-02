@@ -595,7 +595,7 @@ class Screen {
 
 	checkAnswer(answer) {
 		for (let i=0; i < this.solutions.length; i++) {
-			if (answer.toUpperCase() == this.solutions[i].toUpperCase()) {
+			if (answer.toUpperCase() === this.solutions[i].toUpperCase()) {
 				return true;
 			}
 		} 
