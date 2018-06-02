@@ -192,7 +192,6 @@ class Language {
 	}
     
 	addLessonsButtons() {
-		console.log("in");
 		let header = DynamicHTML.h1(this.nav, "LESSONS");
 		header.id = "lessonHeader";
 
@@ -287,7 +286,6 @@ class LanguageExtraAlphabets extends Language {
 
 	addSymbolsButtons() {
 		let symbolName;
-		console.log("nLessons antes=" + this.nLessons);
         
 		let header = DynamicHTML.h1(this.nav, "SYMBOLS");
 
@@ -877,7 +875,7 @@ class Blocks extends Screen {
         
 		if(row != block.parentNode || row.id == "answer") {
 			let answerParent = (row.id == "answer")?row: block.parentNode;
-			//Execute unless the block comes from the block options
+			
 			if (row == block.parentNode || row.id != "answer") {
                 
 				let index = Array.from(answerParent.children).indexOf(block);
@@ -885,9 +883,9 @@ class Blocks extends Screen {
 				this.answer.splice(index, 1, "");   
 			}
             
-			//index of target button
+			
 			if (row.id == "answer") {
-                
+                //index of target button
 				let index = Array.from(row.children).indexOf(event.target);
                 
 				//insert block value at the index of the target value 
@@ -897,7 +895,7 @@ class Blocks extends Screen {
 			if(this.answer.indexOf("") != -1) {
 				this.answer.splice(this.answer.indexOf(""), 1);
 			}
-		}     
+		} 
             
 		row.insertBefore(block, event.target);
 		this.checkAnswer();
