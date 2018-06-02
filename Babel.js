@@ -4,13 +4,11 @@ Babel.js - AMD/2018
     
 Autores: Jonas Rodrigues (49806), Joao Costa (50597)
 
-O ficheiro "Babel.js" tem de incluir, logo nas primeiras linhas, um comentário
-inicial contendo: o nome e número dos dois alunos que realizaram o projeto;
-indicação de quais as partes do trabalho que foram feitas e das que não foram
-feitas (para facilitar uma correção sem enganos); ainda possivelmente alertando
-para alguns aspetos da implementação que possam ser menos óbvios para o avaliador.
+Neste projeto foram cumpridas todas as tarefas pretendidas.
+No caso do ecra Blocks, um block ao ser inserido por cima de outro,
+o bloco e inserido no local do outro, fazendo com que todos os outros
+facam shift para a direito (incluindo o bloco sobre o qual foi inserido)
 
-01234567890123456789012345678901234567890123456789012345678901234567890123456789
 
 */
 
@@ -579,7 +577,6 @@ class Screen {
 		this.box = null;
 	}
 
-    //Show the screen in the given container
 	show(container) {
 		this.box = DynamicHTML.div(container, "border-radius: 5px;" +
 		"background-color: rgb(240, 240, 240); padding:20px;" +
@@ -798,7 +795,10 @@ class Blocks extends Screen {
 		super(id, prompt, original, solution);
         
 		this.blocks = blocks.split(" ");
+        
 		this.buttonElements = [];
+        // Array that will contain the string value of all the blocks
+        // to evaluate
 		this.answer = [];
 	}
     
@@ -807,12 +807,13 @@ class Blocks extends Screen {
 		super.show(container);
 		DynamicHTML.h1(this.box,this.prompt).style = 
 			"color:#333; margin: 15px;";
-		//let pairs = DynamicHTML.p(this.box,"");
+		
         
 		DynamicHTML.text(this.box, 16, " ");
 		DynamicHTML.text(this.box, 32, this.original).style = 
 			"margin: 15px; font-size: 25px;";
         
+        //div where the answer will be placed
 		let firstLine = 
 			DynamicHTML.div(this.box, "padding: 10px; margin: 15px;" +
 			"border-bottom: 2px solid #666; min-height: 40px; min-width: 90%;" +
@@ -827,10 +828,12 @@ class Blocks extends Screen {
 			this.onBlockDropFirstLine(event);
 		};
         
+        //Second div for asthetic purposes
 		let secondLine = DynamicHTML.div(this.box, "margin: 15px;" +
 			"border-bottom: 2px solid #666; height: 40px; min-width: 90%;" +
 			"max-width 90%;");
         
+        //Div where the blocks are initially inserted in
 		let blocksDiv = 
 			DynamicHTML.div(this.box, "text-align: center; margin: 15px;" +
 				"min-width: 90%; max-width 90%;");
@@ -843,6 +846,7 @@ class Blocks extends Screen {
 			event.preventDefault();
 		};
         
+        //Show all the available blocks
 		for(let i=0;i<this.blocks.length;i++) {
 			this.buttonElements[i] = 
 				DynamicHTML.inpuButton(blocksDiv,"butElem"+i,this.blocks[i]);
@@ -951,6 +955,8 @@ class Blocks extends Screen {
 	}
 }
 
+// Class that represents a Symbol block in the Symbols screen
+// It stores the symbol and the corresponding latin translation
 class Symbol {
 	constructor(symbol, latin) {
 		this.symbol = symbol;
@@ -979,6 +985,7 @@ class Symbols extends Screen {
 		this.nPairsMade = 0;
 	}
 
+    //Checks whether the answer is correct
 	isAnswerCorrect(staticElement, droppedElement) {
 		if(staticElement == droppedElement.latin) {
 			this.nPairsMade++;
@@ -991,15 +998,19 @@ class Symbols extends Screen {
 	show(container) {
 		super.show(container);
 
+        //div with the symbol blocks
 		this.box2 = 
 			DynamicHTML.div(container, "margin-top: 10px;border-radius: 5px;" +
 			"background-color: rgb(240, 240, 240); padding:20px;" +
 			"font-family: Arial; box-shadow: 2px 2px 5px rgba(0,0,0,0.2)");
 
+        //div with the draggable boxes and latin labels
 		this.box.style = 
 			this.box.getAttribute("style") + "display: grid;" +
 			"grid-template-columns: repeat(8, 1fr); grid-gap: 5px 5px";
-
+        
+        // Display the draggable boxes labeled 
+        // with the corresponding latin letter
 		for(let i=0;i<this.original.length;i++) {
 
 			this.pairsBoxes[i] = 
@@ -1019,12 +1030,15 @@ class Symbols extends Screen {
         
 		let tempSymbols = [];
         
+        //Fill the array with Symbol objects
 		for(let i = 0;i<this.solutions.length;i++) { 
 			tempSymbols.push(new Symbol(this.solutions[i], this.original[i]));
 		}
         
+        //Shuffle the symbols within the array
 		tempSymbols.sort(function(a, b){return 0.5 - Math.random();});
         
+        //Display the symbols
 		for(let i = 0;i<this.solutions.length;i++) {
 			let symbolElement = 
 				DynamicHTML.inpuButton(this.box2,"buttonToDrag" + i,
@@ -1047,6 +1061,8 @@ class Symbols extends Screen {
 		}
 	}
     
+    // Event that check the block dragged into the box
+    // And verifies if the symbol corresponds to the latin label
 	onBlockDrop(event) {
 		event.preventDefault();
 		let data = event.dataTransfer.getData("text");
@@ -1065,13 +1081,16 @@ class Symbols extends Screen {
 				"background-color: rgb(255, 255, 255); padding:5px;" +
 				"font-family: Arial; box-shadow: 2px 2px 5px rgba(0,0,0,0.2);"+
 				"cursor: pointer;";
-
+                
+                // Check whether all the symbols have been dragged into the
+                // corresponding boxes
 				if(this.nPairsMade == this.solutions.length) {
 					this.finished(elementDropped.container);
 			}
 		}
 	}
-
+    
+    // Removes the boxes and symbols and displays congratulatory message
 	finished() {
 		this.box2.remove();
 		for(let i = 0;i<this.original.length;i++) {
