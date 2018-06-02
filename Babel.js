@@ -21,17 +21,7 @@ para alguns aspetos da implementação que possam ser menos óbvios para o avali
 var xmlDoc, xmlSerializer, languageName, language;
 
 
-/* Misc functions */
-
-
-//----------OUR CODE---------
-//-----Funcoes auxiliares-----
-function getNumberOfChildElements(parent, elementName) {
-	var nodes = parent.getElementsByTagName(elementName);
-	return nodes.length;
-}
-
-//--------Classes----------
+/* Classes */
 
 class DynamicHTML {
     
@@ -90,12 +80,11 @@ class DynamicHTML {
 		return a;
 	}
     
-	static inpuButton(target, id, value, color) {
+	static inpuButton(target, id, value) {
 		var a = document.createElement("INPUT");
 		a.type = "button";
 		a.id = id;
 		a.value = value;
-		a.style.backgroundColor = color;
 		target.appendChild(a);
 		return a;
 	}
@@ -116,7 +105,6 @@ class DynamicHTML {
 	}
     
 	static eventHandler(a, kind, action) {
-		console.log(action);
 		a[kind] = new Function(action);
 		return a;
 	}
@@ -135,7 +123,6 @@ class DynamicHTML {
     
 	static text2XML(text) {
 		let parser = new DOMParser();
-		//let serializer = new XMLSerializer(); //TODO nao devia ser xmlSerializer??
 		let xmlDoc = parser.parseFromString(text,"text/xml");
 		return xmlDoc;
 	}
@@ -150,7 +137,6 @@ class DynamicHTML {
 		var nodes = xmlDoc.getElementsByTagName("SOUNDSPREFIX");
 		if ( nodes.length == 1) {
 			const prefix = nodes[0].childNodes[0].nodeValue;
-			console.log(prefix);
             
 			if( soundEnabled )
 				new Audio(prefix + sound).play();
@@ -171,16 +157,26 @@ class Language {
 	constructor() {
 		language = this;
 		this.body = document.body;
-        this.body.style = "margin:0px; padding: 0px;";
+		this.body.style = "margin:0px; padding: 0px;";
 		this.screenTypes = ["KEYBOARD", "PAIRS", "BLOCKS", "SYMBOLS"];
 		this.body.innerHTML = "";
-		this.header = DynamicHTML.div(this.body, "float:left;top: 0px; left: 0;background-color: #0f96d0; width:100%; height: 80px;");
-		DynamicHTML.h1(this.header, "Babel   - " + languageName + "").style = "margin: 20px;font-family: sans-serif; text-transform: uppercase; font-weight: bold; color: white";
+		this.header = 
+			DynamicHTML.div(this.body, "float:left;top: 0px; left: 0;"+
+				"background-color: #0f96d0; width:100%; height: 80px;");
+		DynamicHTML.h1(this.header, "Babel   - " + languageName + "").style = 
+			"margin: 20px;font-family: sans-serif; text-transform: uppercase;"+
+			"font-weight: bold; color: white";
 		DynamicHTML.hr(this.body).style = "border-top: 2px solid #0f6690;";
-		this.nav = DynamicHTML.div(this.body, "margin: 20px auto; width: 600px;text-align: center;grid-gap: 5px; display: grid; grid-template-columns: repeat(4, 1fr); text-align: center; position: relative; margin-bottom:20px;");
-		this.back = DynamicHTML.div(this.body, "text-align: center; position: relative; margin-bottom:20px;");
+		this.nav = 
+			DynamicHTML.div(this.body, "margin: 20px auto; width: 600px;" +
+				"text-align: center;grid-gap: 5px; display: grid;" +
+				"grid-template-columns: repeat(4, 1fr); text-align: center;" +
+				"position: relative; margin-bottom:20px;");
+		this.back = 
+			DynamicHTML.div(this.body,"text-align:center; position: relative;" +
+				"margin-bottom:20px;");
 		this.buttons = [];
-		this.nLessons = getNumberOfChildElements(xmlDoc, "LESSON");
+		this.nLessons = xmlDoc.getElementsByTagName("LESSON").length;
 		this.currLesson = null;
 		this.lessons = [];
 		this.start();
@@ -193,31 +189,45 @@ class Language {
     
 	addLessonsButtons() {
 		console.log("in");
-        let header = DynamicHTML.h1(this.nav, "LESSONS");
-        header.id = "lessonHeader";
-        header.style = "text-align: left; grid-column: 1 / span 4; color: rgb(15, 150, 208); font-family: sans-serif;";
+		let header = DynamicHTML.h1(this.nav, "LESSONS");
+		header.id = "lessonHeader";
+		header.style = "text-align: left; grid-column: 1 / span 4;" +
+			"color: rgb(15, 150, 208); font-family: sans-serif;";
 		for (let i = 1; i <= this.nLessons;i++) {
-			//tirar a cor como argumento do botao
-			this.buttons[i] = DynamicHTML.inpuButton(this.nav,"button" + i,"LESSON " + i, "red");
-			this.buttons[i].style = "height: 150px; width: 150px; padding: 8px 16px; background-color: #0f96d0; color: white; font-size: 20px; font-weight: bold; box-shadow: 2px 2px 5px rgba(0,0,0,0.2); cursor: pointer; transition: transform .1s ease-in-out; -webkit-transition: transform .1s ease-in-out;";
-            this.buttons[i].onmouseover = event => {event.target.style.transform = "scale(1.05)"};
-            this.buttons[i].onmouseout = event => {event.target.style.transform = "scale(1)"};
+			this.buttons[i] = 
+				DynamicHTML.inpuButton(this.nav,"button" + i,"LESSON " + i);
+			this.buttons[i].style = 
+				"height: 150px; width: 150px; padding: 8px 16px;" +
+				"background-color: #0f96d0; color: white; font-size: 20px;" +
+				"font-weight: bold; box-shadow: 2px 2px 5px rgba(0,0,0,0.2);" +
+				"cursor: pointer;transition: transform .1s ease-in-out;" +
+                "-webkit-transition: transform .1s ease-in-out;";
+            this.buttons[i].onmouseover = event => {
+                event.target.style.transform = "scale(1.05)"
+            };
+            
+            this.buttons[i].onmouseout = event => {
+                event.target.style.transform = "scale(1)"
+            };
 
 			this.buttons[i].onclick = () => { this.getLesson(i);};
 		}
 	}
 
 	hideLessonsButtons() {        
-        this.nav.style.display = "none";
+		this.nav.style.display = "none";
 	}
 
 	showLessonsButtons() {
-        this.nav.style.display = "grid";
+		this.nav.style.display = "grid";
 	}
 
 	showBackButton() {
-		this.backButton = DynamicHTML.inpuButton(this.back,"backButton", "Back");
-		this.backButton.style = "margin:5px 5px; position: absolute; left: 20px; border-radius: 5px; padding: 8px 16px; background-color: #0f96d0; color: white; font-size: 13px; font-weight: bold;";
+		this.backButton = DynamicHTML.inpuButton(this.back,"backButton","Back");
+		this.backButton.style = "margin:5px 5px; position: absolute;" +
+			"left: 20px; border-radius: 5px; padding: 8px 16px;" +
+			"background-color: #0f96d0; color: white; font-size: 13px;" +
+			"font-weight: bold;";
 		this.backButton.onclick = () => {return this.goBack();};
 	}
 
@@ -229,7 +239,6 @@ class Language {
 		this.currLesson.leaveLesson();
 		this.currLesson = null;
 		this.hideBackButton();
-		//this.addLessonsButtons();
 		this.showLessonsButtons();
 
 	}
@@ -237,7 +246,6 @@ class Language {
 	getLesson(id) {
 		if (this.currLesson != null) {
 			this.currLesson.leaveLesson();
-			//this.hideLessonsButtons();
 		} else {
 			this.hideLessonsButtons();
 			this.showBackButton();
@@ -246,7 +254,6 @@ class Language {
 		this.currLesson = this.lessons[id];
 		language.currLesson.showLesson();
 		language.currLesson.showCurrentScreen();
-        
 	}
     
 
@@ -257,12 +264,11 @@ class Language {
 	}
 }
 
-//TODO
+
 class LanguageExtraAlphabets extends Language {
 	constructor() {
 		super();
-		this.nSymbols = getNumberOfChildElements(xmlDoc, "SYMBOLS");
-		console.log("nSymbols=" + this.nSymbols);
+		this.nSymbols = xmlDoc.getElementsByTagName("SYMBOLS").length;
 		this.currSymbols = null;
 		this.symbols = [];
 		this.symbolsXML = xmlDoc.getElementsByTagName("SYMBOLS");
@@ -274,54 +280,78 @@ class LanguageExtraAlphabets extends Language {
 		let symbolName;
 		console.log("nLessons antes=" + this.nLessons);
         
-        let header = DynamicHTML.h1(this.nav, "SYMBOLS");
-        header.style = "text-align: left; grid-column: 1 / span 4; color: #891bf7; font-family: sans-serif;";
+		let header = DynamicHTML.h1(this.nav, "SYMBOLS");
+		header.style = "text-align: left; grid-column: 1 / span 4;" +
+			"color: #891bf7; font-family: sans-serif;";
         
 		let i;
 		for(i = this.nLessons+1;i<=this.nLessons+this.nSymbols;i++) {
-			console.log(i-this.nLessons);
-			console.log(this.symbolsXML[i-this.nLessons-1]);
-			symbolName = this.symbolsXML[i-this.nLessons-1].getElementsByTagName("SYMBNAME")[0].firstChild.nodeValue;
-			console.log(symbolName);
-			this.buttons[i] = DynamicHTML.inpuButton(this.nav,"button" + symbolName,symbolName.toUpperCase(), "red");
-			this.buttons[i].style = "height: 150px; width: 150px; background-color: #891bf7; color: white; font-size: 20px; font-weight: bold; box-shadow: 2px 2px 5px rgba(0,0,0,0.2); cursor: pointer; transition: transform .1s ease-in-out; -webkit-transition: transform .1s ease-in-out;";
-            this.buttons[i].onmouseover = event => {event.target.style.transform = "scale(1.05)"};
-            this.buttons[i].onmouseout = event => {event.target.style.transform = "scale(1)"};
+			let curSymbol = this.symbolsXML[i-this.nLessons-1];
+
+			symbolName = 
+			 curSymbol.getElementsByTagName("SYMBNAME")[0].firstChild.nodeValue;
+			
+			this.buttons[i] = 
+				DynamicHTML.inpuButton(this.nav,"button" + symbolName,
+					symbolName.toUpperCase(), "red");
+			
+			this.buttons[i].style = 
+				"height: 150px; width: 150px; background-color: #891bf7;" +
+				"color: white; font-size: 20px; font-weight: bold;" +
+				"box-shadow: 2px 2px 5px rgba(0,0,0,0.2); cursor: pointer;"+
+                "transition: transform .1s ease-in-out;" +
+                "-webkit-transition: transform .1s ease-in-out;";
+            
+            this.buttons[i].onmouseover = event => {
+                event.target.style.transform = "scale(1.05)"
+            };
+            this.buttons[i].onmouseout = event => {
+                event.target.style.transform = "scale(1)"
+            };
+
 			const id = i-this.nLessons;
 			this.buttons[i].onclick = () => { this.getSymbols(id);};
 		}
 		this.nLessons += this.nSymbols;
-		console.log("nLessons depois=" + this.nLessons);
 	}
 
 	getSymbols(id) {
-		console.log("getSymbols(" + id + ")");
 		this.currSymbols = this.symbols[id];
 		this.hideLessonsButtons();
 		this.showBackButton();
 
-		let container = DynamicHTML.div(document.body, "position: absolute; left: 50%; -webkit-transform: translateX(-50%); transform: translateX(-50%); ");
+		let container = 
+			DynamicHTML.div(document.body, "position: absolute; left: 50%;" +
+			"-webkit-transform: translateX(-50%);transform: translateX(-50%);");
 		container.id = "container";
         
-		let resetBtn = DynamicHTML.inpuButton(container, "resetBtn", "Reset Board", "red");
-		resetBtn.style = "position: absolute; top: 22px;right: 10px;background-color: rgb(13, 118, 176); border-radius: 5px; padding: 8px 16px; color: white; font-size: 13px; font-weight: bold; cursor: pointer;";
+		let resetBtn = 
+			DynamicHTML.inpuButton(container, "resetBtn", "Reset Board");
+		resetBtn.style = "position: absolute; top: 22px;right: 10px;"+
+			"background-color: rgb(13, 118, 176); border-radius: 5px;" +
+			"padding: 8px 16px; color: white; font-size: 13px;" +
+			"font-weight: bold; cursor: pointer;";
         
 		resetBtn.onclick = () => {
 			language.currSymbols.box.remove();
 			language.currSymbols.box2.remove();
 			language.currSymbols.show(container);
-		}
+		};
         
-		let title = DynamicHTML.h1(container, language.currSymbols.name.toUpperCase() + " SYMBOLS");
+		let title = 
+			DynamicHTML.h1(container, language.currSymbols.name.toUpperCase() +
+				" SYMBOLS");
 		title.style = "color:#0d76b0; font-family: sans-serif;";
 		title.id = "title";
         
 		let currScreen = DynamicHTML.h1(container, "");
-		currScreen.style = "color:#444; font-family: sans-serif; font-size: 20px;";
+		currScreen.style = 
+			"color:#444; font-family: sans-serif; font-size: 20px;";
 		currScreen.id = "currScreen";
         
 		let screensLeft = DynamicHTML.h1(container, "");
-		screensLeft.style = "color:#555; font-family: sans-serif; font-size: 15px;";
+		screensLeft.style = 
+			"color:#555; font-family: sans-serif; font-size: 15px;";
 		screensLeft.id = "screensLeft";
 
 		this.currSymbols.show(container);
@@ -359,7 +389,6 @@ class Lesson {
 		this.id = id;
 		this.loadScreens(); 
 		this.screenNotPassedIndex = this.screensNotPassed.length - 1;
-		console.log(this.screens);
 	}
     
 	loadScreens() {
@@ -396,28 +425,51 @@ class Lesson {
 	}
     
 	loadKeyboard(id, screenXML) {
-		var prompt = screenXML.getElementsByTagName("PROMPT")[0].firstChild.nodeValue;
-		var original = screenXML.getElementsByTagName("ORIGINAL")[0].firstChild.nodeValue;
-		var sound = null
+		var prompt = 
+			screenXML.getElementsByTagName("PROMPT")[0].firstChild.nodeValue;
+
+		var original = 
+			screenXML.getElementsByTagName("ORIGINAL")[0].firstChild.nodeValue;
+
+		var sound = null;
+
 		if(screenXML.getElementsByTagName("SOUND").length > 0) {
-			sound = screenXML.getElementsByTagName("SOUND")[0].firstChild.nodeValue;
+			sound = 
+				screenXML.getElementsByTagName("SOUND")[0].firstChild.nodeValue;
 		}
-		var solutions = Array.from(screenXML.getElementsByTagName("TRANSLATION")).map(translation => {return translation.firstChild.nodeValue;});
+
+		var transXML = screenXML.getElementsByTagName("TRANSLATION")
+
+		var solutions = 
+			Array.from(transXML).map(translation => {
+				return translation.firstChild.nodeValue;
+			});
+
 		return new Keyboard(id, prompt, original, solutions, sound);
 	}
 
 	loadPairs(id,screenXML) {
-		var prompt = screenXML.getElementsByTagName("PROMPT")[0].firstChild.nodeValue;
-		var original = screenXML.getElementsByTagName("ORIGINAL")[0].firstChild.nodeValue;
-		var solutions = screenXML.getElementsByTagName("SOLUTION")[0].firstChild.nodeValue;
+		let promptXML = screenXML.getElementsByTagName("PROMPT");
+		let originalXML = screenXML.getElementsByTagName("ORIGINAL");
+		let solutionsXML = screenXML.getElementsByTagName("SOLUTION");
+
+		var prompt = promptXML[0].firstChild.nodeValue;
+		var original = originalXML[0].firstChild.nodeValue;
+		var solutions = solutionsXML[0].firstChild.nodeValue;
 		return new Pairs(id, prompt, original, solutions);
 	}
     
 	loadBlocks(id,screenXML) {
-		var prompt = screenXML.getElementsByTagName("PROMPT")[0].firstChild.nodeValue;
-		var original = screenXML.getElementsByTagName("ORIGINAL")[0].firstChild.nodeValue;
-		var solutions = [screenXML.getElementsByTagName("SOLUTION")[0].firstChild.nodeValue];
-		var blocks = screenXML.getElementsByTagName("BLOCKS")[0].firstChild.nodeValue;
+		let promptXML = screenXML.getElementsByTagName("PROMPT");
+		let originalXML = screenXML.getElementsByTagName("ORIGINAL");
+		let solutionsXML = screenXML.getElementsByTagName("SOLUTION");
+		let blocksXML = screenXML.getElementsByTagName("BLOCKS");
+
+
+		var prompt = promptXML[0].firstChild.nodeValue;
+		var original = originalXML[0].firstChild.nodeValue;
+		var solutions = [solutionsXML[0].firstChild.nodeValue];
+		var blocks = blocksXML[0].firstChild.nodeValue;
 		return new Blocks(id, prompt, original, solutions, blocks);
 	}
 
@@ -430,37 +482,52 @@ class Lesson {
 	}
     
 	showLesson() {
-		let container = DynamicHTML.div(document.body, "position: absolute; left: 50%; -webkit-transform: translateX(-50%); transform: translateX(-50%); ");
+		let container = 
+			DynamicHTML.div(document.body, "position: absolute; left: 50%;" +
+				"-webkit-transform: translateX(-50%);" +
+				"transform: translateX(-50%);");
 		container.id = "container";
         
-		let title = DynamicHTML.h1(container, "LESSON " + language.currLesson.id);
+		let title = 
+			DynamicHTML.h1(container, "LESSON " + language.currLesson.id);
 		title.style = "color:#0d76b0; font-family: sans-serif;";
 		title.id = "title";
         
 		let currScreen = DynamicHTML.h1(container, "");
-		currScreen.style = "color:#444; font-family: sans-serif; font-size: 20px;";
+		currScreen.style = 
+			"color:#444; font-family: sans-serif; font-size: 20px;";
 		currScreen.id = "currScreen";
         
 		let screensLeft = DynamicHTML.h1(container, "");
-		screensLeft.style = "color:#555; font-family: sans-serif; font-size: 15px;";
+		screensLeft.style = 
+			"color:#555; font-family: sans-serif; font-size: 15px;";
 		screensLeft.id = "screensLeft";
 	}
     
 	showCurrentScreen() {
 		let currScreen = document.getElementById("currScreen");
 		let screensLeft = document.getElementById("screensLeft");
+		let container = document.getElementById("container");
         
 		if (this.hasNextScreen()) {
-			currScreen.innerHTML = "Screen " + language.currLesson.getCurrentScreen().id + " of " + language.currLesson.nScreens;
-			let screens = (language.currLesson.screensNotPassed.length == 1)?" screen": " screens";
-			screensLeft.innerHTML = "You have " + language.currLesson.screensNotPassed.length + screens +" to complete";
+			currScreen.innerHTML = 
+				"Screen " + language.currLesson.getCurrentScreen().id + 
+				" of " + language.currLesson.nScreens;
+			let screens = (language.currLesson.screensNotPassed.length == 1)?
+				" screen": " screens";
+
+			screensLeft.innerHTML = 
+				"You have " + language.currLesson.screensNotPassed.length +
+				screens + " to complete";
             
 			this.getCurrentScreen().show(container);
 		} else {
 			currScreen.style = "display: none;";
 			screensLeft.style = "display: none;";
             
-			DynamicHTML.h1(container, "Congratulations, you've reached the end of this lesson!").style = "color:#444; font-family: sans-serif; font-size: 20px;";
+			DynamicHTML.h1(container, "Congratulations, you've reached the " +
+			"end of this lesson!").style = 
+				"color:#444; font-family: sans-serif; font-size: 20px;";
 		}
 	}
     
@@ -468,7 +535,7 @@ class Lesson {
 		document.getElementById("container").remove();
 	}
 
-	nextScreen() {
+	nextScreen(container) {
 		//Hide previous screen
 		this.getCurrentScreen().hide();
         
@@ -478,9 +545,10 @@ class Lesson {
 			this.screenNotPassedIndex = this.screensNotPassed.length - 1;
 		}
         
-		this.currentScreenNumber = this.screensNotPassed[this.screenNotPassedIndex];
+		this.currentScreenNumber = 
+			this.screensNotPassed[this.screenNotPassedIndex];
 
-		this.showCurrentScreen();
+		this.showCurrentScreen(container);
 	}
     
 	passCurrentScreen() {
@@ -498,7 +566,9 @@ class Screen {
 	}
 
 	show(container) {
-		this.box = DynamicHTML.div(container, "border-radius: 5px; background-color: rgb(240, 240, 240); padding:20px; font-family: Arial; box-shadow: 2px 2px 5px rgba(0,0,0,0.2)");
+		this.box = DynamicHTML.div(container, "border-radius: 5px;" +
+		"background-color: rgb(240, 240, 240); padding:20px;" +
+		"font-family: Arial; box-shadow: 2px 2px 5px rgba(0,0,0,0.2)");
 		this.box.id = "box";
 	}
     
@@ -529,38 +599,50 @@ class Keyboard extends Screen {
 
 	show(container) {
 		super.show(container);
-		DynamicHTML.h1(this.box, this.prompt).style = "margin-left: 20px; color:#333";
+		DynamicHTML.h1(this.box, this.prompt).style = 
+			"margin-left: 20px; color:#333";
 
 		var p1 = DynamicHTML.p(this.box, "margin-left: 30px;");
 
 		if(this.sound!=null) {
-			var i = DynamicHTML.img(p1, "http://icons.iconarchive.com/icons/icons8/ios7/32/Media-Controls-High-Volume-icon.png");
-			DynamicHTML.eventHandler(i, "onclick", "DynamicHTML.play(" + "\"" + this.sound + "\"" + ");");
+			var i = DynamicHTML.img(p1, "http://icons.iconarchive.com" +
+				"/icons/icons8/ios7/32/Media-Controls-High-Volume-icon.png");
+			DynamicHTML.eventHandler(i, "onclick", "DynamicHTML.play(" + 
+				"\"" + this.sound + "\"" + ");");
 		}
 		DynamicHTML.text(p1, 16, " ").style.marginLeft = "30px";
 		DynamicHTML.text(p1, 32, this.original);
 
 		var p2 = DynamicHTML.p(this.box, "padding-left:20px;");
-		this.i = DynamicHTML.inputActiveText(p2, "answer", 40, 24, "Type this in English");
+		this.i = DynamicHTML.inputActiveText(p2, "answer", 40, 24, 
+			"Type this in English");
 		
 
 		DynamicHTML.text(p2, 16, " ");
-		var b1 = DynamicHTML.inpuButton(p2, "check", "Check", "lime");
-		b1.style = "margin-left: 5px; border-radius: 5px; padding: 8px 15px; background-color: #22aa55; color: white; font-size: 16px; font-weight: bold;";
-		DynamicHTML.eventHandler(document, "onkeydown", "if(event.keyCode == 13) document.getElementById('check').click();");
-		DynamicHTML.eventHandler(b1, "onclick", "language.currLesson.getCurrentScreen().checkSolution();");
+		var b1 = DynamicHTML.inpuButton(p2, "check", "Check");
+		b1.style = "margin-left: 5px; border-radius: 5px; padding: 8px 15px;" +
+			"background-color: #22aa55; color: white; font-size: 16px;" +
+			"font-weight: bold;";
+		DynamicHTML.eventHandler(document, "onkeydown", 
+			"if(event.keyCode==13) document.getElementById('check').click();");
+		DynamicHTML.eventHandler(b1, "onclick", 
+			"language.currLesson.getCurrentScreen().checkSolution();");
         
 	}
     
 	checkSolution() {
-		let isSolution = language.currLesson.getCurrentScreen().checkAnswer(document.getElementById("answer").value);
+		let answer = document.getElementById("answer").value;
+
+		let isSolution = 
+			language.currLesson.getCurrentScreen().checkAnswer(answer);
+
 		let container = document.getElementById("container");
 		document.onkeydown = null;
             
 		if (isSolution) {
 			this.answeredCorrect();
 		} else {
-			this.answeredWrong();
+			this.answeredWrong(container);
 		}
 		
 	}
@@ -571,9 +653,12 @@ class Keyboard extends Screen {
 		language.currLesson.nextScreen();
 	}
     
-	answeredWrong() {
-		let nextScreenBtn = DynamicHTML.inpuButton(container, "nextScreenBtn", "Next Screen", "red");
-		nextScreenBtn.style = "display: inline-block; margin: 5px 5px 10px; border-radius: 5px; padding: 8px 16px; background-color: #0f96d0; color: white; font-size: 13px; font-weight: bold;";
+	answeredWrong(container) {
+		let nextScreenBtn = 
+			DynamicHTML.inpuButton(container, "nextScreenBtn", "Next Screen");
+		nextScreenBtn.style = "display: inline-block; margin: 5px 5px 10px;" +
+			"border-radius: 5px; padding: 8px 16px; background-color: #0f96d0;"+
+			"color: white; font-size: 13px; font-weight: bold;";
 		//nextScreenBtn.id = "nextScreenBtn";
 		
                 
@@ -582,19 +667,25 @@ class Keyboard extends Screen {
 			document.getElementById("correctAnswer").remove();
 			document.getElementById("nextScreenBtn").remove();
 
-			DynamicHTML.eventHandler(document, "onkeydown", "if((event.keyCode == 13) && document.getElementById('check') != null) document.getElementById('check').click();");
+			DynamicHTML.eventHandler(document, "onkeydown", 
+				"if((event.keyCode == 13) && " +
+				"document.getElementById('check') != null) " +
+				"document.getElementById('check').click();");
 		};
 
-		DynamicHTML.eventHandler(document, "onkeydown", "if(event.keyCode == 13) document.getElementById('nextScreenBtn').click();");
+		DynamicHTML.eventHandler(document, "onkeydown", 
+			"if(event.keyCode == 13)" +
+			" document.getElementById('nextScreenBtn').click();");
                 
 		language.currLesson.getCurrentScreen().box.style = "display: none";
-		let correctAnswer = DynamicHTML.h1(container, "The correct answer was: " + language.currLesson.getCurrentScreen().getSolution());
-		correctAnswer.style = "color:#444; font-family: sans-serif; font-size: 20px;";
+		let correctAnswer = DynamicHTML.h1(container,"The correct answer was: "+
+			language.currLesson.getCurrentScreen().getSolution());
+		correctAnswer.style = 
+			"color:#444; font-family: sans-serif; font-size: 20px;";
 		correctAnswer.id = "correctAnswer";
 		DynamicHTML.play("general/wrong_answer.mp3"); 
 	}
 }
-
 class Pairs extends Screen {
 	constructor(id, prompt, original, solutions) {
 		super(id, prompt, original, solutions);
@@ -620,7 +711,8 @@ class Pairs extends Screen {
 				button.disabled = "disabled";
 				this.nPairsMade++;
 			}  else {
-				this.selectedBefore.style.backgroundColor = "rgb(255, 255, 255)";
+				this.selectedBefore.style.backgroundColor = 
+					"rgb(255, 255, 255)";
 				this.selectedBefore.style.color = "rgb(0, 0, 0)";
 			}
 			this.selectedBefore = null;
@@ -633,8 +725,10 @@ class Pairs extends Screen {
 	}
 
 	isPairCorrect(lastSelected) {
-		let indexOfSelectedNow = this.solutionsArray.indexOf(lastSelected.value);
-		let indexOfSelectedBefore = this.solutionsArray.indexOf(this.selectedBefore.value); 
+		let indexOfSelectedNow = 
+			this.solutionsArray.indexOf(lastSelected.value);
+		let indexOfSelectedBefore = 
+			this.solutionsArray.indexOf(this.selectedBefore.value); 
 		if( Math.abs(indexOfSelectedNow - indexOfSelectedBefore) == 1) {
 			if (Math.min(indexOfSelectedBefore,indexOfSelectedNow) % 2 == 0 ) {
 				return true;
@@ -652,11 +746,25 @@ class Pairs extends Screen {
 		let pairs = DynamicHTML.p(this.box,"");
 
 		for(let i=0;i<this.originalArray.length;i++) {
-			this.buttonsElements[i] = DynamicHTML.inpuButton(pairs,"butElem"+i,this.originalArray[i],"red");
-			this.buttonsElements[i].style = "margin:5px 5px; border-radius: 5px; font-size: 17px; background-color: rgb(255, 255, 255); padding:5px; font-family: Arial; box-shadow: 2px 2px 5px rgba(0,0,0,0.2); cursor: pointer; transition: transform .1s ease-in-out; -webkit-transition: transform .1s ease-in-out;";
-			this.buttonsElements[i].onclick = (event) => {this.answered(event.target);};
-            this.buttonsElements[i].onmouseover = event => {event.target.style.transform = "scale(1.1)"};
-            this.buttonsElements[i].onmouseout = event => {event.target.style.transform = "scale(1)"};
+
+			this.buttonsElements[i] = DynamicHTML.inpuButton(pairs,"butElem"+i,
+				this.originalArray[i]);
+			this.buttonsElements[i].style = 
+				"margin:5px 5px; border-radius: 5px; font-size: 17px;" +
+				"background-color: rgb(255, 255, 255); padding:5px;" +
+				"font-family: Arial; box-shadow: 2px 2px 5px rgba(0,0,0,0.2);" +
+				"cursor: pointer; transition: transform .1s ease-in-out;" +
+                "-webkit-transition: transform .1s ease-in-out;";;
+			this.buttonsElements[i].onclick = (event) => {
+				this.answered(event.target);
+			};
+            
+            this.buttonsElements[i].onmouseover = event => {
+                event.target.style.transform = "scale(1.1)"
+            };
+            this.buttonsElements[i].onmouseout = event => {
+                event.target.style.transform = "scale(1)"
+            };
 		}
 
 	}
@@ -673,13 +781,18 @@ class Blocks extends Screen {
     
 	show(container) {
 		super.show(container);
-		DynamicHTML.h1(this.box,this.prompt).style = "color:#333; margin: 15px;";
-		let pairs = DynamicHTML.p(this.box,"");
+		DynamicHTML.h1(this.box,this.prompt).style = 
+			"color:#333; margin: 15px;";
+		//let pairs = DynamicHTML.p(this.box,"");
         
 		DynamicHTML.text(this.box, 16, " ");
-		DynamicHTML.text(this.box, 32, this.original).style = "margin: 15px; font-size: 25px;";
+		DynamicHTML.text(this.box, 32, this.original).style = 
+			"margin: 15px; font-size: 25px;";
         
-		let firstLine = DynamicHTML.div(this.box, "padding: 10px; margin: 15px; border-bottom: 2px solid #666; min-height: 40px; min-width: 90%; max-width 90%;");
+		let firstLine = 
+			DynamicHTML.div(this.box, "padding: 10px; margin: 15px;" +
+			"border-bottom: 2px solid #666; min-height: 40px; min-width: 90%;" +
+			"max-width 90%;");
 		firstLine.id = "answer";
 		firstLine.ondragover = event => {
 			event.preventDefault();
@@ -689,9 +802,13 @@ class Blocks extends Screen {
 			this.onBlockDropFirstLine(event);
 		};
         
-		let secondLine = DynamicHTML.div(this.box, "margin: 15px; border-bottom: 2px solid #666; height: 40px; min-width: 90%; max-width 90%;");
+		let secondLine = DynamicHTML.div(this.box, "margin: 15px;" +
+			"border-bottom: 2px solid #666; height: 40px; min-width: 90%;" +
+			"max-width 90%;");
         
-		let blocksDiv = DynamicHTML.div(this.box, "text-align: center; margin: 15px; min-width: 90%; max-width 90%;");
+		let blocksDiv = 
+			DynamicHTML.div(this.box, "text-align: center; margin: 15px;" +
+				" min-width: 90%; max-width 90%;");
         
 		blocksDiv.ondrop = event => {
 			this.onBlockDropBlocksDiv(event);
@@ -702,8 +819,13 @@ class Blocks extends Screen {
 		};
         
 		for(let i=0;i<this.blocks.length;i++) {
-			this.buttonElements[i] = DynamicHTML.inpuButton(blocksDiv,"butElem"+i,this.blocks[i],"red");
-			this.buttonElements[i].style = "display: inline-block; margin:5px 5px; border-radius: 5px; font-size: 17px; background-color: rgb(255, 255, 255); padding:5px; font-family: Arial; box-shadow: 2px 2px 5px rgba(0,0,0,0.2); cursor: pointer;";
+			this.buttonElements[i] = 
+				DynamicHTML.inpuButton(blocksDiv,"butElem"+i,this.blocks[i]);
+			this.buttonElements[i].style = 
+				"display: inline-block; margin:5px 5px; border-radius: 5px;" +
+				"font-size: 17px; background-color: rgb(255, 255, 255);" +
+				"padding:5px; font-family: Arial;" +
+				"box-shadow: 2px 2px 5px rgba(0,0,0,0.2); cursor: pointer;";
 			this.buttonElements[i].draggable = "true";
 			this.buttonElements[i].ondragstart = event => {
 				event.dataTransfer.setData("text", event.target.id);
@@ -750,12 +872,12 @@ class Blocks extends Screen {
 		}     
             
 		row.insertBefore(block, event.target);
-		console.log(this.answer);
 		this.checkAnswer();
 	}
     
 	checkAnswer() {
-		if(this.answer.join(" ") == language.currLesson.getCurrentScreen().getSolution()) {
+		if(this.answer.join(" ") == 
+		language.currLesson.getCurrentScreen().getSolution()) {
 			language.currLesson.passCurrentScreen();
 			DynamicHTML.play("general/right_answer.mp3");
 			language.currLesson.nextScreen();
@@ -767,7 +889,7 @@ class Blocks extends Screen {
 		let block = document.getElementById(event.dataTransfer.getData("text"));
 		let value = block.value;
 		event.target.appendChild(block);
-		this.answer.push(block.value);
+		this.answer.push(value);
             
 		this.checkAnswer();
 	}
@@ -798,16 +920,21 @@ class Symbol {
 
 class Symbols extends Screen { //Usar para alfabetos extra apenas
 	constructor(id, symbolXML) {
+		let originalXML = symbolXML.getElementsByTagName("LATIN");
+		let solutionsXML = symbolXML.getElementsByTagName("ALPHABET");
+		let promptXML = symbolXML.getElementsByTagName("PROMPT");
+		let symbnameXML = symbolXML.getElementsByTagName("SYMBNAME");
 		let prompt = "";
-		if(symbolXML.getElementsByTagName("PROMPT").length != 0) {
-			prompt = symbolXML.getElementsByTagName("PROMPT")[0].firstChild.nodeValue;
+
+		if(promptXML.length != 0) {
+			prompt = promptXML[0].firstChild.nodeValue;
 		}
         
-		let original = symbolXML.getElementsByTagName("LATIN")[0].firstChild.nodeValue;
-		let solutions = symbolXML.getElementsByTagName("ALPHABET")[0].firstChild.nodeValue;
-
+        let original = originalXML[0].firstChild.nodeValue;
+		let solutions = solutionsXML[0].firstChild.nodeValue;
+        
 		super(id, prompt, original.split(" "), solutions.split(" "));
-		this.name = symbolXML.getElementsByTagName("SYMBNAME")[0].firstChild.nodeValue;
+		this.name = symbnameXML[0].firstChild.nodeValue;
 		this.pairsBoxes = [];
 		this.nPairsMade = 0;
 	}
@@ -823,14 +950,26 @@ class Symbols extends Screen { //Usar para alfabetos extra apenas
 
 	show(container) {
 		super.show(container);
-		this.box2 = DynamicHTML.div(container, "margin-top: 10px;border-radius: 5px; background-color: rgb(240, 240, 240); padding:20px; font-family: Arial; box-shadow: 2px 2px 5px rgba(0,0,0,0.2)");
-        this.box.style = this.box.getAttribute("style") + "display: grid; grid-template-columns: repeat(8, 1fr); grid-gap: 5px 5px";
+		this.box2 = 
+			DynamicHTML.div(container, "margin-top: 10px;border-radius: 5px;" +
+			"background-color: rgb(240, 240, 240); padding:20px;" +
+			"font-family: Arial; box-shadow: 2px 2px 5px rgba(0,0,0,0.2)");
+		this.box.style = 
+			this.box.getAttribute("style") + "display: grid;" +
+			"grid-template-columns: repeat(8, 1fr); grid-gap: 5px 5px";
 		for(let i=0;i<this.original.length;i++) {
-			this.pairsBoxes[i] = DynamicHTML.div(this.box,"margin: 6px 6px; text-align:center;vertical-align:middle;");
-			let letter = DynamicHTML.text(this.pairsBoxes[i],"18",this.original[i]);
+
+			this.pairsBoxes[i] = 
+                DynamicHTML.div(this.box,"margin: 6px 6px; text-align:center;"+
+				"vertical-align:middle;");
+			let letter = 
+                DynamicHTML.text(this.pairsBoxes[i],"18",this.original[i]);
             letter.style = "color:#444; font-weight: bold";
             
-			let draggableBox = DynamicHTML.div(this.pairsBoxes[i],"margin: 5px auto 0px; border-radius:5px; height: 30px; width:28px; background-color: #ddd;");
+			let draggableBox = 
+                DynamicHTML.div(this.pairsBoxes[i],"margin: 5px auto 0px;" +
+				"border-radius:5px; height: 30px; width:28px;" +
+				"background-color: #ddd;");
 			draggableBox.ondragover = event => {event.preventDefault();};
 			draggableBox.ondrop = event => {this.onBlockDrop(event);};
 		}
@@ -844,13 +983,22 @@ class Symbols extends Screen { //Usar para alfabetos extra apenas
 		tempSymbols.sort(function(a, b){return 0.5 - Math.random();});
         
 		for(let i = 0;i<this.solutions.length;i++) {
-			let symbolElement = DynamicHTML.inpuButton(this.box2,"buttonToDrag" + i,tempSymbols[i].symbol, "white");
-			symbolElement.style = "margin:5px; border-radius: 5px; font-size: 17px; background-color: rgb(255, 255, 255); padding:5px; font-family: Arial; box-shadow: 2px 2px 5px rgba(0,0,0,0.2); cursor: pointer;";
+			let symbolElement = 
+				DynamicHTML.inpuButton(this.box2,"buttonToDrag" + i,
+					tempSymbols[i].symbol);
+			symbolElement.style = 
+				"margin:5px; border-radius: 5px; font-size: 17px;" +
+				"background-color: rgb(255, 255, 255); padding:5px;" +
+				"font-family: Arial; box-shadow: 2px 2px 5px rgba(0,0,0,0.2);"+
+				"cursor: pointer;";
 			symbolElement.draggable = "true";
 			let symbol = new Symbol(this.solutions[i], this.original[i]);
 			symbolElement.symbol = tempSymbols[i];
 			
-			symbolElement.ondragstart = (event) => {event.dataTransfer.setData("text", event.target.id);};
+			symbolElement.ondragstart = 
+				(event) => {
+					event.dataTransfer.setData("text", event.target.id);
+				};
 		}
 	}
     
@@ -859,26 +1007,37 @@ class Symbols extends Screen { //Usar para alfabetos extra apenas
 		let data = event.dataTransfer.getData("text");
 		let elementDropped = document.getElementById(data);
         
-		if(this.isAnswerCorrect(event.target.parentNode.getElementsByTagName("span")[0].textContent, elementDropped.symbol)) {
-			event.target.style = "margin: 5px auto 0px;border-radius:5px; height:" + elementDropped.offsetHeight + "px; width:" + elementDropped.offsetWidth + "px; border:1px solid #000";
-			event.target.appendChild(elementDropped);
-			elementDropped.style = "border-radius: 5px; font-size: 17px; background-color: rgb(255, 255, 255); padding:5px; font-family: Arial; box-shadow: 2px 2px 5px rgba(0,0,0,0.2); cursor: pointer;";
+		if(this.isAnswerCorrect(event.target.parentNode.getElementsByTagName(
+			"span")[0].textContent, elementDropped.symbol)) {
+				event.target.style = "margin: 5px auto 0px;border-radius:5px;"+
+				"height:" + elementDropped.offsetHeight + "px; width:" +
+				 elementDropped.offsetWidth + "px; border:1px solid #000";
+				event.target.appendChild(elementDropped);
+				elementDropped.style = "border-radius: 5px; font-size: 17px;" +
+				"background-color: rgb(255, 255, 255); padding:5px;" +
+				"font-family: Arial; box-shadow: 2px 2px 5px rgba(0,0,0,0.2);"+
+				"cursor: pointer;";
 
-			if(this.nPairsMade == this.solutions.length) {
-				this.finished(elementDropped.container);
+				if(this.nPairsMade == this.solutions.length) {
+					this.finished(elementDropped.container);
 			}
 		}
 	}
 
-	finished(container) {
+	finished() {
 		this.box2.remove();
 		for(let i = 0;i<this.original.length;i++) {
 			this.pairsBoxes[i].remove();
 		}
-		DynamicHTML.h1(this.box, "Congratulations, you just learned all symbols of the alphabet " + this.name + ".").style = "color:#444; font-family: sans-serif; font-size: 20px; text-align:center;";
+		DynamicHTML.h1(this.box, "Congratulations, you just learned all" +
+		" symbols of the alphabet " + this.name + ".").style = 
+			"color:#444; font-family: sans-serif; font-size: 20px;" +
+			"text-align:center;";
 	}
 }
 //------------------------------
+
+/* Functions */
 
 function runLanguage(text) {
 	xmlDoc = DynamicHTML.text2XML(text);  // assignement to global
@@ -886,9 +1045,9 @@ function runLanguage(text) {
 	// https://www.w3schools.com/xml/dom_nodes_get.asp
 	var nodes = xmlDoc.getElementsByTagName("LANGNAME");
 	if( nodes.length == 1 ) {
-		languageName = nodes[0].childNodes[0].nodeValue;  // assignement to global
-        
-		console.log("start()");
+
+		// assignement to global
+		languageName = nodes[0].childNodes[0].nodeValue; 
 
 		if(xmlDoc.getElementsByTagName("SYMBOLS").length > 0) {
 			new LanguageExtraAlphabets();
@@ -913,6 +1072,7 @@ function screen0() {
 
 	// load the language XML
 	var f = DynamicHTML.inpuFile(body, "file-input");
-	DynamicHTML.eventHandler(f, "onchange", "DynamicHTML.processLocalFile(event, runLanguage);");
+	DynamicHTML.eventHandler(f, "onchange", 
+		"DynamicHTML.processLocalFile(event, runLanguage);");
 }
 
