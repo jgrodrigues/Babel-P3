@@ -281,11 +281,10 @@ class LanguageExtraAlphabets extends Language {
 			console.log(symbolName);
 			this.buttons[i] = DynamicHTML.inpuButton(this.nav,"button" + symbolName,symbolName, "red");
 			this.buttons[i].style = "display: inline-block; margin: 5px 5px; border-radius: 5px; padding: 8px 16px; background-color: #0f96d0; color: white; font-size: 13px; font-weight: bold;";
-
-			this.buttons[i].onclick = () => { this.getSymbols(i-this.nLessons);};
+			const id = i-this.nLessons;
+			this.buttons[i].onclick = () => { this.getSymbols(id);};
 		}
 		this.nLessons += this.nSymbols;
-		console.log("i=" + i);
 		console.log("nLessons depois=" + this.nLessons);
 	}
 
@@ -298,7 +297,7 @@ class LanguageExtraAlphabets extends Language {
 		let container = DynamicHTML.div(document.body, "position: absolute; left: 50%; -webkit-transform: translateX(-50%); transform: translateX(-50%); ");
 		container.id = "container";
         
-		let title = DynamicHTML.h1(container, "SYMBOLS");
+		let title = DynamicHTML.h1(container, language.currSymbols.name.toUpperCase() + " SYMBOLS");
 		title.style = "color:#0d76b0; font-family: sans-serif;";
 		title.id = "title";
         
@@ -329,9 +328,17 @@ class LanguageExtraAlphabets extends Language {
 			this.symbols[i] = new Symbols(i,this.symbolsXML[i-1]);
 		}
 	}
-
-
-
+    
+	goBack() {
+		if (this.currSymbols != null) {
+			document.getElementById("container").remove();
+			this.currSymbols = null;
+			this.hideBackButton();
+			this.showLessonsButtons();
+		} else {
+			super.goBack();
+		}
+	}
 }
 
 
@@ -472,7 +479,6 @@ class Screen {
 		this.prompt = prompt;
 		this.original = original;
 		this.solutions = solutions;
-		this.container = null;
 		this.box = null;
 	}
 
@@ -641,6 +647,7 @@ class Symbols extends Screen { //Usar para alfabetos extra apenas
 		if(symbolXML.getElementsByTagName("PROMPT").length != 0) {
 			prompt = symbolXML.getElementsByTagName("PROMPT")[0].firstChild.nodeValue;
 		}
+        
 		let original = symbolXML.getElementsByTagName("LATIN")[0].firstChild.nodeValue;
 		let solutions = symbolXML.getElementsByTagName("ALPHABET")[0].firstChild.nodeValue;
 
@@ -649,6 +656,7 @@ class Symbols extends Screen { //Usar para alfabetos extra apenas
 		console.log(solutions);
 
 		super(id, prompt, original.split(" "), solutions.split(" "));
+		this.name = symbolXML.getElementsByTagName("SYMBNAME")[0].firstChild.nodeValue;
 		this.pairsBoxes = [];
 		this.fixedElements = [];
 		this.boxesToFill = [];
