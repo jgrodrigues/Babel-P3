@@ -165,13 +165,13 @@ class Language {
 				"background-color: #0f96d0; width:100%; height: 80px;");
 		DynamicHTML.h1(this.header, "Babel   - " + languageName + "").style = 
 			"margin: 20px;font-family: sans-serif; text-transform: uppercase;"+
-			" font-weight: bold; color: white";
+			"font-weight: bold; color: white";
 		DynamicHTML.hr(this.body).style = "border-top: 2px solid #0f6690;";
 		this.nav = 
 			DynamicHTML.div(this.body, "margin: 20px auto; width: 600px;" +
 				"text-align: center;grid-gap: 5px; display: grid;" +
-				" grid-template-columns: repeat(4, 1fr); text-align: center;" +
-				" position: relative; margin-bottom:20px;");
+				"grid-template-columns: repeat(4, 1fr); text-align: center;" +
+				"position: relative; margin-bottom:20px;");
 		this.back = 
 			DynamicHTML.div(this.body,"text-align:center; position: relative;" +
 				"margin-bottom:20px;");
@@ -201,7 +201,7 @@ class Language {
 				"height: 150px; width: 150px; padding: 8px 16px;" +
 				"background-color: #0f96d0; color: white; font-size: 20px;" +
 				"font-weight: bold; box-shadow: 2px 2px 5px rgba(0,0,0,0.2);" +
-				" cursor: pointer;";
+				"cursor: pointer;";
 
 			this.buttons[i].onclick = () => { this.getLesson(i);};
 		}
@@ -588,7 +588,7 @@ class Keyboard extends Screen {
 		var p1 = DynamicHTML.p(this.box, "margin-left: 30px;");
 
 		if(this.sound!=null) {
-			var i = DynamicHTML.img(p1, "http://icons.iconarchive.com " +
+			var i = DynamicHTML.img(p1, "http://icons.iconarchive.com" +
 				"/icons/icons8/ios7/32/Media-Controls-High-Volume-icon.png");
 			DynamicHTML.eventHandler(i, "onclick", "DynamicHTML.play(" + 
 				"\"" + this.sound + "\"" + ");");
