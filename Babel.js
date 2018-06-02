@@ -271,13 +271,13 @@ class LanguageExtraAlphabets extends Language {
 	}
 
 	addSymbolsButtons() {
-		let symbolName = "1";
+		let symbolName;
 		console.log("nLessons antes=" + this.nLessons);
 		let i;
 		for(i = this.nLessons+1;i<=this.nLessons+this.nSymbols;i++) {
 			console.log(i-this.nLessons);
-			console.log(this.symbolsXML[i-this.nLessons]);
-			//symbolName = this.symbolsXML[i-this.nLessons].getElementsByTagName("SYMBNAME").firstChild.nodeValue;
+			console.log(this.symbolsXML[i-this.nLessons-1]);
+			symbolName = this.symbolsXML[i-this.nLessons-1].getElementsByTagName("SYMBNAME")[0].firstChild.nodeValue;
 			console.log(symbolName);
 			this.buttons[i] = DynamicHTML.inpuButton(this.nav,"button" + symbolName,symbolName, "red");
 			this.buttons[i].style = "display: inline-block; margin: 5px 5px; border-radius: 5px; padding: 8px 16px; background-color: #0f96d0; color: white; font-size: 13px; font-weight: bold;";
@@ -653,79 +653,54 @@ class Symbols extends Screen { //Usar para alfabetos extra apenas
 		this.fixedElements = [];
 		this.boxesToFill = [];
 		this.nPairsMade = 0;
+		this.symbolsToDrag = [];
 	}
 
 	isAnswerCorrect(staticElement, droppedElement) {
 		if(this.fixedElements.indexOf(staticElement) == this.boxesToFill.indexOf(droppedElement)) {
+			console.log("staticElement" + staticElement);
+			console.log("droppedElement" + droppedElement);
+			console.log("true");
 			return true;
 		} else {
+			console.log("false");
 			return false;
 		}
 	}
 
 	show(container) {
 		super.show(container);
+		this.box2 = DynamicHTML.div(container, "margin-top: 10px;border-radius: 5px; background-color: rgb(240, 240, 240); padding:20px; font-family: Arial; box-shadow: 2px 2px 5px rgba(0,0,0,0.2)");
+		this.box.style.display = "table";
 		for(let i=0;i<this.original.length;i++) {
-			this.pairsBoxes[i] = DynamicHTML.div(this.box,"display: inline;");
-			this.fixedElements[i] = DynamicHTML.text(this.pairsBoxes[i],"15",this.original[i]);
-			this.boxesToFill[i] = DynamicHTML.div(this.pairsBoxes[i],"margin-left: 5px; height: 10px; width:10px; border:1px solid #000;");
+			this.pairsBoxes[i] = DynamicHTML.div(this.box,"display: inline-block; margin: 6px 6px; text-align:center;vertical-align:middle;");
+			this.fixedElements[i] = DynamicHTML.text(this.pairsBoxes[i],"18",this.original[i]);
+			this.boxesToFill[i] = DynamicHTML.div(this.pairsBoxes[i],"border-radius:5px; height: 30px; width:28px; border:1px solid #000;");
+			this.boxesToFill[i].ondragover = (event) => {event.preventDefault();};
+			this.boxesToFill[i].ondrop = (event) => {
+				event.preventDefault();
+				let data = event.dataTransfer.getData("text");
+				let elementDropped = document.getElementById(data);
+				console.log("elementDropped" + elementDropped.value);
+				if(this.isAnswerCorrect(event.target.previousSibling.value, elementDropped.value)) {
+					console.log("event.target.previousSibling.nodeValue=" + event.target.previousSibling.value);
+					let newHeight = elementDropped.offsetHeight + 10;
+					let newWidth = elementDropped.offsetWidth + 10;
+					event.target.style = "border-radius:5px; height:" + newHeight + "px; width:" + newWidth + "px; border:1px solid #000";
+					event.target.appendChild(elementDropped);
+				}
+			};
+		}
+		// let solutionsDiv = DynamicHTML.div(this.box, "");
+		for(let i = 0;i<this.solutions.length;i++) {
+			this.symbolsToDrag[i] = DynamicHTML.inpuButton(this.box2,"buttonToDrag" + i,this.solutions[i], "white");
+			this.symbolsToDrag[i].style = "margin:5px; border-radius: 5px; font-size: 17px; background-color: rgb(255, 255, 255); padding:5px; font-family: Arial; box-shadow: 2px 2px 5px rgba(0,0,0,0.2); cursor: pointer;";
+			this.symbolsToDrag[i].draggable = "true";
 			
+			this.symbolsToDrag[i].ondragstart = (event) => {event.dataTransfer.setData("text", event.target.id);};
 		}
 	}
 }
-//------------------------------
-
-//TESTE
-// class Game {
-// 	static run() {
-// 		var body = document.body;
-// 		body.innerHTML = "";
-// 		h1(body, "Babel   (" + languageName + ")");
-// 		hr(body);
-// 		var d = div(body, "border:3px solid black; display:table; padding:20px; margin-left:40px");
-
-// 		//var nLessons = getNumberOfChildElements(xmlDoc,"LESSON");
-// 		var nScreens = 1;
-// 		var screens = [];
-// 		var currScreenNumber;
-
-// 		var currScreen;
-// 		var currScreenType;
-// 		var prompt, original, solutions = [], sound;
-
-// 		//STARTUP le ficheiro e sabe quantos screens e as solucoes de cada um etc
-// 		for(var i = 1;i<=nScreens;i++) {
-// 			currScreen = getLessonData(i,nLessons);
-// 			currScreenType = currScreen.firstChild.tagName;
-// 			prompt = currScreen.getElementsByTagName("PROMPT")[0].firstChild.nodeValue;
-// 			original = currScreen.getElementsByTagName("ORIGINAL")[0].firstChild.nodeValue;
-
-// 			console.log(getNumberOfChildElements(currScreen,"SOLUTION"));
-// 			console.log(currScreen);
-// 			console.log(prompt);
-// 			console.log(original);
-
-// 			for(var j = 0;j<getNumberOfChildElements(currScreen,"SOLUTION");j++) {
-// 				console.log(i);
-// 				solutions[j] = currLesson.getElementsByTagName("SOLUTION")[j].firstChild.nodeValue;
-// 			}
-
-// 			sound = currLesson.getElementsByTagName("SOUND")[0].firstChild.nodeValue
-
-// 			screens[i] = new Screen(prompt, original, solutions, sound); //Usar instance of mais a frente
-// 			//pode dar jeito para saber qe licao estamos
-// 			console.log(currScreenType);
-// 		}
-
-// 		console.log(solutions);
-// 		console.log(lessons[1]);
-// 	}
-
-// 	static nextLesson() {
-
-// 	}
-
-// }
 //------------------------------
 
 function runLanguage(text) {
