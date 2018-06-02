@@ -579,6 +579,7 @@ class Screen {
 		this.box = null;
 	}
 
+    //Show the screen in the given container
 	show(container) {
 		this.box = DynamicHTML.div(container, "border-radius: 5px;" +
 		"background-color: rgb(240, 240, 240); padding:20px;" +
@@ -801,6 +802,7 @@ class Blocks extends Screen {
 		this.answer = [];
 	}
     
+    
 	show(container) {
 		super.show(container);
 		DynamicHTML.h1(this.box,this.prompt).style = 
@@ -867,20 +869,29 @@ class Blocks extends Screen {
 		}
 	}
     
+    //When a block gets dropped on another block
 	onBlockDropBlock(event) {
+        //Stop propagation to avoid effectos of 
+        //onBlockDropFirstLine or onBlockDropsDiv
 		event.stopPropagation();
 		event.preventDefault();
 		let block = document.getElementById(event.dataTransfer.getData("text"));
 		let row = event.target.parentNode;       
         
+        // Dont execute if the block switch doesnt occur in the answer div
 		if(row != block.parentNode || row.id == "answer") {
-			let answerParent = (row.id == "answer")?row: block.parentNode;
+            let answerParent = document.getElementById("answer");
 			
+            // If the switch occurs within blocks of the same row,
+            // remove the block to switch from the answer 
+            // so that it can be latter inserted before the target block
 			if (row == block.parentNode || row.id != "answer") {
                 
+                // Index of the block in the answer div
 				let index = Array.from(answerParent.children).indexOf(block);
-				//insert blank string that will later be removed
-				this.answer.splice(index, 1, "");   
+				// Replace with empty string as placeholder 
+                // that will later be removed
+				this.answer.splice(index, 1, ""); 
 			}
             
 			
@@ -891,16 +902,20 @@ class Blocks extends Screen {
 				//insert block value at the index of the target value 
 				this.answer.splice(index, 0, block.value);
 			}
-            
+            //Remove the empty string used as placeholder
 			if(this.answer.indexOf("") != -1) {
 				this.answer.splice(this.answer.indexOf(""), 1);
 			}
 		} 
-            
+        
+        //insert the block before the targetted block
 		row.insertBefore(block, event.target);
+        
+        //Verify if the current answer is correct
 		this.checkAnswer();
 	}
     
+    //Check whether the current value in answer is correct
 	checkAnswer() {
 		if(this.answer.join(" ") == 
 		language.currLesson.getCurrentScreen().getSolution()) {
@@ -910,6 +925,7 @@ class Blocks extends Screen {
 		}
 	}
 
+    //When a block gets dropped in the answer div
 	onBlockDropFirstLine(event) {
 		event.preventDefault();
 		let block = document.getElementById(event.dataTransfer.getData("text"));
@@ -919,6 +935,7 @@ class Blocks extends Screen {
 		this.checkAnswer();
 	}
     
+    //When a block gets dropped in the block container
 	onBlockDropBlocksDiv(event) {
 		event.preventDefault();
 		let block = document.getElementById(event.dataTransfer.getData("text"));
@@ -941,7 +958,7 @@ class Symbol {
 	}
 }
 
-class Symbols extends Screen { //Usar para alfabetos extra apenas
+class Symbols extends Screen {
 	constructor(id, symbolXML) {
 		let originalXML = symbolXML.getElementsByTagName("LATIN");
 		let solutionsXML = symbolXML.getElementsByTagName("ALPHABET");
