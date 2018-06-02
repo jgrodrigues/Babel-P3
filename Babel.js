@@ -200,7 +200,6 @@ class Language {
 			"color: rgb(15, 150, 208); font-family: sans-serif;";
 
 		for (let i = 1; i <= this.nLessons;i++) {
-			//tirar a cor como argumento do botao
 			this.buttons[i] = 
 				DynamicHTML.inpuButton(this.nav,"button" + i,"LESSON " + i);
 
@@ -208,7 +207,15 @@ class Language {
 				"height: 150px; width: 150px; padding: 8px 16px;" +
 				"background-color: #0f96d0; color: white; font-size: 20px;" +
 				"font-weight: bold; box-shadow: 2px 2px 5px rgba(0,0,0,0.2);" +
-				"cursor: pointer;";
+				"cursor: pointer;transition: transform .1s ease-in-out;" +
+                "-webkit-transition: transform .1s ease-in-out;";
+            this.buttons[i].onmouseover = event => {
+                event.target.style.transform = "scale(1.05)"
+            };
+            
+            this.buttons[i].onmouseout = event => {
+                event.target.style.transform = "scale(1)"
+            };
 
 			this.buttons[i].onclick = () => { this.getLesson(i);};
 		}
@@ -266,7 +273,7 @@ class Language {
 	}
 }
 
-//TODO
+
 class LanguageExtraAlphabets extends Language {
 	constructor() {
 		super();
@@ -301,7 +308,16 @@ class LanguageExtraAlphabets extends Language {
 			this.buttons[i].style = 
 				"height: 150px; width: 150px; background-color: #891bf7;" +
 				"color: white; font-size: 20px; font-weight: bold;" +
-				"box-shadow: 2px 2px 5px rgba(0,0,0,0.2); cursor: pointer;";
+				"box-shadow: 2px 2px 5px rgba(0,0,0,0.2); cursor: pointer;"+
+                "transition: transform .1s ease-in-out;" +
+                "-webkit-transition: transform .1s ease-in-out;";
+            
+            this.buttons[i].onmouseover = event => {
+                event.target.style.transform = "scale(1.05)"
+            };
+            this.buttons[i].onmouseout = event => {
+                event.target.style.transform = "scale(1)"
+            };
 
 			const id = i-this.nLessons;
 			this.buttons[i].onclick = () => { this.getSymbols(id);};
@@ -752,6 +768,7 @@ class Pairs extends Screen {
 		let pairs = DynamicHTML.p(this.box,"");
 
 		for(let i=0;i<this.originalArray.length;i++) {
+
 			this.buttonsElements[i] = DynamicHTML.inpuButton(pairs,"butElem"+i,
 				this.originalArray[i]);
 
@@ -759,11 +776,19 @@ class Pairs extends Screen {
 				"margin:5px 5px; border-radius: 5px; font-size: 17px;" +
 				"background-color: rgb(255, 255, 255); padding:5px;" +
 				"font-family: Arial; box-shadow: 2px 2px 5px rgba(0,0,0,0.2);" +
-				"cursor: pointer;";
+				"cursor: pointer; transition: transform .1s ease-in-out;" +
+                "-webkit-transition: transform .1s ease-in-out;";;
 
 			this.buttonsElements[i].onclick = (event) => {
 				this.answered(event.target);
 			};
+            
+            this.buttonsElements[i].onmouseover = event => {
+                event.target.style.transform = "scale(1.1)"
+            };
+            this.buttonsElements[i].onmouseout = event => {
+                event.target.style.transform = "scale(1)"
+            };
 		}
 
 	}
@@ -929,17 +954,14 @@ class Symbols extends Screen { //Usar para alfabetos extra apenas
 		if(promptXML.length != 0) {
 			prompt = promptXML[0].firstChild.nodeValue;
 		}
-
-		let original = originalXML[0].firstChild.nodeValue;
+        
+        let original = originalXML[0].firstChild.nodeValue;
 		let solutions = solutionsXML[0].firstChild.nodeValue;
-
+        
 		super(id, prompt, original.split(" "), solutions.split(" "));
 		this.name = symbnameXML[0].firstChild.nodeValue;
 		this.pairsBoxes = [];
-		this.fixedElements = [];
-		this.boxesToFill = [];
 		this.nPairsMade = 0;
-		this.symbolsToDrag = [];
 	}
 
 	isAnswerCorrect(staticElement, droppedElement) {
@@ -964,31 +986,28 @@ class Symbols extends Screen { //Usar para alfabetos extra apenas
 			"grid-template-columns: repeat(8, 1fr); grid-gap: 5px 5px";
 
 		for(let i=0;i<this.original.length;i++) {
+
 			this.pairsBoxes[i] = 
-				DynamicHTML.div(this.box,"margin: 6px 6px; text-align:center;"+
+                DynamicHTML.div(this.box,"margin: 6px 6px; text-align:center;"+
 				"vertical-align:middle;");
-
-			this.fixedElements[i] = 
-				DynamicHTML.text(this.pairsBoxes[i],"18",this.original[i]);
-
-			this.fixedElements[i].style = "color:#444; font-weight: bold";
-
-			this.boxesToFill[i] = 
-				DynamicHTML.div(this.pairsBoxes[i],"margin: 5px auto 0px;" +
+			let letter = 
+                DynamicHTML.text(this.pairsBoxes[i],"18",this.original[i]);
+            letter.style = "color:#444; font-weight: bold";
+            
+			let draggableBox = 
+                DynamicHTML.div(this.pairsBoxes[i],"margin: 5px auto 0px;" +
 				"border-radius:5px; height: 30px; width:28px;" +
 				"background-color: #ddd;");
-
-			this.boxesToFill[i].ondragover = 
-				event => {event.preventDefault();};
-
-			this.boxesToFill[i].ondrop = 
-				event => {this.onBlockDrop(event);};
+			draggableBox.ondragover = event => {event.preventDefault();};
+			draggableBox.ondrop = event => {this.onBlockDrop(event);};
 		}
         
 		let tempSymbols = [];
+        
 		for(let i = 0;i<this.solutions.length;i++) { 
 			tempSymbols.push(new Symbol(this.solutions[i], this.original[i]));
 		}
+        
 		tempSymbols.sort(function(a, b){return 0.5 - Math.random();});
         
 		for(let i = 0;i<this.solutions.length;i++) {
@@ -1005,7 +1024,6 @@ class Symbols extends Screen { //Usar para alfabetos extra apenas
 			symbolElement.draggable = "true";
 			let symbol = new Symbol(this.solutions[i], this.original[i]);
 			symbolElement.symbol = tempSymbols[i];
-			this.symbolsToDrag[i] = tempSymbols[i];
 			
 			symbolElement.ondragstart = 
 				(event) => {
