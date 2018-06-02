@@ -199,10 +199,11 @@ class Language {
 		for (let i = 1; i <= this.nLessons;i++) {
 			//tirar a cor como argumento do botao
 			this.buttons[i] = DynamicHTML.inpuButton(this.nav,"button" + i,"LESSON " + i, "red");
-			this.buttons[i].style = "height: 150px; width: 150px; padding: 8px 16px; background-color: #0f96d0; color: white; font-size: 20px; font-weight: bold; box-shadow: 2px 2px 5px rgba(0,0,0,0.2); cursor: pointer;";
+			this.buttons[i].style = "height: 150px; width: 150px; padding: 8px 16px; background-color: #0f96d0; color: white; font-size: 20px; font-weight: bold; box-shadow: 2px 2px 5px rgba(0,0,0,0.2); cursor: pointer; transition: transform .1s ease-in-out; -webkit-transition: transform .1s ease-in-out;";
+            this.buttons[i].onmouseover = event => {event.target.style.transform = "scale(1.05)"};
+            this.buttons[i].onmouseout = event => {event.target.style.transform = "scale(1)"};
 
 			this.buttons[i].onclick = () => { this.getLesson(i);};
-			//eventHandler(this.buttons[i],"onclick","showKeyboardScreen(" + i +");");
 		}
 	}
 
@@ -283,7 +284,9 @@ class LanguageExtraAlphabets extends Language {
 			symbolName = this.symbolsXML[i-this.nLessons-1].getElementsByTagName("SYMBNAME")[0].firstChild.nodeValue;
 			console.log(symbolName);
 			this.buttons[i] = DynamicHTML.inpuButton(this.nav,"button" + symbolName,symbolName.toUpperCase(), "red");
-			this.buttons[i].style = "height: 150px; width: 150px; background-color: #891bf7; color: white; font-size: 20px; font-weight: bold; box-shadow: 2px 2px 5px rgba(0,0,0,0.2); cursor: pointer;";
+			this.buttons[i].style = "height: 150px; width: 150px; background-color: #891bf7; color: white; font-size: 20px; font-weight: bold; box-shadow: 2px 2px 5px rgba(0,0,0,0.2); cursor: pointer; transition: transform .1s ease-in-out; -webkit-transition: transform .1s ease-in-out;";
+            this.buttons[i].onmouseover = event => {event.target.style.transform = "scale(1.05)"};
+            this.buttons[i].onmouseout = event => {event.target.style.transform = "scale(1)"};
 			const id = i-this.nLessons;
 			this.buttons[i].onclick = () => { this.getSymbols(id);};
 		}
@@ -320,17 +323,6 @@ class LanguageExtraAlphabets extends Language {
 		let screensLeft = DynamicHTML.h1(container, "");
 		screensLeft.style = "color:#555; font-family: sans-serif; font-size: 15px;";
 		screensLeft.id = "screensLeft";
-
-        
-		// if (this.hasNextScreen()) {
-            
-		// 	this.getCurrentScreen().show(container);
-		// } else {
-		// 	currScreen.style = "display: none;";
-		// 	screensLeft.style = "display: none;";
-            
-		// 	DynamicHTML.h1(container, "Congratulations, you've reached the end of this lesson!").style = "color:#444; font-family: sans-serif; font-size: 20px;";
-		// }
 
 		this.currSymbols.show(container);
 	}
@@ -661,8 +653,10 @@ class Pairs extends Screen {
 
 		for(let i=0;i<this.originalArray.length;i++) {
 			this.buttonsElements[i] = DynamicHTML.inpuButton(pairs,"butElem"+i,this.originalArray[i],"red");
-			this.buttonsElements[i].style = "margin:5px 5px; border-radius: 5px; font-size: 17px; background-color: rgb(255, 255, 255); padding:5px; font-family: Arial; box-shadow: 2px 2px 5px rgba(0,0,0,0.2); cursor: pointer;";
+			this.buttonsElements[i].style = "margin:5px 5px; border-radius: 5px; font-size: 17px; background-color: rgb(255, 255, 255); padding:5px; font-family: Arial; box-shadow: 2px 2px 5px rgba(0,0,0,0.2); cursor: pointer; transition: transform .1s ease-in-out; -webkit-transition: transform .1s ease-in-out;";
 			this.buttonsElements[i].onclick = (event) => {this.answered(event.target);};
+            this.buttonsElements[i].onmouseover = event => {event.target.style.transform = "scale(1.1)"};
+            this.buttonsElements[i].onmouseout = event => {event.target.style.transform = "scale(1)"};
 		}
 
 	}
@@ -812,17 +806,10 @@ class Symbols extends Screen { //Usar para alfabetos extra apenas
 		let original = symbolXML.getElementsByTagName("LATIN")[0].firstChild.nodeValue;
 		let solutions = symbolXML.getElementsByTagName("ALPHABET")[0].firstChild.nodeValue;
 
-		console.log(prompt);
-		console.log(original);
-		console.log(solutions);
-
 		super(id, prompt, original.split(" "), solutions.split(" "));
 		this.name = symbolXML.getElementsByTagName("SYMBNAME")[0].firstChild.nodeValue;
 		this.pairsBoxes = [];
-		this.fixedElements = [];
-		this.boxesToFill = [];
 		this.nPairsMade = 0;
-		this.symbolsToDrag = [];
 	}
 
 	isAnswerCorrect(staticElement, droppedElement) {
@@ -840,17 +827,20 @@ class Symbols extends Screen { //Usar para alfabetos extra apenas
         this.box.style = this.box.getAttribute("style") + "display: grid; grid-template-columns: repeat(8, 1fr); grid-gap: 5px 5px";
 		for(let i=0;i<this.original.length;i++) {
 			this.pairsBoxes[i] = DynamicHTML.div(this.box,"margin: 6px 6px; text-align:center;vertical-align:middle;");
-			this.fixedElements[i] = DynamicHTML.text(this.pairsBoxes[i],"18",this.original[i]);
-            this.fixedElements[i].style = "color:#444; font-weight: bold";
-			this.boxesToFill[i] = DynamicHTML.div(this.pairsBoxes[i],"margin: 5px auto 0px; border-radius:5px; height: 30px; width:28px; background-color: #ddd;");
-			this.boxesToFill[i].ondragover = event => {event.preventDefault();};
-			this.boxesToFill[i].ondrop = event => {this.onBlockDrop(event);};
+			let letter = DynamicHTML.text(this.pairsBoxes[i],"18",this.original[i]);
+            letter.style = "color:#444; font-weight: bold";
+            
+			let draggableBox = DynamicHTML.div(this.pairsBoxes[i],"margin: 5px auto 0px; border-radius:5px; height: 30px; width:28px; background-color: #ddd;");
+			draggableBox.ondragover = event => {event.preventDefault();};
+			draggableBox.ondrop = event => {this.onBlockDrop(event);};
 		}
         
 		let tempSymbols = [];
+        
 		for(let i = 0;i<this.solutions.length;i++) { 
 			tempSymbols.push(new Symbol(this.solutions[i], this.original[i]));
 		}
+        
 		tempSymbols.sort(function(a, b){return 0.5 - Math.random();});
         
 		for(let i = 0;i<this.solutions.length;i++) {
@@ -859,7 +849,6 @@ class Symbols extends Screen { //Usar para alfabetos extra apenas
 			symbolElement.draggable = "true";
 			let symbol = new Symbol(this.solutions[i], this.original[i]);
 			symbolElement.symbol = tempSymbols[i];
-			this.symbolsToDrag[i] = tempSymbols[i];
 			
 			symbolElement.ondragstart = (event) => {event.dataTransfer.setData("text", event.target.id);};
 		}
