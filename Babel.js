@@ -418,7 +418,7 @@ class Lesson {
 		return new Pairs(id, prompt, original, solutions);
 	}
     
-    loadBlocks(id,screenXML) {
+	loadBlocks(id,screenXML) {
 		var prompt = screenXML.getElementsByTagName("PROMPT")[0].firstChild.nodeValue;
 		var original = screenXML.getElementsByTagName("ORIGINAL")[0].firstChild.nodeValue;
 		var solutions = [screenXML.getElementsByTagName("SOLUTION")[0].firstChild.nodeValue];
@@ -560,14 +560,14 @@ class Keyboard extends Screen {
 	checkSolution() {
 		let isSolution = language.currLesson.getCurrentScreen().checkAnswer(document.getElementById("answer").value);
 		let container = document.getElementById("container");
+		document.onkeydown = null;
             
 		if (isSolution) {
 			this.answeredCorrect();
 		} else {
 			this.answeredWrong();
 		}
-
-		document.onkeydown = null;
+		
 	}
     
 	answeredCorrect() {
@@ -577,15 +577,20 @@ class Keyboard extends Screen {
 	}
     
 	answeredWrong() {
-		let nextScreenBtn = DynamicHTML.inpuButton(container, "nextbtn", "Next Screen", "red");
+		let nextScreenBtn = DynamicHTML.inpuButton(container, "nextScreenBtn", "Next Screen", "red");
 		nextScreenBtn.style = "display: inline-block; margin: 5px 5px 10px; border-radius: 5px; padding: 8px 16px; background-color: #0f96d0; color: white; font-size: 13px; font-weight: bold;";
-		nextScreenBtn.id = "nextScreenBtn";
+		//nextScreenBtn.id = "nextScreenBtn";
+		
                 
 		nextScreenBtn.onclick = () => {
 			language.currLesson.nextScreen();
 			document.getElementById("correctAnswer").remove();
 			document.getElementById("nextScreenBtn").remove();
+
+			DynamicHTML.eventHandler(document, "onkeydown", "if((event.keyCode == 13) && document.getElementById('check') != null) document.getElementById('check').click();");
 		};
+
+		DynamicHTML.eventHandler(document, "onkeydown", "if(event.keyCode == 13) document.getElementById('nextScreenBtn').click();");
                 
 		language.currLesson.getCurrentScreen().box.style = "display: none";
 		let correctAnswer = DynamicHTML.h1(container, "The correct answer was: " + language.currLesson.getCurrentScreen().getSolution());
@@ -662,130 +667,130 @@ class Pairs extends Screen {
 }
 
 class Blocks extends Screen {
-    constructor(id, prompt, original, solution, blocks) {
-        super(id, prompt, original, solution);
+	constructor(id, prompt, original, solution, blocks) {
+		super(id, prompt, original, solution);
         
-        this.blocks = blocks.split(" ");
-        this.buttonElements = [];
-        this.answer = [];
-    }
+		this.blocks = blocks.split(" ");
+		this.buttonElements = [];
+		this.answer = [];
+	}
     
-    show(container) {
-        super.show(container);
-        DynamicHTML.h1(this.box,this.prompt).style = "color:#333; margin: 15px;";
+	show(container) {
+		super.show(container);
+		DynamicHTML.h1(this.box,this.prompt).style = "color:#333; margin: 15px;";
 		let pairs = DynamicHTML.p(this.box,"");
         
-        DynamicHTML.text(this.box, 16, " ");
+		DynamicHTML.text(this.box, 16, " ");
 		DynamicHTML.text(this.box, 32, this.original).style = "margin: 15px; font-size: 25px;";
         
-        let firstLine = DynamicHTML.div(this.box, "padding: 10px; margin: 15px; border-bottom: 2px solid #666; min-height: 40px; min-width: 90%; max-width 90%;");
-        firstLine.id = "answer";
-        firstLine.ondragover = event => {
-            event.preventDefault();
-        };
+		let firstLine = DynamicHTML.div(this.box, "padding: 10px; margin: 15px; border-bottom: 2px solid #666; min-height: 40px; min-width: 90%; max-width 90%;");
+		firstLine.id = "answer";
+		firstLine.ondragover = event => {
+			event.preventDefault();
+		};
         
-        firstLine.ondrop = event => {
-            this.onBlockDropFirstLine(event);
-        };
+		firstLine.ondrop = event => {
+			this.onBlockDropFirstLine(event);
+		};
         
-        let secondLine = DynamicHTML.div(this.box, "margin: 15px; border-bottom: 2px solid #666; height: 40px; min-width: 90%; max-width 90%;");
+		let secondLine = DynamicHTML.div(this.box, "margin: 15px; border-bottom: 2px solid #666; height: 40px; min-width: 90%; max-width 90%;");
         
-        let blocksDiv = DynamicHTML.div(this.box, "text-align: center; margin: 15px; min-width: 90%; max-width 90%;");
+		let blocksDiv = DynamicHTML.div(this.box, "text-align: center; margin: 15px; min-width: 90%; max-width 90%;");
         
-        blocksDiv.ondrop = event => {
-            this.onBlockDropBlocksDiv(event);
-        };
+		blocksDiv.ondrop = event => {
+			this.onBlockDropBlocksDiv(event);
+		};
         
-        blocksDiv.ondragover = event => {
-            event.preventDefault();
-        };
+		blocksDiv.ondragover = event => {
+			event.preventDefault();
+		};
         
-        for(let i=0;i<this.blocks.length;i++) {
+		for(let i=0;i<this.blocks.length;i++) {
 			this.buttonElements[i] = DynamicHTML.inpuButton(blocksDiv,"butElem"+i,this.blocks[i],"red");
 			this.buttonElements[i].style = "display: inline-block; margin:5px 5px; border-radius: 5px; font-size: 17px; background-color: rgb(255, 255, 255); padding:5px; font-family: Arial; box-shadow: 2px 2px 5px rgba(0,0,0,0.2); cursor: pointer;";
-            this.buttonElements[i].draggable = "true";
-            this.buttonElements[i].ondragstart = event => {
-                event.dataTransfer.setData("text", event.target.id);
-            };
+			this.buttonElements[i].draggable = "true";
+			this.buttonElements[i].ondragstart = event => {
+				event.dataTransfer.setData("text", event.target.id);
+			};
             
-            this.buttonElements[i].ondrop = event => {
-                this.onBlockDropBlock(event);
-            };
+			this.buttonElements[i].ondrop = event => {
+				this.onBlockDropBlock(event);
+			};
 
-            this.buttonElements[i].ondragover = event => {
-                event.preventDefault();
-            };
+			this.buttonElements[i].ondragover = event => {
+				event.preventDefault();
+			};
 		}
-    }
+	}
     
-    onBlockDropBlock(event) {
-        event.stopPropagation();
-        event.preventDefault();
-        let block = document.getElementById(event.dataTransfer.getData("text"));
-        let row = event.target.parentNode;       
+	onBlockDropBlock(event) {
+		event.stopPropagation();
+		event.preventDefault();
+		let block = document.getElementById(event.dataTransfer.getData("text"));
+		let row = event.target.parentNode;       
         
-        if(row != block.parentNode || row.id == "answer") {
-            let answerParent = (row.id == "answer")?row: block.parentNode;
-            //Execute unless the block comes from the block options
-            if (row == block.parentNode || row.id != "answer") {
+		if(row != block.parentNode || row.id == "answer") {
+			let answerParent = (row.id == "answer")?row: block.parentNode;
+			//Execute unless the block comes from the block options
+			if (row == block.parentNode || row.id != "answer") {
                 
-                let index = Array.from(answerParent.children).indexOf(block);
-                //insert blank string that will later be removed
-                this.answer.splice(index, 1, "");   
-            }
+				let index = Array.from(answerParent.children).indexOf(block);
+				//insert blank string that will later be removed
+				this.answer.splice(index, 1, "");   
+			}
             
-            //index of target button
-            if (row.id == "answer") {
+			//index of target button
+			if (row.id == "answer") {
                 
-                let index = Array.from(row.children).indexOf(event.target);
+				let index = Array.from(row.children).indexOf(event.target);
                 
-                //insert block value at the index of the target value 
-                this.answer.splice(index, 0, block.value);
-            }
+				//insert block value at the index of the target value 
+				this.answer.splice(index, 0, block.value);
+			}
             
-            if(this.answer.indexOf("") != -1) {
-                this.answer.splice(this.answer.indexOf(""), 1);
-            }
-        }     
+			if(this.answer.indexOf("") != -1) {
+				this.answer.splice(this.answer.indexOf(""), 1);
+			}
+		}     
             
-        row.insertBefore(block, event.target);
-        console.log(this.answer);
-        this.checkAnswer();
-    }
+		row.insertBefore(block, event.target);
+		console.log(this.answer);
+		this.checkAnswer();
+	}
     
-    checkAnswer() {
-        if(this.answer.join(" ") == language.currLesson.getCurrentScreen().getSolution()) {
-            language.currLesson.passCurrentScreen();
-            DynamicHTML.play("general/right_answer.mp3");
-            language.currLesson.nextScreen();
-        }
-    }
+	checkAnswer() {
+		if(this.answer.join(" ") == language.currLesson.getCurrentScreen().getSolution()) {
+			language.currLesson.passCurrentScreen();
+			DynamicHTML.play("general/right_answer.mp3");
+			language.currLesson.nextScreen();
+		}
+	}
 
-    onBlockDropFirstLine(event) {
-        event.preventDefault();
-        let block = document.getElementById(event.dataTransfer.getData("text"));
-        let value = block.value;
-        event.target.appendChild(block);
-        this.answer.push(block.value);
+	onBlockDropFirstLine(event) {
+		event.preventDefault();
+		let block = document.getElementById(event.dataTransfer.getData("text"));
+		let value = block.value;
+		event.target.appendChild(block);
+		this.answer.push(block.value);
             
-        this.checkAnswer();
-    }
+		this.checkAnswer();
+	}
     
-    onBlockDropBlocksDiv(event) {
-        event.preventDefault();
-        let block = document.getElementById(event.dataTransfer.getData("text"));
-        let row = event.target.parentNode; 
+	onBlockDropBlocksDiv(event) {
+		event.preventDefault();
+		let block = document.getElementById(event.dataTransfer.getData("text"));
+		let row = event.target.parentNode; 
         
-        if(row != block.parentElement) {
-            let index = Array.from(block.parentElement.children).indexOf(block);
-            this.answer.splice(index, 1);
+		if(row != block.parentElement) {
+			let index = Array.from(block.parentElement.children).indexOf(block);
+			this.answer.splice(index, 1);
             
-        }
+		}
         
-        this.checkAnswer();
+		this.checkAnswer();
         
-        event.target.appendChild(block);
-    }
+		event.target.appendChild(block);
+	}
 }
 
 class Symbol {
