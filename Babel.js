@@ -271,14 +271,12 @@ class LanguageExtraAlphabets extends Language {
 	}
 
 	addSymbolsButtons() {
-		let symbolName = "1";
+		
 		console.log("nLessons antes=" + this.nLessons);
 		let i;
 		for(i = this.nLessons+1;i<=this.nLessons+this.nSymbols;i++) {
 			console.log(i-this.nLessons);
-			console.log(this.symbolsXML[i-this.nLessons]);
-			//symbolName = this.symbolsXML[i-this.nLessons].getElementsByTagName("SYMBNAME").firstChild.nodeValue;
-			console.log(symbolName);
+			let symbolName = this.symbolsXML[i-this.nLessons-1].getElementsByTagName("SYMBNAME")[0].firstChild.nodeValue;
 			this.buttons[i] = DynamicHTML.inpuButton(this.nav,"button" + symbolName,symbolName, "red");
 			this.buttons[i].style = "display: inline-block; margin: 5px 5px; border-radius: 5px; padding: 8px 16px; background-color: #0f96d0; color: white; font-size: 13px; font-weight: bold;";
 
