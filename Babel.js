@@ -183,12 +183,15 @@ class Language {
 		this.lessons = [];
 		this.start();
 	}
-    
+	
+	//Starts the language by initializing all lessons and 
+	//adding the lessons buttons on the home page screen
 	start() {
 		this.initLessons();
 		this.addLessonsButtons();
 	}
-    
+	
+	//Adds the lessons button and shows it
 	addLessonsButtons() {
 		let header = DynamicHTML.h1(this.nav, "LESSONS");
 		header.id = "lessonHeader";
@@ -205,27 +208,33 @@ class Language {
 				"background-color: #0f96d0; color: white; font-size: 20px;" +
 				"font-weight: bold; box-shadow: 2px 2px 5px rgba(0,0,0,0.2);" +
 				"cursor: pointer;transition: transform .1s ease-in-out;" +
-                "-webkit-transition: transform .1s ease-in-out;";
-            this.buttons[i].onmouseover = event => {
-                event.target.style.transform = "scale(1.05)"
-            };
+				"-webkit-transition: transform .1s ease-in-out;";
+				
+			//Just for animation/stylish purposes
+			this.buttons[i].onmouseover = event => {
+				event.target.style.transform = "scale(1.05)";
+			};
             
-            this.buttons[i].onmouseout = event => {
-                event.target.style.transform = "scale(1)"
-            };
+			this.buttons[i].onmouseout = event => {
+				event.target.style.transform = "scale(1)";
+			};
 
+			//Adds the onclick event which should show the lesson clicked
 			this.buttons[i].onclick = () => { this.getLesson(i);};
 		}
 	}
 
+	//Hides the lessons buttons
 	hideLessonsButtons() {        
 		this.nav.style.display = "none";
 	}
 
+	//Shows the lessons buttons
 	showLessonsButtons() {
 		this.nav.style.display = "grid";
 	}
 
+	//Shows the back button
 	showBackButton() {
 		this.backButton = DynamicHTML.inpuButton(this.back,"backButton","Back");
 
@@ -237,10 +246,12 @@ class Language {
 		this.backButton.onclick = () => {return this.goBack();};
 	}
 
+	//Hides the back button
 	hideBackButton(){
 		this.backButton.style.display = "none";
 	}
 
+	//Goes back to the homepage
 	goBack() {
 		this.currLesson.leaveLesson();
 		this.currLesson = null;
@@ -248,7 +259,8 @@ class Language {
 		this.showLessonsButtons();
 
 	}
-    
+	
+	//Gets a lesson
 	getLesson(id) {
 		if (this.currLesson != null) {
 			this.currLesson.leaveLesson();
@@ -262,7 +274,7 @@ class Language {
 		language.currLesson.showCurrentScreen();
 	}
     
-
+	//Initializes all lessons
 	initLessons() {
 		for(let i = 1; i <= this.nLessons; i++) {
 			this.lessons[i] = new Lesson(i,this.body);
@@ -282,6 +294,7 @@ class LanguageExtraAlphabets extends Language {
 		this.initSymbols();
 	}
 
+	//Adds the symbols button and shows them on the home page
 	addSymbolsButtons() {
 		let symbolName;
         
@@ -308,12 +321,12 @@ class LanguageExtraAlphabets extends Language {
                 "transition: transform .1s ease-in-out;" +
                 "-webkit-transition: transform .1s ease-in-out;";
             
-            this.buttons[i].onmouseover = event => {
-                event.target.style.transform = "scale(1.05)"
-            };
-            this.buttons[i].onmouseout = event => {
-                event.target.style.transform = "scale(1)"
-            };
+			this.buttons[i].onmouseover = event => {
+				event.target.style.transform = "scale(1.05)";
+			};
+			this.buttons[i].onmouseout = event => {
+				event.target.style.transform = "scale(1)";
+			};
 
 			const id = i-this.nLessons;
 			this.buttons[i].onclick = () => { this.getSymbols(id);};
@@ -321,6 +334,7 @@ class LanguageExtraAlphabets extends Language {
 		this.nLessons += this.nSymbols;
 	}
 
+	//Gets a symbol quizz
 	getSymbols(id) {
 		this.currSymbols = this.symbols[id];
 		this.hideLessonsButtons();
@@ -368,12 +382,14 @@ class LanguageExtraAlphabets extends Language {
 		this.currSymbols.show(container);
 	}
 
+	//Initializes all Symbols quizzes
 	initSymbols() {
 		for(let i = 1; i <= this.nSymbols; i++) {
 			this.symbols[i] = new Symbols(i,this.symbolsXML[i-1]);
 		}
 	}
-    
+	
+	//Goes back to the home screen
 	goBack() {
 		if (this.currSymbols != null) {
 			document.getElementById("container").remove();
@@ -401,7 +417,8 @@ class Lesson {
 		this.loadScreens(); 
 		this.screenNotPassedIndex = this.screensNotPassed.length - 1;
 	}
-    
+	
+	//Load all screens of the lesson to memory, making them ready to be shown
 	loadScreens() {
 		let nNodes = this.lessonXML.childNodes.length;
         
@@ -434,7 +451,8 @@ class Lesson {
 			}
 		}
 	}
-    
+	
+	//Loads a keyboard screen
 	loadKeyboard(id, screenXML) {
 		var prompt = 
 			screenXML.getElementsByTagName("PROMPT")[0].firstChild.nodeValue;
@@ -459,6 +477,7 @@ class Lesson {
 		return new Keyboard(id, prompt, original, solutions, sound);
 	}
 
+	//Load a pairs screen
 	loadPairs(id,screenXML) {
 		let promptXML = screenXML.getElementsByTagName("PROMPT");
 		let originalXML = screenXML.getElementsByTagName("ORIGINAL");
@@ -469,7 +488,8 @@ class Lesson {
 		var solutions = solutionsXML[0].firstChild.nodeValue;
 		return new Pairs(id, prompt, original, solutions);
 	}
-    
+	
+	//Loads a Block screen
 	loadBlocks(id,screenXML) {
 		let promptXML = screenXML.getElementsByTagName("PROMPT");
 		let originalXML = screenXML.getElementsByTagName("ORIGINAL");
@@ -484,14 +504,17 @@ class Lesson {
 		return new Blocks(id, prompt, original, solutions, blocks);
 	}
 
+	//Check if there are more screens
 	hasNextScreen() {
 		return this.screensNotPassed.length != 0;
 	}
-    
+	
+	//Gets the current screen
 	getCurrentScreen() {
 		return this.screens[this.currentScreenNumber];
 	}
-    
+	
+	//Shows the lesson on screen
 	showLesson() {
 		let container = 
 			DynamicHTML.div(document.body, "position: absolute; left: 50%;" +
@@ -514,7 +537,8 @@ class Lesson {
 			"color:#555; font-family: sans-serif; font-size: 15px;";
 		screensLeft.id = "screensLeft";
 	}
-    
+	
+	//Shows the current screen
 	showCurrentScreen() {
 		let currScreen = document.getElementById("currScreen");
 		let screensLeft = document.getElementById("screensLeft");
@@ -542,11 +566,13 @@ class Lesson {
 				"color:#444; font-family: sans-serif; font-size: 20px;";
 		}
 	}
-    
+	
+	//Leaves the lesson (removes the elements on screen of the lesson)
 	leaveLesson() {
 		document.getElementById("container").remove();
 	}
 
+	//Go to the next screen of the lesson
 	nextScreen(container) {
 		//Hide previous screen
 		this.getCurrentScreen().hide();
@@ -562,7 +588,8 @@ class Lesson {
 
 		this.showCurrentScreen(container);
 	}
-    
+	
+	//Marks the current screen as passed
 	passCurrentScreen() {
 		this.screensNotPassed.splice(this.screenNotPassedIndex, 1);
 	}
@@ -577,6 +604,7 @@ class Screen {
 		this.box = null;
 	}
 
+	//Show the screen in the given container
 	show(container) {
 		this.box = DynamicHTML.div(container, "border-radius: 5px;" +
 		"background-color: rgb(240, 240, 240); padding:20px;" +
@@ -585,20 +613,22 @@ class Screen {
 		this.box.id = "box";
 	}
     
+	//Hides the screen
 	hide() {
 		document.getElementById("box").remove();
 	}
 
-	checkAnswer(answer) {
+	//If the answer given by the user is correct
+	isAnswerCorrect(answer) {
 		for (let i=0; i < this.solutions.length; i++) {
 			if (answer.toUpperCase() === this.solutions[i].toUpperCase()) {
 				return true;
 			}
 		} 
-        
 		return false;
 	}
 
+	//Gets a solution, if it has one or more it will always return the first one
 	getSolution() {
 		return this.solutions[0];
 	}
@@ -610,6 +640,7 @@ class Keyboard extends Screen {
 		this.sound = sound;
 	}
 
+	//Shows the keyboard screen
 	show(container) {
 		super.show(container);
 		DynamicHTML.h1(this.box, this.prompt).style = 
@@ -617,6 +648,7 @@ class Keyboard extends Screen {
 
 		var p1 = DynamicHTML.p(this.box, "margin-left: 30px;");
 
+		//Plays a sound if it's available
 		if(this.sound!=null) {
 			var i = DynamicHTML.img(p1, "http://icons.iconarchive.com" +
 				"/icons/icons8/ios7/32/Media-Controls-High-Volume-icon.png");
@@ -638,19 +670,22 @@ class Keyboard extends Screen {
 			"background-color: #22aa55; color: white; font-size: 16px;" +
 			"font-weight: bold;";
 
+		//If user presses enter it checks the answer
 		DynamicHTML.eventHandler(document, "onkeydown", 
 			"if(event.keyCode==13) document.getElementById('check').click();");
 
+		//If user clicks on check button it checks the answer
 		DynamicHTML.eventHandler(b1, "onclick", 
 			"language.currLesson.getCurrentScreen().checkSolution();");
         
 	}
-    
+	
+	//Checks the answer of the user
 	checkSolution() {
 		let answer = document.getElementById("answer").value;
 
 		let isSolution = 
-			language.currLesson.getCurrentScreen().checkAnswer(answer);
+			language.currLesson.getCurrentScreen().isAnswerCorrect(answer);
 
 		let container = document.getElementById("container");
 		document.onkeydown = null;
@@ -663,44 +698,52 @@ class Keyboard extends Screen {
 		
 	}
     
+	//If the answer was correct
 	answeredCorrect() {
 		language.currLesson.passCurrentScreen();
 		DynamicHTML.play("general/right_answer.mp3");
 		language.currLesson.nextScreen();
 	}
     
+	//If the answer was wrong
 	answeredWrong(container) {
+		//Shows a button to go to the next screen
 		let nextScreenBtn = 
 			DynamicHTML.inpuButton(container, "nextScreenBtn", "Next Screen");
 		nextScreenBtn.style = "display: inline-block; margin: 5px 5px 10px;" +
 			"border-radius: 5px; padding: 8px 16px; background-color: #0f96d0;"+
 			"color: white; font-size: 13px; font-weight: bold;";
 		
-                
+		//If user clicks the nexScreenBtn we switch to the next screen        
 		nextScreenBtn.onclick = () => {
 			language.currLesson.nextScreen();
 			document.getElementById("correctAnswer").remove();
 			document.getElementById("nextScreenBtn").remove();
 
+			//If user presses enter key and check button 
+			//exists it should simulate a click on the check button
 			DynamicHTML.eventHandler(document, "onkeydown", 
 				"if((event.keyCode == 13) && " +
 				"document.getElementById('check') != null) " +
 				"document.getElementById('check').click();");
 		};
 
+		//Change the event triggered by pressing enter to the nextScreenBtn
 		DynamicHTML.eventHandler(document, "onkeydown", 
 			"if(event.keyCode == 13)" +
 			" document.getElementById('nextScreenBtn').click();");
                 
+		//Hides the screen the user answered to
 		language.currLesson.getCurrentScreen().box.style = "display: none";
 
+		//Shows the correct answer
 		let correctAnswer = DynamicHTML.h1(container,"The correct answer was: "+
 			language.currLesson.getCurrentScreen().getSolution());
-
 		correctAnswer.style = 
 			"color:#444; font-family: sans-serif; font-size: 20px;";
 		correctAnswer.id = "correctAnswer";
 		
+		//Plays wrong answer sound
 		DynamicHTML.play("general/wrong_answer.mp3"); 
 	}
 }
@@ -714,6 +757,7 @@ class Pairs extends Screen {
 		this.nPairsMade = 0;
 	}
 
+	//If the user clicks a button shown on screen
 	answered(button) {
 		if(this.selectedBefore==null) {
 			this.selectedBefore = button;
@@ -721,6 +765,7 @@ class Pairs extends Screen {
 			this.selectedBefore.style.backgroundColor = "rgb(60, 60, 60)";
 		} else {
 			if(this.isPairCorrect(button)) {
+				//If pair selected is correct buttons should be disabled
 				this.selectedBefore.style.backgroundColor = "#B4B4B4";
 				button.style.backgroundColor = "#B4B4B4";
 				this.selectedBefore.style.color = "rgb(0, 0, 0)";
@@ -733,8 +778,10 @@ class Pairs extends Screen {
 					"rgb(255, 255, 255)";
 				this.selectedBefore.style.color = "rgb(0, 0, 0)";
 			}
+			//Reset the current button selected because the pair was wrong
 			this.selectedBefore = null;
 		}
+		//If user got all pairs, pass to the next screen and play sound
 		if(this.nPairsMade == this.solutionsArray.length/2) {
 			language.currLesson.passCurrentScreen();
 			DynamicHTML.play("general/right_answer.mp3");
@@ -742,11 +789,16 @@ class Pairs extends Screen {
 		}
 	}
 
+	//Check if the pair selected is correct
 	isPairCorrect(lastSelected) {
 		let indexOfSelectedNow = 
 			this.solutionsArray.indexOf(lastSelected.value);
+
 		let indexOfSelectedBefore = 
 			this.solutionsArray.indexOf(this.selectedBefore.value); 
+		
+		//Quick way to check if they are a correct pair by just checking
+		//the indexes of the array
 		if( Math.abs(indexOfSelectedNow - indexOfSelectedBefore) == 1) {
 			if (Math.min(indexOfSelectedBefore,indexOfSelectedNow) % 2 == 0 ) {
 				return true;
@@ -758,11 +810,13 @@ class Pairs extends Screen {
 		}
 	}
 
+	//Shows the pairs screen
 	show(container) {
 		super.show(container);
 		DynamicHTML.h1(this.box,this.prompt).style.color = "#333";
 		let pairs = DynamicHTML.p(this.box,"");
 
+		//Initialize the buttons and respective events
 		for(let i=0;i<this.originalArray.length;i++) {
 
 			this.buttonsElements[i] = DynamicHTML.inpuButton(pairs,"butElem"+i,
@@ -773,18 +827,19 @@ class Pairs extends Screen {
 				"background-color: rgb(255, 255, 255); padding:5px;" +
 				"font-family: Arial; box-shadow: 2px 2px 5px rgba(0,0,0,0.2);" +
 				"cursor: pointer; transition: transform .1s ease-in-out;" +
-                "-webkit-transition: transform .1s ease-in-out;";;
+                "-webkit-transition: transform .1s ease-in-out;";
 
 			this.buttonsElements[i].onclick = (event) => {
 				this.answered(event.target);
 			};
             
-            this.buttonsElements[i].onmouseover = event => {
-                event.target.style.transform = "scale(1.1)"
-            };
-            this.buttonsElements[i].onmouseout = event => {
-                event.target.style.transform = "scale(1)"
-            };
+			//Just for animation/stylish purposes
+			this.buttonsElements[i].onmouseover = event => {
+				event.target.style.transform = "scale(1.1)";
+			};
+			this.buttonsElements[i].onmouseout = event => {
+				event.target.style.transform = "scale(1)";
+			};
 		}
 
 	}
@@ -873,53 +928,53 @@ class Blocks extends Screen {
 		}
 	}
     
-    //When a block gets dropped on another block
+	//When a block gets dropped on another block
 	onBlockDropBlock(event) {
-        //Stop propagation to avoid effectos of 
-        //onBlockDropFirstLine or onBlockDropsDiv
+		//Stop propagation to avoid effects of 
+		//onBlockDropFirstLine or onBlockDropsDiv
 		event.stopPropagation();
 		event.preventDefault();
 		let block = document.getElementById(event.dataTransfer.getData("text"));
 		let row = event.target.parentNode;       
         
-        // Dont execute if the block switch doesnt occur in the answer div
+		// Dont execute if the block switch doesnt occur in the answer div
 		if(row != block.parentNode || row.id == "answer") {
-            let answerParent = document.getElementById("answer");
+			let answerParent = document.getElementById("answer");
 			
-            // If the switch occurs within blocks of the same row,
-            // remove the block to switch from the answer 
-            // so that it can be latter inserted before the target block
+			// If the switch occurs within blocks of the same row,
+			// remove the block to switch from the answer 
+			// so that it can be latter inserted before the target block
 			if (row == block.parentNode || row.id != "answer") {
                 
-                // Index of the block in the answer div
+				// Index of the block in the answer div
 				let index = Array.from(answerParent.children).indexOf(block);
 				// Replace with empty string as placeholder 
-                // that will later be removed
+				// that will later be removed
 				this.answer.splice(index, 1, ""); 
 			}
             
 			
 			if (row.id == "answer") {
-                //index of target button
+				//index of target button
 				let index = Array.from(row.children).indexOf(event.target);
                 
 				//insert block value at the index of the target value 
 				this.answer.splice(index, 0, block.value);
 			}
-            //Remove the empty string used as placeholder
+			//Remove the empty string used as placeholder
 			if(this.answer.indexOf("") != -1) {
 				this.answer.splice(this.answer.indexOf(""), 1);
 			}
 		} 
         
-        //insert the block before the targetted block
+		//insert the block before the targetted block
 		row.insertBefore(block, event.target);
         
-        //Verify if the current answer is correct
+		//Verify if the current answer is correct
 		this.checkAnswer();
 	}
     
-    //Check whether the current value in answer is correct
+	//Check whether the current value in answer is correct
 	checkAnswer() {
 		if(this.answer.join(" ") == 
 		language.currLesson.getCurrentScreen().getSolution()) {
@@ -929,7 +984,7 @@ class Blocks extends Screen {
 		}
 	}
 
-    //When a block gets dropped in the answer div
+	//When a block gets dropped in the answer div
 	onBlockDropFirstLine(event) {
 		event.preventDefault();
 		let block = document.getElementById(event.dataTransfer.getData("text"));
@@ -939,7 +994,7 @@ class Blocks extends Screen {
 		this.checkAnswer();
 	}
     
-    //When a block gets dropped in the block container
+	//When a block gets dropped in the block container
 	onBlockDropBlocksDiv(event) {
 		event.preventDefault();
 		let block = document.getElementById(event.dataTransfer.getData("text"));
@@ -976,7 +1031,7 @@ class Symbols extends Screen {
 			prompt = promptXML[0].firstChild.nodeValue;
 		}
         
-        let original = originalXML[0].firstChild.nodeValue;
+		let original = originalXML[0].firstChild.nodeValue;
 		let solutions = solutionsXML[0].firstChild.nodeValue;
         
 		super(id, prompt, original.split(" "), solutions.split(" "));
@@ -1018,7 +1073,7 @@ class Symbols extends Screen {
 				"vertical-align:middle;");
 			let letter = 
                 DynamicHTML.text(this.pairsBoxes[i],"18",this.original[i]);
-            letter.style = "color:#444; font-weight: bold";
+			letter.style = "color:#444; font-weight: bold";
             
 			let draggableBox = 
                 DynamicHTML.div(this.pairsBoxes[i],"margin: 5px auto 0px;" +
