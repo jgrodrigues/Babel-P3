@@ -835,11 +835,12 @@ class Symbols extends Screen { //Usar para alfabetos extra apenas
 	show(container) {
 		super.show(container);
 		this.box2 = DynamicHTML.div(container, "margin-top: 10px;border-radius: 5px; background-color: rgb(240, 240, 240); padding:20px; font-family: Arial; box-shadow: 2px 2px 5px rgba(0,0,0,0.2)");
-		this.box.style.display = "table";
+        this.box.style = this.box.getAttribute("style") + "display: grid; grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr";
 		for(let i=0;i<this.original.length;i++) {
-			this.pairsBoxes[i] = DynamicHTML.div(this.box,"display: inline-block; margin: 6px 6px; text-align:center;vertical-align:middle;");
+			this.pairsBoxes[i] = DynamicHTML.div(this.box,"margin: 6px 6px; text-align:center;vertical-align:middle;");
 			this.fixedElements[i] = DynamicHTML.text(this.pairsBoxes[i],"18",this.original[i]);
-			this.boxesToFill[i] = DynamicHTML.div(this.pairsBoxes[i],"border-radius:5px; height: 30px; width:28px; background-color: #ddd;");
+            this.fixedElements[i].style = "color:#444; font-weight: bold";
+			this.boxesToFill[i] = DynamicHTML.div(this.pairsBoxes[i],"margin: 5px auto; border-radius:5px; height: 30px; width:28px; background-color: #ddd;");
 			this.boxesToFill[i].ondragover = event => {event.preventDefault();};
 			this.boxesToFill[i].ondrop = event => {this.onBlockDrop(event);};
 		}
@@ -868,7 +869,7 @@ class Symbols extends Screen { //Usar para alfabetos extra apenas
 		let elementDropped = document.getElementById(data);
         
 		if(this.isAnswerCorrect(event.target.parentNode.getElementsByTagName("span")[0].textContent, elementDropped.symbol)) {
-			event.target.style = "border-radius:5px; height:" + elementDropped.offsetHeight + "px; width:" + elementDropped.offsetWidth + "px; border:1px solid #000";
+			event.target.style = "margin: 5px auto;border-radius:5px; height:" + elementDropped.offsetHeight + "px; width:" + elementDropped.offsetWidth + "px; border:1px solid #000";
 			event.target.appendChild(elementDropped);
 			elementDropped.style = "border-radius: 5px; font-size: 17px; background-color: rgb(255, 255, 255); padding:5px; font-family: Arial; box-shadow: 2px 2px 5px rgba(0,0,0,0.2); cursor: pointer;";
 
