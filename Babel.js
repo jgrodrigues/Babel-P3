@@ -651,12 +651,12 @@ class Symbols extends Screen { //Usar para alfabetos extra apenas
 		super(id, prompt, original.split(" "), solutions.split(" "));
 		this.pairsBoxes = [];
 		this.fixedElements = [];
-		this.toDragElements = [];
+		this.boxesToFill = [];
 		this.nPairsMade = 0;
 	}
 
 	isAnswerCorrect(staticElement, droppedElement) {
-		if(this.fixedElements.indexOf(staticElement) == this.toDragElements.indexOf(droppedElement)) {
+		if(this.fixedElements.indexOf(staticElement) == this.boxesToFill.indexOf(droppedElement)) {
 			return true;
 		} else {
 			return false;
@@ -668,7 +668,8 @@ class Symbols extends Screen { //Usar para alfabetos extra apenas
 		for(let i=0;i<this.original.length;i++) {
 			this.pairsBoxes[i] = DynamicHTML.div(this.box,"display: inline;");
 			this.fixedElements[i] = DynamicHTML.text(this.pairsBoxes[i],"15",this.original[i]);
-			this.toDragElements[i] = DynamicHTML.div(this.pairsBoxes[i],"margin-left: 5px; height: 10px; width:10px; border:1px solid #000;");
+			this.boxesToFill[i] = DynamicHTML.div(this.pairsBoxes[i],"margin-left: 5px; height: 10px; width:10px; border:1px solid #000;");
+			
 		}
 	}
 }
