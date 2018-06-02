@@ -297,14 +297,14 @@ class LanguageExtraAlphabets extends Language {
 		let container = DynamicHTML.div(document.body, "position: absolute; left: 50%; -webkit-transform: translateX(-50%); transform: translateX(-50%); ");
 		container.id = "container";
         
-        let resetBtn = DynamicHTML.inpuButton(container, "resetBtn", "Reset Board", "red");
-        resetBtn.style = "position: absolute; top: 22px;right: 10px;background-color: rgb(13, 118, 176); border-radius: 5px; padding: 8px 16px; color: white; font-size: 13px; font-weight: bold; cursor: pointer;";
+		let resetBtn = DynamicHTML.inpuButton(container, "resetBtn", "Reset Board", "red");
+		resetBtn.style = "position: absolute; top: 22px;right: 10px;background-color: rgb(13, 118, 176); border-radius: 5px; padding: 8px 16px; color: white; font-size: 13px; font-weight: bold; cursor: pointer;";
         
-        resetBtn.onclick = () => {
-            language.currSymbols.box.remove();
-            language.currSymbols.box2.remove();
-            language.currSymbols.show(container);
-        }
+		resetBtn.onclick = () => {
+			language.currSymbols.box.remove();
+			language.currSymbols.box2.remove();
+			language.currSymbols.show(container);
+		}
         
 		let title = DynamicHTML.h1(container, language.currSymbols.name.toUpperCase() + " SYMBOLS");
 		title.style = "color:#0d76b0; font-family: sans-serif;";
@@ -403,7 +403,10 @@ class Lesson {
 	loadKeyboard(id, screenXML) {
 		var prompt = screenXML.getElementsByTagName("PROMPT")[0].firstChild.nodeValue;
 		var original = screenXML.getElementsByTagName("ORIGINAL")[0].firstChild.nodeValue;
-		var sound = screenXML.getElementsByTagName("SOUND")[0].firstChild.nodeValue;
+		var sound = null
+		if(screenXML.getElementsByTagName("SOUND").length > 0) {
+			sound = screenXML.getElementsByTagName("SOUND")[0].firstChild.nodeValue;
+		}
 		var solutions = Array.from(screenXML.getElementsByTagName("TRANSLATION")).map(translation => {return translation.firstChild.nodeValue;});
 		return new Keyboard(id, prompt, original, solutions, sound);
 	}
@@ -519,8 +522,6 @@ class Keyboard extends Screen {
 	constructor(id, prompt, original, solutions, sound) {
 		super(id, prompt, original, solutions);
 		this.sound = sound;
-        
-		//TODO som como evento ao clicar no botao chamar playsound
 	}
 
 	show(container) {
@@ -528,18 +529,22 @@ class Keyboard extends Screen {
 		DynamicHTML.h1(this.box, "Write this in English").style = "margin-left: 15px; color:#333";
 
 		var p1 = DynamicHTML.p(this.box, "padding-left:40px; word-spacing:50px;");
-		var i = DynamicHTML.img(p1, "http://icons.iconarchive.com/icons/icons8/ios7/32/Media-Controls-High-Volume-icon.png");
-		DynamicHTML.eventHandler(i, "onclick", "DynamicHTML.play(" + "\"" + this.sound + "\"" + ");");
+
+		if(this.sound!=null) {
+			var i = DynamicHTML.img(p1, "http://icons.iconarchive.com/icons/icons8/ios7/32/Media-Controls-High-Volume-icon.png");
+			DynamicHTML.eventHandler(i, "onclick", "DynamicHTML.play(" + "\"" + this.sound + "\"" + ");");
+		}
 		DynamicHTML.text(p1, 16, " ");
 		DynamicHTML.text(p1, 32, this.original);
 
 		var p2 = DynamicHTML.p(this.box, "padding-left:20px;");
 		this.i = DynamicHTML.inputActiveText(p2, "answer", 40, 24, "Type this in English");
-		DynamicHTML.eventHandler(i, "onkeydown", "if(event.keyCode == 13) document.getElementById('check').click();");
+		
 
 		DynamicHTML.text(p2, 16, " ");
 		var b1 = DynamicHTML.inpuButton(p2, "check", "Check", "lime");
 		b1.style = "margin-left: 5px; border-radius: 5px; padding: 8px 15px; background-color: #22aa55; color: white; font-size: 16px; font-weight: bold;";
+		DynamicHTML.eventHandler(document, "onkeydown", "if(event.keyCode == 13) document.getElementById('check').click();");
 		DynamicHTML.eventHandler(b1, "onclick", "language.currLesson.getCurrentScreen().checkSolution();");
         
 	}
@@ -553,6 +558,8 @@ class Keyboard extends Screen {
 		} else {
 			this.answeredWrong();
 		}
+
+		document.onkeydown = null;
 	}
     
 	answeredCorrect() {
@@ -651,10 +658,10 @@ class Blocks extends Screen {
 }
 
 class Symbol {
-    constructor(symbol, latin) {
-        this.symbol = symbol;
-        this.latin = latin;
-    }
+	constructor(symbol, latin) {
+		this.symbol = symbol;
+		this.latin = latin;
+	}
 }
 
 class Symbols extends Screen { //Usar para alfabetos extra apenas
@@ -682,13 +689,9 @@ class Symbols extends Screen { //Usar para alfabetos extra apenas
 
 	isAnswerCorrect(staticElement, droppedElement) {
 		if(staticElement == droppedElement.latin) {
-			console.log("staticElement" + staticElement);
-			console.log("droppedElement" + droppedElement);
-			console.log("true");
+			this.nPairsMade++;
 			return true;
 		} else {
-			console.log("false");console.log("staticElement" + staticElement);
-			console.log(droppedElement);
 			return false;
 		}
 	}
@@ -702,40 +705,50 @@ class Symbols extends Screen { //Usar para alfabetos extra apenas
 			this.fixedElements[i] = DynamicHTML.text(this.pairsBoxes[i],"18",this.original[i]);
 			this.boxesToFill[i] = DynamicHTML.div(this.pairsBoxes[i],"border-radius:5px; height: 30px; width:28px; background-color: #ddd;");
 			this.boxesToFill[i].ondragover = event => {event.preventDefault();};
-			this.boxesToFill[i].ondrop = event => {this.onBlockDrop(event)};
+			this.boxesToFill[i].ondrop = event => {this.onBlockDrop(event);};
 		}
-		// let solutionsDiv = DynamicHTML.div(this.box, "");
         
-        let tempSymbols = [];
-        for(let i = 0;i<this.solutions.length;i++) { 
-            tempSymbols.push(new Symbol(this.solutions[i], this.original[i]));
-        }
-        tempSymbols.sort(function(a, b){return 0.5 - Math.random()});
+		let tempSymbols = [];
+		for(let i = 0;i<this.solutions.length;i++) { 
+			tempSymbols.push(new Symbol(this.solutions[i], this.original[i]));
+		}
+		tempSymbols.sort(function(a, b){return 0.5 - Math.random();});
         
 		for(let i = 0;i<this.solutions.length;i++) {
 			let symbolElement = DynamicHTML.inpuButton(this.box2,"buttonToDrag" + i,tempSymbols[i].symbol, "white");
 			symbolElement.style = "margin:5px; border-radius: 5px; font-size: 17px; background-color: rgb(255, 255, 255); padding:5px; font-family: Arial; box-shadow: 2px 2px 5px rgba(0,0,0,0.2); cursor: pointer;";
 			symbolElement.draggable = "true";
-            let symbol = new Symbol(this.solutions[i], this.original[i]);
-            symbolElement.symbol = tempSymbols[i];
-            this.symbolsToDrag[i] = tempSymbols[i];
+			let symbol = new Symbol(this.solutions[i], this.original[i]);
+			symbolElement.symbol = tempSymbols[i];
+			this.symbolsToDrag[i] = tempSymbols[i];
 			
 			symbolElement.ondragstart = (event) => {event.dataTransfer.setData("text", event.target.id);};
 		}
 	}
     
-    onBlockDrop(event) {
-        event.preventDefault();
-        let data = event.dataTransfer.getData("text");
-        let elementDropped = document.getElementById(data);
-        console.log("elementDropped" + elementDropped.value);
+	onBlockDrop(event) {
+		event.preventDefault();
+		let data = event.dataTransfer.getData("text");
+		let elementDropped = document.getElementById(data);
         
-        if(this.isAnswerCorrect(event.target.parentNode.getElementsByTagName("span")[0].textContent, elementDropped.symbol)) {
-            event.target.style = "border-radius:5px; height:" + elementDropped.offsetHeight + "px; width:" + elementDropped.offsetWidth + "px; border:1px solid #000";
-            event.target.appendChild(elementDropped);
-            elementDropped.style = "border-radius: 5px; font-size: 17px; background-color: rgb(255, 255, 255); padding:5px; font-family: Arial; box-shadow: 2px 2px 5px rgba(0,0,0,0.2); cursor: pointer;";
-        }
-    }
+		if(this.isAnswerCorrect(event.target.parentNode.getElementsByTagName("span")[0].textContent, elementDropped.symbol)) {
+			event.target.style = "border-radius:5px; height:" + elementDropped.offsetHeight + "px; width:" + elementDropped.offsetWidth + "px; border:1px solid #000";
+			event.target.appendChild(elementDropped);
+			elementDropped.style = "border-radius: 5px; font-size: 17px; background-color: rgb(255, 255, 255); padding:5px; font-family: Arial; box-shadow: 2px 2px 5px rgba(0,0,0,0.2); cursor: pointer;";
+
+			if(this.nPairsMade == this.solutions.length) {
+				this.finished(elementDropped.container);
+			}
+		}
+	}
+
+	finished(container) {
+		this.box2.remove();
+		for(let i = 0;i<this.original.length;i++) {
+			this.pairsBoxes[i].remove();
+		}
+		DynamicHTML.h1(this.box, "Congratulations, you just learned all symbols of the alphabet " + this.name + ".").style = "color:#444; font-family: sans-serif; font-size: 20px; text-align:center;";
+	}
 }
 //------------------------------
 
@@ -746,14 +759,14 @@ function runLanguage(text) {
 	var nodes = xmlDoc.getElementsByTagName("LANGNAME");
 	if( nodes.length == 1 ) {
 		languageName = nodes[0].childNodes[0].nodeValue;  // assignement to global
-		//screen1();
         
 		console.log("start()");
 
-		new LanguageExtraAlphabets();
-		//new Language();
-        
-		//var page = new DynamicHTML(language);
+		if(xmlDoc.getElementsByTagName("SYMBOLS").length > 0) {
+			new LanguageExtraAlphabets();
+		} else {
+			new Language();
+		}
 	}
 	else {
 		alert("ERROR: Not a language file!\nPLEASE, TRY AGAIN!");
