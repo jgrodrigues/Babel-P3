@@ -5,10 +5,11 @@ Babel.js - AMD/2018
 Autores: Jonas Rodrigues (49806), Joao Costa (50597)
 
 Neste projeto foram cumpridas todas as tarefas pretendidas.
-No caso do ecra Blocks, um block ao ser inserido por cima de outro,
-o bloco e inserido no local do outro, fazendo com que todos os outros
-facam shift para a direito (incluindo o bloco sobre o qual foi inserido)
 
+Comentarios adicionais:
+	No caso do ecra Blocks, um block ao ser inserido por cima de outro,
+o bloco e' inserido no local do outro, fazendo com que todos os outros
+facam shift para a direita (incluindo o bloco sobre o qual foi inserido).
 
 */
 
