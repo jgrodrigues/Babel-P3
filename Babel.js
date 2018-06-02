@@ -171,12 +171,14 @@ class Language {
 	constructor() {
 		language = this;
 		this.body = document.body;
+        this.body.style = "margin:0px; padding: 0px;";
 		this.screenTypes = ["KEYBOARD", "PAIRS", "BLOCKS", "SYMBOLS"];
 		this.body.innerHTML = "";
 		this.header = DynamicHTML.div(this.body, "float:left;top: 0px; left: 0;background-color: #0f96d0; width:100%; height: 80px;");
 		DynamicHTML.h1(this.header, "Babel   - " + languageName + "").style = "margin: 20px;font-family: sans-serif; text-transform: uppercase; font-weight: bold; color: white";
-		DynamicHTML.hr(this.body).style = "border-top: 2px dashed #0f96d0;";
-		this.nav = DynamicHTML.div(this.body, "text-align: center; position: relative; margin-bottom:20px;");
+		DynamicHTML.hr(this.body).style = "border-top: 2px solid #0f6690;";
+		this.nav = DynamicHTML.div(this.body, "margin: 20px auto; width: 600px;text-align: center;grid-gap: 5px; display: grid; grid-template-columns: repeat(4, 1fr); text-align: center; position: relative; margin-bottom:20px;");
+		this.back = DynamicHTML.div(this.body, "text-align: center; position: relative; margin-bottom:20px;");
 		this.buttons = [];
 		this.nLessons = getNumberOfChildElements(xmlDoc, "LESSON");
 		this.currLesson = null;
@@ -191,32 +193,29 @@ class Language {
     
 	addLessonsButtons() {
 		console.log("in");
+        let header = DynamicHTML.h1(this.nav, "LESSONS");
+        header.id = "lessonHeader";
+        header.style = "text-align: left; grid-column: 1 / span 4; color: rgb(15, 150, 208); font-family: sans-serif;";
 		for (let i = 1; i <= this.nLessons;i++) {
 			//tirar a cor como argumento do botao
-			this.buttons[i] = DynamicHTML.inpuButton(this.nav,"button" + i,"Lesson " + i, "red");
-			this.buttons[i].style = "display: inline-block; margin: 5px 5px; border-radius: 5px; padding: 8px 16px; background-color: #0f96d0; color: white; font-size: 13px; font-weight: bold;";
+			this.buttons[i] = DynamicHTML.inpuButton(this.nav,"button" + i,"LESSON " + i, "red");
+			this.buttons[i].style = "height: 150px; width: 150px; padding: 8px 16px; background-color: #0f96d0; color: white; font-size: 20px; font-weight: bold; box-shadow: 2px 2px 5px rgba(0,0,0,0.2); cursor: pointer;";
 
 			this.buttons[i].onclick = () => { this.getLesson(i);};
 			//eventHandler(this.buttons[i],"onclick","showKeyboardScreen(" + i +");");
 		}
 	}
 
-	hideLessonsButtons() {
-		for (let i = 1; i <= this.nLessons;i++) {
-			this.buttons[i].style.display = "none";
-		}
-		//this.nav.remove();
+	hideLessonsButtons() {        
+        this.nav.style.display = "none";
 	}
 
 	showLessonsButtons() {
-		for (let i = 1; i <= this.nLessons;i++) {
-			this.buttons[i].style.display = "";
-		}
-		//this.addLessonsButtons();
+        this.nav.style.display = "grid";
 	}
 
 	showBackButton() {
-		this.backButton = DynamicHTML.inpuButton(this.nav,"backButton", "Back");
+		this.backButton = DynamicHTML.inpuButton(this.back,"backButton", "Back");
 		this.backButton.style = "margin:5px 5px; position: absolute; left: 20px; border-radius: 5px; padding: 8px 16px; background-color: #0f96d0; color: white; font-size: 13px; font-weight: bold;";
 		this.backButton.onclick = () => {return this.goBack();};
 	}
@@ -273,14 +272,18 @@ class LanguageExtraAlphabets extends Language {
 	addSymbolsButtons() {
 		let symbolName;
 		console.log("nLessons antes=" + this.nLessons);
+        
+        let header = DynamicHTML.h1(this.nav, "SYMBOLS");
+        header.style = "text-align: left; grid-column: 1 / span 4; color: #891bf7; font-family: sans-serif;";
+        
 		let i;
 		for(i = this.nLessons+1;i<=this.nLessons+this.nSymbols;i++) {
 			console.log(i-this.nLessons);
 			console.log(this.symbolsXML[i-this.nLessons-1]);
 			symbolName = this.symbolsXML[i-this.nLessons-1].getElementsByTagName("SYMBNAME")[0].firstChild.nodeValue;
 			console.log(symbolName);
-			this.buttons[i] = DynamicHTML.inpuButton(this.nav,"button" + symbolName,symbolName, "red");
-			this.buttons[i].style = "display: inline-block; margin: 5px 5px; border-radius: 5px; padding: 8px 16px; background-color: #0f96d0; color: white; font-size: 13px; font-weight: bold;";
+			this.buttons[i] = DynamicHTML.inpuButton(this.nav,"button" + symbolName,symbolName.toUpperCase(), "red");
+			this.buttons[i].style = "height: 150px; width: 150px; background-color: #891bf7; color: white; font-size: 20px; font-weight: bold; box-shadow: 2px 2px 5px rgba(0,0,0,0.2); cursor: pointer;";
 			const id = i-this.nLessons;
 			this.buttons[i].onclick = () => { this.getSymbols(id);};
 		}
@@ -534,15 +537,15 @@ class Keyboard extends Screen {
 
 	show(container) {
 		super.show(container);
-		DynamicHTML.h1(this.box, this.prompt).style = "margin-left: 15px; color:#333";
+		DynamicHTML.h1(this.box, this.prompt).style = "margin-left: 20px; color:#333";
 
-		var p1 = DynamicHTML.p(this.box, "padding-left:40px; word-spacing:50px;");
+		var p1 = DynamicHTML.p(this.box, "margin-left: 30px;");
 
 		if(this.sound!=null) {
 			var i = DynamicHTML.img(p1, "http://icons.iconarchive.com/icons/icons8/ios7/32/Media-Controls-High-Volume-icon.png");
 			DynamicHTML.eventHandler(i, "onclick", "DynamicHTML.play(" + "\"" + this.sound + "\"" + ");");
 		}
-		DynamicHTML.text(p1, 16, " ");
+		DynamicHTML.text(p1, 16, " ").style.marginLeft = "30px";
 		DynamicHTML.text(p1, 32, this.original);
 
 		var p2 = DynamicHTML.p(this.box, "padding-left:20px;");
@@ -600,7 +603,6 @@ class Keyboard extends Screen {
 	}
 }
 
-//TODO
 class Pairs extends Screen {
 	constructor(id, prompt, original, solutions) {
 		super(id, prompt, original, solutions);
