@@ -327,10 +327,14 @@ class LanguageExtraAlphabets extends Language {
 	}
     
     goBack() {
-        document.getElementById("container").remove();
-		this.currSymbols = null;
-		this.hideBackButton();
-		this.showLessonsButtons();
+        if (this.currSymbols != null) {
+            document.getElementById("container").remove();
+            this.currSymbols = null;
+            this.hideBackButton();
+            this.showLessonsButtons();
+        } else {
+            super.goBack();
+        }
 	}
 }
 
