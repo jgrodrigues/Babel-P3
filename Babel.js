@@ -297,6 +297,15 @@ class LanguageExtraAlphabets extends Language {
 		let container = DynamicHTML.div(document.body, "position: absolute; left: 50%; -webkit-transform: translateX(-50%); transform: translateX(-50%); ");
 		container.id = "container";
         
+        let resetBtn = DynamicHTML.inpuButton(container, "resetBtn", "Reset Board", "red");
+        resetBtn.style = "position: absolute; top: 22px;right: 10px;background-color: rgb(13, 118, 176); border-radius: 5px; padding: 8px 16px; color: white; font-size: 13px; font-weight: bold; cursor: pointer;";
+        
+        resetBtn.onclick = () => {
+            language.currSymbols.box.remove();
+            language.currSymbols.box2.remove();
+            language.currSymbols.show(container);
+        }
+        
 		let title = DynamicHTML.h1(container, language.currSymbols.name.toUpperCase() + " SYMBOLS");
 		title.style = "color:#0d76b0; font-family: sans-serif;";
 		title.id = "title";
@@ -641,6 +650,13 @@ class Blocks extends Screen {
 
 }
 
+class Symbol {
+    constructor(symbol, latin) {
+        this.symbol = symbol;
+        this.latin = latin;
+    }
+}
+
 class Symbols extends Screen { //Usar para alfabetos extra apenas
 	constructor(id, symbolXML) {
 		let prompt = "";
@@ -665,13 +681,14 @@ class Symbols extends Screen { //Usar para alfabetos extra apenas
 	}
 
 	isAnswerCorrect(staticElement, droppedElement) {
-		if(this.fixedElements.indexOf(staticElement) == this.boxesToFill.indexOf(droppedElement)) {
+		if(staticElement == droppedElement.latin) {
 			console.log("staticElement" + staticElement);
 			console.log("droppedElement" + droppedElement);
 			console.log("true");
 			return true;
 		} else {
-			console.log("false");
+			console.log("false");console.log("staticElement" + staticElement);
+			console.log(droppedElement);
 			return false;
 		}
 	}
@@ -683,31 +700,42 @@ class Symbols extends Screen { //Usar para alfabetos extra apenas
 		for(let i=0;i<this.original.length;i++) {
 			this.pairsBoxes[i] = DynamicHTML.div(this.box,"display: inline-block; margin: 6px 6px; text-align:center;vertical-align:middle;");
 			this.fixedElements[i] = DynamicHTML.text(this.pairsBoxes[i],"18",this.original[i]);
-			this.boxesToFill[i] = DynamicHTML.div(this.pairsBoxes[i],"border-radius:5px; height: 30px; width:28px; border:1px solid #000;");
-			this.boxesToFill[i].ondragover = (event) => {event.preventDefault();};
-			this.boxesToFill[i].ondrop = (event) => {
-				event.preventDefault();
-				let data = event.dataTransfer.getData("text");
-				let elementDropped = document.getElementById(data);
-				console.log("elementDropped" + elementDropped.value);
-				if(this.isAnswerCorrect(event.target.previousSibling.value, elementDropped.value)) {
-					console.log("event.target.previousSibling.nodeValue=" + event.target.previousSibling.value);
-					let newHeight = elementDropped.offsetHeight + 10;
-					let newWidth = elementDropped.offsetWidth + 10;
-					event.target.style = "border-radius:5px; height:" + newHeight + "px; width:" + newWidth + "px; border:1px solid #000";
-					event.target.appendChild(elementDropped);
-				}
-			};
+			this.boxesToFill[i] = DynamicHTML.div(this.pairsBoxes[i],"border-radius:5px; height: 30px; width:28px; background-color: #ddd;");
+			this.boxesToFill[i].ondragover = event => {event.preventDefault();};
+			this.boxesToFill[i].ondrop = event => {this.onBlockDrop(event)};
 		}
 		// let solutionsDiv = DynamicHTML.div(this.box, "");
+        
+        let tempSymbols = [];
+        for(let i = 0;i<this.solutions.length;i++) { 
+            tempSymbols.push(new Symbol(this.solutions[i], this.original[i]));
+        }
+        tempSymbols.sort(function(a, b){return 0.5 - Math.random()});
+        
 		for(let i = 0;i<this.solutions.length;i++) {
-			this.symbolsToDrag[i] = DynamicHTML.inpuButton(this.box2,"buttonToDrag" + i,this.solutions[i], "white");
-			this.symbolsToDrag[i].style = "margin:5px; border-radius: 5px; font-size: 17px; background-color: rgb(255, 255, 255); padding:5px; font-family: Arial; box-shadow: 2px 2px 5px rgba(0,0,0,0.2); cursor: pointer;";
-			this.symbolsToDrag[i].draggable = "true";
+			let symbolElement = DynamicHTML.inpuButton(this.box2,"buttonToDrag" + i,tempSymbols[i].symbol, "white");
+			symbolElement.style = "margin:5px; border-radius: 5px; font-size: 17px; background-color: rgb(255, 255, 255); padding:5px; font-family: Arial; box-shadow: 2px 2px 5px rgba(0,0,0,0.2); cursor: pointer;";
+			symbolElement.draggable = "true";
+            let symbol = new Symbol(this.solutions[i], this.original[i]);
+            symbolElement.symbol = tempSymbols[i];
+            this.symbolsToDrag[i] = tempSymbols[i];
 			
-			this.symbolsToDrag[i].ondragstart = (event) => {event.dataTransfer.setData("text", event.target.id);};
+			symbolElement.ondragstart = (event) => {event.dataTransfer.setData("text", event.target.id);};
 		}
 	}
+    
+    onBlockDrop(event) {
+        event.preventDefault();
+        let data = event.dataTransfer.getData("text");
+        let elementDropped = document.getElementById(data);
+        console.log("elementDropped" + elementDropped.value);
+        
+        if(this.isAnswerCorrect(event.target.parentNode.getElementsByTagName("span")[0].textContent, elementDropped.symbol)) {
+            event.target.style = "border-radius:5px; height:" + elementDropped.offsetHeight + "px; width:" + elementDropped.offsetWidth + "px; border:1px solid #000";
+            event.target.appendChild(elementDropped);
+            elementDropped.style = "border-radius: 5px; font-size: 17px; background-color: rgb(255, 255, 255); padding:5px; font-family: Arial; box-shadow: 2px 2px 5px rgba(0,0,0,0.2); cursor: pointer;";
+        }
+    }
 }
 //------------------------------
 
